@@ -8,7 +8,7 @@
 <div>
     memebers : 
     {% for member in study.members.all %}
-        <p>{{ member.username }}<button>out</button></p>
+        <p>{{ member.username }}{% if study.creator == user %}<button>out</button>{% endif %}</p>
     {% endfor %}
 </div>
 <div>
