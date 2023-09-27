@@ -1,0 +1,22 @@
+
+
+# 동작) message
+
+## 동작 리스트
+# Fix 필수사항 수정
+# Feat 새로운 기능 추가
+# Add 기능 없이 파일만 추가
+# Remove 기능이나 파일 삭제
+# Update 개선사항 수정
+# Docs 문서 수정
+
+## example
+# Fix) Allowed Hosts에 localhost 추가
+# Feat) s3 업로드
+# Add) 로고 이미지
+# Remove) 테스트용 이미지
+# Update) class -> func in study.view.detail
+# Docs) 메인 화면 이미지 in readme
+
+## commit message template 추가
+# git config --global commit.template .gitmessage.txt
