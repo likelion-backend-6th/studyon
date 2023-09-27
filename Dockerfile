@@ -12,4 +12,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . ${APP_NAME}
 
-ENTRYPOINT ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+COPY ./scripts/entrypoint.sh /entrypoint
+RUN chmod +x /entrypoint
+
+COPY ./scripts/start.sh /start
+RUN chmod +x /start
+
+ENTRYPOINT [ "/entrypoint" ]
+CMD ["/start"]
