@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  postgres:
+    container_name: studyon_db
+    image: postgres:13
+    ports:
+      - 5432:5432
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_studyon:/var/lib/postgresql/data
+
+  studyon:
+    depends_on:
+      - postgres
+    container_name: studyon_dj
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: studyon_dj
+    volumes:
+      - .:/app
+      - studyon-static:/var/www/html/static
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env
+volumes:
+  postgres_studyon:
+  studyon-static:
