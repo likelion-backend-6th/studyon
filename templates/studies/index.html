@@ -1,0 +1,13 @@
+<h1>스터디 관리 메인페이지</h1>
+<hr>
+
+<h3>생성한 스터디 목록</h3>
+{% for my_study in my_studies %}
+    <h4>{{ my_study.title }}</h4>
+{% endfor %}
+<hr>
+
+<h3>참여중인 스터디 목록</h3>
+{% for in_study in in_studies %}
+    <h4>{{ in_study.title }}</h4>
+{% endfor %}
