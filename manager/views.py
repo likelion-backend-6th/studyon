@@ -11,8 +11,8 @@ class StudyView(LoginRequiredMixin,generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['my_studies'] = Study.objects.filter(creator=self.request.user)
-        context['in_studies'] = Study.objects.filter(members=self.request.user).exclude(creator=self.request.user)
+        context['my_studies'] = Study.objects.filter(creator=self.request.user,is_active=True)
+        context['in_studies'] = Study.objects.filter(members=self.request.user,is_active=True).exclude(creator=self.request.user)
         context['my_recruits'] = Recruit.objects.filter(creator=self.request.user)
         context['like_recruits'] = Recruit.objects.filter(like_users=self.request.user)
         return context
