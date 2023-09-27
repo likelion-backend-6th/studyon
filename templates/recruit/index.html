@@ -1,0 +1,34 @@
+<h1>메인 페이지</h1>
+
+<h3>전체 모집글</h3>
+<ul>
+    {% for recruit in recruits %}
+        <li>
+            title: {{ recruit.title }}<br>
+            process: {{ recruit.process }}<br>
+            info: {{ recruit.info }}<br>
+            tags:
+            {% for tag in recruit.tags.all %}
+                {{ tag.name }}
+            {% endfor %}
+        </li>
+    {% endfor %}
+</ul>
+{% if request.user.is_authenticated %}
+    <h3>참여중인 스터디</h3>
+    <ul>
+        {% for study in in_studies %}
+            <li>
+                study title: {{ study.study.title }}
+            </li>
+        {% endfor %}
+    </ul>
+    <h3>좋아요한 모집글</h3>
+    <ul>
+        {% for recruit in liked_studies %}
+            <li>
+                like: {{ recruit.title }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

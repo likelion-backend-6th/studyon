@@ -24,6 +24,7 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('studies/', include('manager.urls',namespace='manager')),
+    path('', include('recruit.urls')),
 ]
 
 if settings.DEBUG:
