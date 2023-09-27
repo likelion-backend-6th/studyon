@@ -1,0 +1,19 @@
+<h1>스터디 관리 상세 페이지</h1>
+
+<p>id : {{ study.id }}</p>
+<p>title : {{ study.title }}</p>
+<p>period : {{ study.start|date:'Y.m.d' }}~{{ study.end|date:'Y.m.d' }}</p>
+<p>process : {{ study.process }}</p>
+<p>info : {{ study.info }}</p>
+<div>
+    memebers : 
+    {% for member in study.members.all %}
+        <p>{{ member.username }}<button>out</button></p>
+    {% endfor %}
+</div>
+<div>
+    tasks : 
+    {% for task in tasks %}
+        <p>{% if task.is_finished %}완료{% else %}미완료{% endif %} - [{{task.start|date:'Y.m.d'}}~{{task.end|date:'Y.m.d'}}] {{ task.title }} <button>board</button></p>
+    {% endfor %}
+</div>

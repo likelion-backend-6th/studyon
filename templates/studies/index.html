@@ -15,7 +15,7 @@
 
 <h3>내가 팀장인 스터디 목록</h3>
 {% for my_study in my_studies %}
-    <h4>{{ my_study.title }}</h4>
+    <h4><a href="{% url "manager:stuydy_detail" my_study.id %}">{{ my_study.title }}</a></h4>
 {% endfor %}
 <hr>
 
