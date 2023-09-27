@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# Base Apps
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -39,10 +40,16 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
+# Custom Apps
 INSTALLED_APPS += [
     "manager.apps.ManagerConfig",
     "recruit.apps.RecruitConfig",
     "user.apps.UserConfig",
+]
+
+# Third Party Apps
+INSTALLED_APPS += [
+    "taggit",
 ]
 
 MIDDLEWARE = [
