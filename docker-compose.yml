@@ -28,6 +28,7 @@ services:
       - ./.env
     environment:
       ENV: local
+
 volumes:
   postgres_studyon:
   studyon-static:
