@@ -33,20 +33,22 @@ class StudyDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["tasks"] = Task.objects.filter(study=self.object)
         return context
-    
+
+
 class StudyDoneView(LoginRequiredMixin, View):
     def post(self, request, pk):
-        study = get_object_or_404(Study,id=pk)
+        study = get_object_or_404(Study, id=pk)
         study.status = 4
         study.save()
-        return redirect('manager:studies_list')
+        return redirect("manager:studies_list")
+
 
 class StudyFinishView(LoginRequiredMixin, View):
     def post(self, request, pk):
-        study = get_object_or_404(Study,id=pk)
+        study = get_object_or_404(Study, id=pk)
         study.status = 3
         study.save()
-        return redirect('manager:studies_list')
+        return redirect("manager:studies_list")
 
 
 class PostView(LoginRequiredMixin, ListView):
