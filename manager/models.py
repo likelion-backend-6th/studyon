@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from taggit.managers import TaggableManager
+from markdownx.models import MarkdownxField
 
 
 class Study(models.Model):
@@ -85,7 +86,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="posts")
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
-    content = models.TextField()
+    content = MarkdownxField()
     files = models.ManyToManyField(File, related_name="posts")
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
