@@ -6,6 +6,10 @@
 {% else %}
     <a href="#">로그인</a>
 {% endif %}
+<form method="get">
+    {{ form.as_p }}
+    <button type="submit">검색</button>
+</form>
 
 <h3>전체 모집글</h3>
 <ul>
