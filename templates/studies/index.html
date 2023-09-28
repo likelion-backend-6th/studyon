@@ -67,6 +67,11 @@
         <p>팀원</p>
         <p>members : {% for member in in_study.members.all %}{{ member.username }}{% if not forloop.last %},{% endif %}{% endfor %}</p>
         {% if in_study.study_tasks.all %}<p>tasks : {{ in_study.finished_task.count }} / {{ in_study.study_tasks.count }} ( {{ in_study.finished_task_percent }}% )</p>{% endif %}
-        <p><button>탈퇴요청</button></p>
+        <p>
+            <form action='{% url "manager:study_leave" in_study.id %}' method="post">
+                {% csrf_token %}
+                <input type="submit" value="Leave">
+            </form>
+        </p>
     </div>
 {% endfor %}
