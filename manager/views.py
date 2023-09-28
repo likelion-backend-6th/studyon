@@ -63,3 +63,9 @@ class PostView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["task"] = get_object_or_404(Task, id=self.kwargs["pk"])
         return context
+
+
+class PostDetailView(LoginRequiredMixin, DetailView):
+    model = Post
+    template_name = "studies/tasks/posts/detail.html"
+    context_object_name = "post"
