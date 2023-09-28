@@ -1,5 +1,5 @@
-from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import ListView, DetailView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.models import User
@@ -33,6 +33,20 @@ class StudyDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["tasks"] = Task.objects.filter(study=self.object)
         return context
+    
+class StudyDoneView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        study = get_object_or_404(Study,id=pk)
+        study.status = 4
+        study.save()
+        return redirect('manager:studies_list')
+
+class StudyFinishView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        study = get_object_or_404(Study,id=pk)
+        study.status = 3
+        study.save()
+        return redirect('manager:studies_list')
 
 
 class PostView(LoginRequiredMixin, ListView):

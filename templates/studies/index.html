@@ -36,14 +36,24 @@
 {% for my_study in my_studies %}
     <div style='border:1px red solid; display:inline-block;'>
         <p><a href="{% url "manager:study_detail" my_study.id %}">{{ my_study.title }}</a></p>
-        <p>status : {% if my_study.status is 1 or my_study.status is 2 %}~ing{% else %}done{% endif %}</p>
+        <p>status : {{ my_study.get_status_display }}</p>
         <p>date : {{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</p>
         {% comment %} 내가 팀장인 목록을 불러온것이기 때문에 팀장만 나옴 {% endcomment %}
         <p>팀장</p>
         <p>members : {% for member in my_study.members.all %}{{ member.username }}{% if not forloop.last %},{% endif %}{% endfor %}</p>
         {% if my_study.study_tasks.all %}<p>tasks : {{ my_study.finished_task.count }} / {{ my_study.study_tasks.count }} ( {{ my_study.finished_task_percent }}% )</p>{% endif %}
-        <p><button>완료</button></p>
-        <p><button>종료</button></p>
+        <p>
+            <form action='{% url "manager:study_done" my_study.id %}' method="post">
+                {% csrf_token %}
+                <input type="submit" value="Complete">
+            </form>
+        </p>
+        <p>
+            <form action='{% url "manager:study_finished" my_study.id %}' method="post">
+                {% csrf_token %}
+                <input type="submit" value="Finished">
+            </form>
+        </p>
     </div>
 {% endfor %}
 <hr>
@@ -52,7 +62,7 @@
 {% for in_study in in_studies %}
     <div style='border:1px red solid; display:inline-block;'>
         <p><a href="{% url "manager:study_detail" in_study.id %}">{{ in_study.title }}</a></p>
-        <p>status : {% if in_study.status is 1 or in_study.status is 2 %}~ing{% else %}done{% endif %}</p>
+        <p>status : {{ in_study.get_status_display }}</p>
         <p>date : {{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</p>
         <p>팀원</p>
         <p>members : {% for member in in_study.members.all %}{{ member.username }}{% if not forloop.last %},{% endif %}{% endfor %}</p>
