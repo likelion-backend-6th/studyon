@@ -50,7 +50,7 @@
 <h3>내가 팀원인 스터디 목록</h3>
 {% for in_study in in_studies %}
     <div style='border:1px red solid; display:inline-block;'>
-        <p><a href="{% url "manager:stuydy_detail" in_study.id %}">{{ in_study.title }}</a></p>
+        <p><a href="{% url "manager:study_detail" in_study.id %}">{{ in_study.title }}</a></p>
         <p>status : {% if in_study.status is 1 or in_study.status is 2 %}~ing{% else %}done{% endif %}</p>
         <p>date : {{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</p>
         <p>팀원</p>
