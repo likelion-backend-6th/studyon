@@ -25,6 +25,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("studies/", include("manager.urls", namespace="manager")),
     path("", include("recruit.urls")),
+    path("markdownx/", include("markdownx.urls")),
 ]
 
 if settings.DEBUG:
