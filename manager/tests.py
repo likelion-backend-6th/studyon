@@ -68,19 +68,19 @@ class PostTest(TestCase):
             end=datetime(2023, 10, 31),
         )
 
-        cls.post = Post.objects.create(
+        cls.post01 = Post.objects.create(
             title="테스트 포스트01",
             task=cls.task01,
             author=cls.user01,
             content="테스트 게시글 본문01",
         )
-        cls.post = Post.objects.create(
+        cls.post02 = Post.objects.create(
             title="테스트 포스트02",
             task=cls.task01,
             author=cls.user02,
             content="테스트 게시글 본문02",
         )
-        cls.post = Post.objects.create(
+        cls.post03 = Post.objects.create(
             title="테스트 포스트03",
             task=cls.task01,
             author=cls.user03,
@@ -96,3 +96,13 @@ class PostTest(TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.context_data["object_list"].count(), 3)
+
+    def test_post_view(self):
+        test_url = reverse("manager:post_detail", args=[self.post01.pk])
+        client = Client()
+        client.force_login(self.user01)
+
+        res: TemplateResponse = client.get(test_url)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.context_data["object"].title, self.post01.title)
