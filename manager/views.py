@@ -47,6 +47,13 @@ class StudyFinishView(LoginRequiredMixin, View):
         study.status = 3
         study.save()
         return redirect('manager:studies_list')
+    
+class StudyLeaveView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        study = get_object_or_404(Study,id=pk)
+        study.members.remove(request.user)
+        study.save()
+        return redirect('manager:studies_list')
 
 
 class PostView(LoginRequiredMixin, ListView):
