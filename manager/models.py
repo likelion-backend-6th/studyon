@@ -34,12 +34,19 @@ class Study(models.Model):
             models.Index(fields=["creator"]),
         ]
         ordering = ["-created_at"]
-        
+
     def finished_task(self):
         return self.study_tasks.filter(is_finished=True)
-    
+
     def finished_task_percent(self):
-        return round(float(len(self.study_tasks.filter(is_finished=True))/len(self.study_tasks.all()))*100,2)
+        return round(
+            float(
+                len(self.study_tasks.filter(is_finished=True))
+                / len(self.study_tasks.all())
+            )
+            * 100,
+            2,
+        )
 
 
 class Task(models.Model):
