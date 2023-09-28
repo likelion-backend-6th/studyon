@@ -34,7 +34,7 @@
 <h3>내가 팀장인 스터디 목록</h3>
 {% for my_study in my_studies %}
     <div style='border:1px red solid; display:inline-block;'>
-        <p><a href="{% url "manager:stuydy_detail" my_study.id %}">{{ my_study.title }}</a></p>
+        <p><a href="{% url "manager:study_detail" my_study.id %}">{{ my_study.title }}</a></p>
         <p>status : {% if my_study.status is 1 or my_study.status is 2 %}~ing{% else %}done{% endif %}</p>
         <p>date : {{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</p>
         {% comment %} 내가 팀장인 목록을 불러온것이기 때문에 팀장만 나옴 {% endcomment %}
