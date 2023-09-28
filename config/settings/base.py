@@ -53,6 +53,7 @@ INSTALLED_APPS += [
 # Third Party Apps
 INSTALLED_APPS += [
     "taggit",
+    "markdownx",
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,21 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# markdownx settings
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    "markdown.extensions.codehilite",
+    "markdown.extensions.fenced_code",
+    "markdown.extensions.extra",
+    "markdown.extensions.toc",
+]
+
+MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
+    "markdown.extensions.codehilite": {
+        "linenums": True,
+        "use_pygments": True,
+        "noclasses": True,
+        "pygments_style": "nord-darker",
+    },
+}
