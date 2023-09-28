@@ -1,3 +1,4 @@
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView
 
 from recruit.forms import SearchForm
@@ -37,3 +38,17 @@ class RecruitView(ListView):
             context["in_studies"] = None
             context["liked_studies"] = None
         return context
+
+
+def like_recruit(request, pk):
+    recruit = get_object_or_404(Recruit, pk=pk)
+    if request.user.is_authenticated:
+        recruit.like_users.add(request.user)
+    return redirect("recruits:index")
+
+
+def unlike_recruit(request, pk):
+    recruit = get_object_or_404(Recruit, pk=pk)
+    if request.user.is_authenticated:
+        recruit.like_users.remove(request.user)
+    return redirect("recruits:index")
