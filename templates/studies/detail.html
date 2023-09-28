@@ -9,7 +9,17 @@
 <div>
     memebers : 
     {% for member in study.members.all %}
-        <p>{{ member.username }}{% if study.creator == user %}<button>out</button>{% endif %}</p>
+        <p>
+            {% if member.username != user.username %}
+                {{ member.username }}
+                {% if study.creator == user %}
+                    <form action="{% url "manager:study_kickout" study.id member.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Kick out">
+                    </form>
+                {% endif %}
+            {% endif %}
+        </p>
     {% endfor %}
 </div>
 <div>
