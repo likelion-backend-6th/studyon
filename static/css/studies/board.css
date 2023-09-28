@@ -1,0 +1,48 @@
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.task, .table {
+    min-width: 50%;
+}
+
+.title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.th, .tr {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr 1fr;
+}
+
+.td {
+    text-align: center;
+}
+
+.td {
+    display: table-cell;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.td a {
+    text-decoration: none;
+}
+
+.bottom {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end; 
+    width: 50%;
+}
+
+button {
+    margin: 10px;
+    width: 50px;
+}
