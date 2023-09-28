@@ -97,7 +97,7 @@ class PostTest(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.context_data["object_list"].count(), 3)
 
-    def test_post_view(self):
+    def test_post_detail(self):
         test_url = reverse("manager:post_detail", args=[self.post01.pk])
         client = Client()
         client.force_login(self.user01)
