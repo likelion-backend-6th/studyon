@@ -11,4 +11,5 @@ urlpatterns = [
     path("<int:pk>/done", views.StudyDoneView.as_view(), name="study_done"),
     path("<int:pk>/finished", views.StudyDoneView.as_view(), name="study_finished"),
     path("tasks/<int:pk>/", views.PostView.as_view(), name="post_list"),
+    path("posts/<int:pk>/", views.PostDetailView.as_view(), name="post_detail"),
 ]
