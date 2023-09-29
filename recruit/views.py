@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView
 
 from recruit.forms import SearchForm, ApplicationForm
@@ -79,3 +81,43 @@ class RecruitDetailView(DetailView):
             return redirect("recruits:index")
         else:
             return self.render_to_response(self.get_context_data(form=form))
+
+
+class RequestView(ListView):
+    model = Register
+    template_name = "recruits/requests.html"
+    context_object_name = "registers"
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .filter(recruit__creator=self.request.user, is_joined=None)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class ConfirmRegisterView(View):
+    def post(self, request, *args, **kwargs):
+        register = Register.objects.get(pk=kwargs["pk"])
+        register.is_joined = True
+        register.save()
+        recruit = register.recruit
+        recruit.members.add(register.requester)
+        recruit.save()
+        return redirect(
+            reverse_lazy("recruits:recruit_request", args=[register.recruit.id])
+        )
+
+
+class CancelRegisterView(View):
+    def post(self, request, *args, **kwargs):
+        register = Register.objects.get(pk=kwargs["pk"])
+        register.is_joined = False
+        register.save()
+        return redirect(
+            reverse_lazy("recruits:recruit_request", args=[register.recruit.id])
+        )

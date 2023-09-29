@@ -1,0 +1,17 @@
+<h1>참가 신청 확인</h1>
+
+<ul>
+    {% for register in registers %}
+        <li>{{ register.requester.username }}</li>
+        <form action="{% url 'recruits:confirm_request' register.pk %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="confirm">
+        </form>
+        <form action="{% url 'recruits:cancel_request' register.pk %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="cancel">
+        </form>
+    {% empty %}
+        <li>no requester.</li>
+    {% endfor %}
+</ul>
