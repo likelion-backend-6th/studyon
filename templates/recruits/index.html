@@ -15,7 +15,7 @@
 <ul>
     {% for recruit in recruits %}
         <li>
-            title: {{ recruit.title }}<br>
+            <a href="{% url 'recruits:recruit_detail' recruit.id %}">title: {{ recruit.title }}</a><br>
             process: {{ recruit.process }}<br>
             info: {{ recruit.info }}<br>
             tags:
