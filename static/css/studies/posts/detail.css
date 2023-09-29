@@ -27,3 +27,26 @@ button {
     margin: 10px;
     width: 50px;
 }
+
+/* 마크다운 관련 css 수동 추가 */
+
+code {
+    margin: 0 2px;
+    padding: 0 5px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    border-radius: 2px;
+    color: #444;
+}
+
+pre>code {
+    border: none;
+    background-color: transparent;
+}
+
+blockquote {
+    color: #666;
+    margin: 0;
+    padding-left: 1em;
+    border-left: 0.5em #eee solid;
+}
