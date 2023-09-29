@@ -1,0 +1,28 @@
+<h1>{{ recruit.title }}</h1>
+<ul>
+    <li>creator: {{ recruit.creator }}</li>
+    <li>deadline: {{ recruit.deadline }}</li>
+    <li>start: {{ recruit.start }}</li>
+    <li>end: {{ recruit.end }}</li>
+    <li>total seats: {{ recruit.total_seats }}</li>
+    <li>members: {{ recruit.members.count }}</li>
+    <li>target: {{ recruit.target }}</li>
+    <li>process: {{ recruit.process }}</li>
+    <li>info: {{ recruit.info }}</li>
+    <li>likes: {{ recruit.like_users.count }}</li>
+</ul>
+
+{% if request.user == recruit.creator %}
+    <a href="#">참가 신청 확인</a>
+{% else %}
+    <h2>참가 신청서</h2>
+    <form action="" method="post">
+        requester: {{ request.user.username }}<br>
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="register">
+    </form>
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+{% endif %}

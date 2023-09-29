@@ -1,8 +1,9 @@
+from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
-from recruit.forms import SearchForm
-from recruit.models import Recruit
+from recruit.forms import SearchForm, ApplicationForm
+from recruit.models import Recruit, Register
 
 
 # Create your views here.
@@ -52,3 +53,29 @@ def unlike_recruit(request, pk):
     if request.user.is_authenticated:
         recruit.like_users.remove(request.user)
     return redirect("recruits:index")
+
+
+class RecruitDetailView(DetailView):
+    model = Recruit
+    template_name = "recruits/detail.html"
+    context_object_name = "recruit"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = ApplicationForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = ApplicationForm(request.POST)
+        recruit = self.get_object()
+        if Register.objects.filter(recruit=recruit, requester=request.user).exists():
+            messages.error(request, "이미 신청하셨습니다.")
+            return redirect("recruits:recruit_detail", recruit.id)
+        if form.is_valid():
+            register = form.save(commit=False)
+            register.recruit = self.get_object()
+            register.requester = request.user
+            register.save()
+            return redirect("recruits:index")
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
