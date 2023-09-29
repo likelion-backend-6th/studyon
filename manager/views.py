@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, View
+from django.views.generic import ListView, DetailView, View, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy, reverse
 
 from django.contrib.auth.models import User
 from recruit.models import Recruit
 from .models import Post, Study, Task
+from .forms import StudyForm
 
 
 class StudyView(LoginRequiredMixin, ListView):
@@ -66,6 +68,16 @@ class StudyKickoutView(LoginRequiredMixin, View):
         study.members.remove(user)
         study.save()
         return redirect("manager:study_detail", study_id)
+
+
+class StudyModifyView(LoginRequiredMixin, UpdateView):
+    model = Study
+    form_class = StudyForm
+    template_name = "studies/modify.html"
+    success_url = reverse_lazy("manager:study_detail")
+
+    def get_success_url(self):
+        return reverse("manager:study_detail", kwargs={"pk": self.object.id})
 
 
 class PostView(LoginRequiredMixin, ListView):
