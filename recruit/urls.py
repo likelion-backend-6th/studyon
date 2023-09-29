@@ -11,4 +11,19 @@ urlpatterns = [
     path(
         "recruits/<int:pk>/", views.RecruitDetailView.as_view(), name="recruit_detail"
     ),
+    path(
+        "recruits/<int:pk>/requests/",
+        views.RequestView.as_view(),
+        name="recruit_request",
+    ),
+    path(
+        "registers/confirm/<int:pk>/",
+        views.ConfirmRegisterView.as_view(),
+        name="confirm_request",
+    ),
+    path(
+        "registers/cancel/<int:pk>/",
+        views.CancelRegisterView.as_view(),
+        name="cancel_request",
+    ),
 ]

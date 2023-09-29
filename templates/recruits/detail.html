@@ -13,7 +13,7 @@
 </ul>
 
 {% if request.user == recruit.creator %}
-    <a href="#">참가 신청 확인</a>
+    <a href={% url 'recruits:recruit_request' recruit.id %}>참가 신청 확인</a>
 {% else %}
     <h2>참가 신청서</h2>
     <form action="" method="post">
