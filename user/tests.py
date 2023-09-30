@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
-class PostTest(TestCase):
+class UserTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.client = Client()
