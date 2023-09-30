@@ -1,13 +1,13 @@
 <h1>Signup</h1>
 <div>
-  <form action={% url "users:signup" %} method="post">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <input type="password"
-           name="password_check"
-           placeholder="password_check"
-           required>
-    <input type="submit" name="submit" value="Login">
-  </form>
+    <form action={% url "users:signup" %} method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="password"
+               name="password_check"
+               placeholder="password_check"
+               required>
+        <input type="submit" name="submit" value="Login">
+    </form>
 </div>

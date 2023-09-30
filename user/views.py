@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 
 
+def logout(request):
+    auth.logout(request)
+    return redirect("recruits:index")
+
+
 class LoginView(View):
     template_name = "users/login.html"
 
@@ -50,8 +55,3 @@ class SignupView(View):
                 self.template_name,
                 {"error": "password and password_check is not same"},
             )
-
-
-def logout(request):
-    auth.logout(request)
-    return redirect("recruits:index")
