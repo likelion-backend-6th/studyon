@@ -1,0 +1,21 @@
+<h1>User Info</h1>
+<h2>받은 리뷰</h2>
+<ul>
+  {% for review in reviews %}
+    <li>
+      <h3>{{ review.reviewer }}</h3>
+      <p>{{ review.review }}</p>
+      <span>{{ review.score }}</span>
+    </li>
+  {% endfor %}
+</ul>
+<h2>내 리뷰</h2>
+<ul>
+  {% for review in my_reviews %}
+    <li>
+      <h3>{{ review.reviewee }}</h3>
+      <p>{{ review.review }}</p>
+      <span>{{ review.score }}</span>
+    </li>
+  {% endfor %}
+</ul>
