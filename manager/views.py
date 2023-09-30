@@ -1,12 +1,15 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, View, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
+from django.shortcuts import render, redirect
 
 from django.contrib.auth.models import User
+from common.utils import s3_file_upload
 from recruit.models import Recruit
-from .models import Post, Study, Task
-from .forms import StudyForm
+from .models import File, Post, Study, Task
+from .forms import FileFormSet, PostCreateForm, StudyForm
 
 
 class StudyView(LoginRequiredMixin, ListView):
@@ -100,3 +103,41 @@ class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
     template_name = "studies/tasks/posts/detail.html"
     context_object_name = "post"
+
+
+@login_required
+def create_post_with_files(request, pk):
+    template_name = "studies/tasks/posts/create.html"
+
+    if request.method == "POST":
+        post_form = PostCreateForm(request.POST)
+        file_formset = FileFormSet(request.POST, request.FILES)
+
+        if post_form.is_valid() and file_formset.is_valid():
+            post_data = post_form.cleaned_data
+            post = Post.objects.create(
+                title=post_data["title"],
+                task_id=pk,
+                author=request.user,
+                content=post_data["content"],
+            )
+
+            for file in file_formset.files.values():
+                url = s3_file_upload(file, "files")
+                instance = File.objects.create(url=url)
+                post.files.add(instance)
+
+            post_list_url = reverse("manager:post_list", kwargs={"pk": pk})
+
+            return redirect(post_list_url)
+        else:
+            for form in file_formset:
+                print(f"form.errors:{form.errors}")
+
+    else:
+        post_form = PostCreateForm()
+        file_formset = FileFormSet(queryset=File.objects.none())
+
+    context = {"post_form": post_form, "file_formset": file_formset, "pk": pk}
+
+    return render(request, template_name, context)
