@@ -1,10 +1,13 @@
 from datetime import datetime
 from django.template.response import TemplateResponse
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 
-from manager.models import Post, Study, Task
+from unittest.mock import patch, MagicMock
+
+from manager.models import File, Post, Study, Task
 
 from recruit.models import Recruit
 
@@ -87,22 +90,61 @@ class PostTest(TestCase):
             content="테스트 게시글 본문03",
         )
 
+        cls.post_data = {
+            "title": "새 게시글",
+            "task_id": cls.task01.id,
+            "author": cls.user01,
+            "content": "새 게시글 작성 내용",
+            "form-0-file": SimpleUploadedFile(
+                "test.txt", b"Test File Data01", content_type="text/plain"
+            ),
+            "form-1-file": SimpleUploadedFile(
+                "test.txt", b"Test File Data02", content_type="text/plain"
+            ),
+            "form-2-file": SimpleUploadedFile(
+                "test.txt", b"Test File Data03", content_type="text/plain"
+            ),
+            "form-INITIAL_FORMS": 0,
+            "form-TOTAL_FORMS": 3,
+        }
+
     def test_post_view(self):
         test_url = reverse("manager:post_list", args=[self.task01.pk])
-        client = Client()
-        client.force_login(self.user01)
+        self.client.force_login(self.user01)
 
-        res: TemplateResponse = client.get(test_url)
+        res: TemplateResponse = self.client.get(test_url)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.context_data["object_list"].count(), 3)
 
     def test_post_detail(self):
         test_url = reverse("manager:post_detail", args=[self.post01.pk])
-        client = Client()
-        client.force_login(self.user01)
+        self.client.force_login(self.user01)
 
-        res: TemplateResponse = client.get(test_url)
+        res: TemplateResponse = self.client.get(test_url)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.context_data["object"].title, self.post01.title)
+
+    @patch("common.utils.client")
+    def test_post_create(self, client: MagicMock):
+        s3 = MagicMock()
+        client.return_value = s3
+        s3.upload_fileobj.return_value = None
+        s3.put_object_acl.return_value = None
+
+        test_url = reverse("manager:post_create", args=[self.task01.pk])
+        self.client.force_login(self.user01)
+
+        res: TemplateResponse = self.client.post(test_url, data=self.post_data)
+
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(Post.objects.count(), 4)
+        self.assertEqual(File.objects.count(), 3)
+
+        self.assertTrue(
+            File.objects.first().url.startswith("https://kr.object.ncloudstorage.com")
+        )
+
+        self.assertEqual(s3.upload_fileobj.call_count, 3)
+        self.assertEqual(s3.put_object_acl.call_count, 3)
