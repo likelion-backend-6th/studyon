@@ -16,13 +16,17 @@
     <a href={% url 'recruits:recruit_request' recruit.id %}>참가 신청 확인</a>
 {% else %}
     <h2>참가 신청서</h2>
-    <form action="" method="post">
-        requester: {{ request.user.username }}<br>
-        {{ form.as_p }}
-        {% csrf_token %}
-        <input type="submit" value="register">
-    </form>
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
+    {% if recruit.total_seats == recruit.members.count %}
+        <p>자리가 다 찼습니다.</p>
+    {% else %}
+        <form action="" method="post">
+            requester: {{ request.user.username }}<br>
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="submit" value="register">
+        </form>
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    {% endif %}
 {% endif %}
