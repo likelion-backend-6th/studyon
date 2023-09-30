@@ -24,8 +24,8 @@
         </div>
     </div>
     <div class="bottom">
-        <button class="create" onclick="location.href='#'">+</button>
-        <button class="study" onclick="location.href='#'">목록</button>
+        <button class="create" onclick=location.href="{% url 'manager:post_create' task.id %}">+</button>
+        <button class="study" onclick=location.href="{% url 'manager:study_detail' task.study.id %}">목록</button>
     </div>
     <div class="table">
         <div class="thead">
@@ -40,7 +40,7 @@
             {% for post in posts %}
             <div class="tr">
                 <div class="td">{{ post.created_at|date:"Y.m.d" }}</div>
-                <div class="td"><a href="#">{{ post.title }}</a></div>
+                <div class="td"><a href="{% url 'manager:post_detail' post.id %}">{{ post.title }}</a></div>
                 <div class="td">{{ post.author.username }}</div>
                 <div class="td">
                     {% if post.files.exists %}

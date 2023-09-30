@@ -4,3 +4,5 @@ gunicorn==21.2.0
 psycopg2-binary==2.9.7
 django-markdownx==4.0.2
 Pygments==2.16.1
+boto3==1.28.57
+python-dotenv==1.0.0
