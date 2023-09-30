@@ -24,8 +24,8 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("studies/", include("manager.urls", namespace="manager")),
+    path("users/", include("user.urls")),
     path("", include("recruit.urls")),
-    path("", include("user.urls")),
     path("markdownx/", include("markdownx.urls")),
 ]
 
