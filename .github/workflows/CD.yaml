@@ -13,7 +13,7 @@ jobs:
             - name: Checkout Repository
               uses: actions/checkout@v4
               with:
-                repository: likeoion-backend-6th/studyon-infra
+                repository: likelion-backend-6th/studyon-infra
                 ref: main
                 token: ${{ secrets.PAT_FOR_INFRA }}
 
