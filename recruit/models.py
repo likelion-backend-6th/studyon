@@ -23,7 +23,7 @@ class Recruit(models.Model):
     process = models.TextField()
     info = models.TextField(null=True)
     like_users = models.ManyToManyField(User, related_name="likeusers_recruits")
-    files = models.ManyToManyField(File, related_name="recruits")
+    files = models.ManyToManyField(File, related_name="recruits", blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
