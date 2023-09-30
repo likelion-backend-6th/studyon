@@ -13,10 +13,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 
 from pathlib import Path
-import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# .env load
+load_dotenv()
 
 
 # Quick-start development settings - unsuitable for production
@@ -160,3 +163,10 @@ MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
         "pygments_style": "solarized-light",
     },
 }
+
+
+# NCloud
+NCP_S3_ACCESS_KEY = os.getenv("NCP_S3_ACCESS_KEY", "")
+NCP_S3_SECRET_KEY = os.getenv("NCP_S3_SECRET_KEY", "")
+NCP_S3_ENDPOINT_URL = os.getenv("NCP_S3_ENDPOINT_URL", "")
+NCP_S3_BUCKET_NAME = os.getenv("NCP_S3_BUCKET_NAME", "")
