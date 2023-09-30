@@ -1,0 +1,30 @@
+name: CD using ArgoCD
+
+on:
+    release:
+        types:
+            - published
+
+jobs:
+    deploy:
+        name: deploy new version
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+              with:
+                repository: likeoion-backend-6th/studyon-infra
+                ref: main
+                token: ${{ secrets.PAT_FOR_INFRA }}
+
+            - name: Update appVersion
+              run: |
+                sed -ie "s/appVersion.*/appVersion: ${{ github.event.release.tag_name }}/g" studyon/Chart.yaml
+                cat studyon/Chart.yaml
+              shell: bash
+
+            - name: Commit and Push to Repository
+              uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                commit_message: Update Version to ${{ github.event.release.tag_name }}
+                branch : main
