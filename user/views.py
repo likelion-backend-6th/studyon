@@ -70,7 +70,6 @@ class MyHistoryView(ListView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["my_reviews"] = Review.objects.filter(reviewer=self.request.user)
-        print(context)
         return context
 
     def get_queryset(self):
