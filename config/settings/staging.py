@@ -5,11 +5,6 @@ from .base import *
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 
-ALLOWED_HOSTS = [
-    os.getenv("DJANGO_DOMAIN"),
-]
-
-
 DEBUG = True
 
 
