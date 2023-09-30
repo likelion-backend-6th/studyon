@@ -19,7 +19,7 @@ jobs:
 
             - name: Update appVersion
               run: |
-                sed -ie "s/appVersion.*/appVersion: ${{ github.event.release.tag_name }}/g" chart/Chart.yaml
+                sed -i "s/appVersion.*/appVersion: ${{ github.event.release.tag_name }}/g" chart/Chart.yaml
                 cat chart/Chart.yaml
               shell: bash
 
