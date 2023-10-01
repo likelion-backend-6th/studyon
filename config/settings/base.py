@@ -57,6 +57,7 @@ INSTALLED_APPS += [
 INSTALLED_APPS += [
     "taggit",
     "markdownx",
+    "fontawesomefree",
 ]
 
 MIDDLEWARE = [
