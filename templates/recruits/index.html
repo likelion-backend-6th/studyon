@@ -1,7 +1,7 @@
 <a href="{% url 'recruits:index' %}"><h1>메인 페이지</h1></a>
 {% if request.user.is_authenticated %}
     <a href="#">로그아웃</a>
-    <a href="#">스터디 생성</a>
+    <a href="{% url 'recruits:create_recruit' %}">스터디 생성</a>
     <a href={% url 'manager:studies_list' %}>스터디 관리</a>
 {% else %}
     <a href="#">로그인</a>

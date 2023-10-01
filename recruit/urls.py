@@ -26,4 +26,5 @@ urlpatterns = [
         views.CancelRegisterView.as_view(),
         name="cancel_request",
     ),
+    path("recruits/new/", views.RecruitCreateView.as_view(), name="create_recruit"),
 ]
