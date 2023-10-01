@@ -2,8 +2,9 @@ from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
+from manager.models import Study
 from recruit.forms import SearchForm, ApplicationForm
 from recruit.models import Recruit, Register
 
@@ -29,6 +30,7 @@ class RecruitView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["tag"] = self.request.GET.get("tag")
         context["form"] = SearchForm()
         if self.request.user.is_authenticated:
             context["in_studies"] = Recruit.objects.filter(
@@ -121,3 +123,59 @@ class CancelRegisterView(View):
         return redirect(
             reverse_lazy("recruits:recruit_request", args=[register.recruit.id])
         )
+
+
+class RecruitCreateView(CreateView):
+    model = Recruit
+    context_object_name = "recruit"
+    template_name = "recruits/recruit_form.html"
+    fields = [
+        "title",
+        "tags",
+        "deadline",
+        "start",
+        "end",
+        "total_seats",
+        "target",
+        "process",
+        "info",
+        "files",
+    ]
+
+    def form_valid(self, form):
+        form.instance.creator = self.request.user
+        start_date = form.cleaned_data.get("start")
+        end_date = form.cleaned_data.get("end")
+        deadline = form.cleaned_data.get("deadline")
+
+        if end_date and start_date and end_date <= start_date:
+            form.add_error("end", "End date should be after the start date.")
+            return self.form_invalid(form)
+
+        if deadline and start_date and deadline > start_date:
+            form.add_error(
+                "deadline", "Deadline should be on or before the start date."
+            )
+            return self.form_invalid(form)
+
+        study = Study.objects.create(
+            creator=self.request.user,
+            title=form.cleaned_data["title"],
+            start=form.cleaned_data["start"],
+            end=form.cleaned_data["end"],
+            process=form.cleaned_data["process"],
+            info=form.cleaned_data["info"],
+        )
+
+        instance = form.save(commit=False)
+        instance.study = study
+        instance.save()
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("recruits:index")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
