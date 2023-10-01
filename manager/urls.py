@@ -21,5 +21,5 @@ urlpatterns = [
     path("tasks/<int:pk>/posts/", views.PostView.as_view(), name="post_list"),
     path("posts/<int:pk>/modify/", views.update_post_with_files, name="post_modify"),
     path("posts/<int:pk>/", views.PostDetailView.as_view(), name="post_detail"),
-    path("posts/<int:pk>/delete", views.PostDeleteView.as_view(), name="post_delete"),
+    path("posts/<int:pk>/delete/", views.PostDeleteView.as_view(), name="post_delete"),
 ]
