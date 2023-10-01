@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}
+                {% if request.resolver_match.url_name == "post_create" %}
+                    게시글 생성
+                {% else %}
+                    게시글 수정
+                {% endif %}
+            {% endblock %}
+        </title>
+        <link href="{% static 'css/studies/posts/action.css' %}" rel="stylesheet">
+        <link href="{% static 'css/codehilite_styles.css' %}" rel="stylesheet">
+    </head>
+    <body>
+        {% if request.resolver_match.url_name == "post_create" %}
+            <form method="post"
+                  action="{% url 'manager:post_create' pk %}"
+                  enctype="multipart/form-data">
+            {% else %}
+                <form method="post"
+                      action="{% url 'manager:post_modify' pk %}"
+                      enctype="multipart/form-data">
+                {% endif %}
+                {% csrf_token %}
+                <div class="detail">
+                    <div class="title-wrap">
+                        <div class="title">
+                            제목
+                            <button class="create" type="submit">완료</button>
+                        </div>
+                        <div class="content">{{ post_form.title }}</div>
+                    </div>
+                    <div class="content-wrap">
+                        <div class="title">내용</div>
+                        <div class="content">{{ post_form.content }}</div>
+                    </div>
+                    <div class="file-wrap">
+                        <div class="title">
+                            첨부파일
+                            <button id="add-form" type="button">+</button>
+                        </div>
+                        <div class="content" id="formset-container">
+                            {{ file_formset.management_form }}
+                            {% for file_form in file_formset %}<div class="file-form-wrap">{{ file_form.as_p }}</div>{% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="btn">
+                {% if request.resolver_match.url_name == 'post_create' %}
+                    <button class="list" onclick=location.href='{% url 'manager:post_list' pk %}'>목록</button>
+                {% else %}
+                    <button class="list"
+                            onclick="location.href='{% url 'manager:post_list' task_id %}'">목록</button>
+                {% endif %}
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    let fileForm = document.querySelectorAll("#formset-container .file-form-wrap")
+                    let container = document.getElementById("formset-container");
+                    let addButton = document.getElementById("add-form");
+                    let totalForms = document.getElementById("id_form-TOTAL_FORMS");
+
+                    let formNum = fileForm.length - 1
+
+                    addButton.addEventListener('click', addForm);
+
+                    function addForm(e) {
+                        e.preventDefault();
+
+                        if (formNum < 4) {
+                            let newDiv = document.createElement('div');
+                            newDiv.classList.add('file-form');
+                            let newForm = fileForm[0].cloneNode(true);
+                            let pTags = newForm.querySelectorAll('p');
+                            newForm.removeChild(pTags[1]);
+                            newForm.removeChild(pTags[2]);
+                            let formRegex = RegExp(`form-(\\d){1}-`, 'g');
+                            console.log(newForm)
+
+                            formNum++
+                            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+
+                            let textarea = newForm.querySelector('.content textarea');
+                            if (textarea) {
+                                textarea.value = '';
+                            }
+
+                            let deleteButton = document.createElement('button');
+                            deleteButton.type = 'button';
+                            deleteButton.textContent = '-';
+                            deleteButton.classList.add('delete-form');
+                            deleteButton.addEventListener('click', deleteForm);
+                            newDiv.appendChild(newForm);
+                            newDiv.appendChild(deleteButton);
+                            container.appendChild(newDiv);
+
+                            totalForms.value = formNum + 1;
+                        } else {
+                            alert("최대 5개의 파일을 첨부할 수 있습니다.")
+                        }
+                    }
+
+                    function deleteForm() {
+                        this.parentNode.remove();
+
+                        formNum--;
+                        totalForms.value = formNum + 1;
+
+                        let forms = container.querySelectorAll('.file-form-wrap');
+                        forms.forEach((form, index) => {
+                            let formRegex = RegExp(`form-(\\d){1}-`, 'g');
+                            form.innerHTML = form.innerHTML.replace(formRegex, `form-${index}-`);
+                        });
+
+                    }
+                });
+            </script>
+        </body>
+    </html>
