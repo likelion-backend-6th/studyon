@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, View, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
 
@@ -12,6 +11,13 @@ from common.utils import s3_file_upload
 from recruit.models import Recruit
 from .models import File, Post, Study, Task
 from .forms import FileFormSet, FileUpdateForm, PostActionForm, StudyForm
+from .permissions import (
+    PostAccessMixin,
+    PostManageMixin,
+    TaskAccessMixin,
+    post_manage_permission,
+    task_access_permission,
+)
 
 
 class StudyView(LoginRequiredMixin, ListView):
@@ -85,7 +91,7 @@ class StudyModifyView(LoginRequiredMixin, UpdateView):
         return reverse("manager:study_detail", kwargs={"pk": self.object.id})
 
 
-class PostView(LoginRequiredMixin, ListView):
+class PostView(TaskAccessMixin, ListView):
     model = Post
     template_name = "studies/tasks/board.html"
     context_object_name = "posts"
@@ -101,13 +107,13 @@ class PostView(LoginRequiredMixin, ListView):
         return context
 
 
-class PostDetailView(LoginRequiredMixin, DetailView):
+class PostDetailView(PostAccessMixin, DetailView):
     model = Post
     template_name = "studies/tasks/posts/detail.html"
     context_object_name = "post"
 
 
-@login_required
+@task_access_permission
 def create_post_with_files(request, pk):
     template_name = "studies/tasks/posts/action.html"
 
@@ -145,7 +151,7 @@ def create_post_with_files(request, pk):
     return render(request, template_name, context)
 
 
-@login_required
+@post_manage_permission
 def update_post_with_files(request, pk):
     template_name = "studies/tasks/posts/action.html"
 
@@ -196,7 +202,7 @@ def update_post_with_files(request, pk):
     return render(request, template_name, context)
 
 
-class PostDeleteView(LoginRequiredMixin, View):
+class PostDeleteView(PostManageMixin, View):
     def post(self, request, pk):
         post = get_object_or_404(Post, id=pk)
 
