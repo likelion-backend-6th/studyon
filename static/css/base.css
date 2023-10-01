@@ -594,8 +594,20 @@ video {
   display: table;
 }
 
-.content-center {
-  align-content: center;
+.hidden {
+  display: none;
+}
+
+.w-80 {
+  width: 20rem;
+}
+
+.flex-auto {
+  flex: 1 1 auto;
+}
+
+.flex-none {
+  flex: none;
 }
 
 .items-center {
@@ -624,6 +636,10 @@ video {
   padding-right: 1.5rem;
 }
 
+.pt-4 {
+  padding-top: 1rem;
+}
+
 .text-5xl {
   font-size: 3rem;
   line-height: 1;
@@ -641,4 +657,8 @@ video {
 .text-cyan-700 {
   --tw-text-opacity: 1;
   color: rgb(14 116 144 / var(--tw-text-opacity));
+}
+
+body {
+  height: 100vh;
 }
