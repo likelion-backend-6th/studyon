@@ -19,5 +19,6 @@ urlpatterns = [
     ),
     path("tasks/<int:pk>/posts/new/", views.create_post_with_files, name="post_create"),
     path("tasks/<int:pk>/posts/", views.PostView.as_view(), name="post_list"),
+    path("posts/<int:pk>/modify/", views.update_post_with_files, name="post_modify"),
     path("posts/<int:pk>/", views.PostDetailView.as_view(), name="post_detail"),
 ]
