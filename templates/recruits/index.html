@@ -12,7 +12,7 @@
           type="text/css">
 {% endblock style %}
 {% block content %}
-    <div class="flex container mx-auto">
+    <div class="flex container mx-auto h-full">
         <div class="flex-auto pr-8">
             <div class="pt-4">
                 <div class="flex justify-between">
@@ -86,17 +86,30 @@
                 {% endfor %}
             </ul>
         </div>
-        <div id="sidebar" class="flex-none w-80">
+        <div id="sidebar"
+             class="flex-none w-80 border-l border-r border-neutral-800 p-4 overflow-y-auto">
             <div>
-                <h3>참여 중인 스터디</h3>
-                <ul>
-                    {% for study in in_studies %}<li>study title: {{ study.study.title }}</li>{% endfor %}
+                <h3 class="text-2xl text-center border-b border-neutral-500 pb-3">참여 중인 스터디</h3>
+                <ul class="p-4">
+                    {% for study in in_studies %}
+                        <li>
+                            <a href="{% url 'manager:study_detail' study.id %}">
+                                <i class="fa-solid fa-minus pr-4"></i>{{ study.study.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
             <div>
-                <h3>좋아요 누른 스터디</h3>
-                <ul>
-                    {% for recruit in liked_studies %}<li>like: {{ recruit.title }}</li>{% endfor %}
+                <h3 class="text-2xl text-center border-b border-neutral-500 pb-3">좋아요 누른 스터디</h3>
+                <ul class="p-4">
+                    {% for recruit in liked_studies %}
+                        <li>
+                            <a href="{% url 'recruits:recruit_detail' recruit.id %}">
+                                <i class="fa-solid fa-minus pr-4"></i>{{ recruit.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
