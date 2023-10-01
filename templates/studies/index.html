@@ -6,7 +6,7 @@
 {% for my_recruit in my_recruits %}
     <div style='border:1px red solid; display:inline-block;'>
         <p>study? project?</p>
-        <p>title : <a href="#">{{ my_recruit.title }}</a></p>
+        <p>title : <a href="{% url "recruits:recruit_detail" my_recruit.id %}">{{ my_recruit.title }}</a></p>
         <p>deadline : {{ my_recruit.deadline|date:'Y.m.d' }}</p>
         <p>seats : {{ my_recruit.members.count }}명 / {{ my_recruit.total_seats }}명</p>
         <p>tags : {% for tag in my_recruit.tags.all %}{{ tag }}{% if not forloop.last %},{% endif %}{% endfor %}</p>
@@ -21,7 +21,7 @@
 {% for like_recruit in like_recruits %}
     <div style='border:1px red solid; display:inline-block;'>
         <p>study? project?</p>
-        <p>title : <a href="#">{{ like_recruit.title }}</a></p>
+        <p>title : <a href="{% url "recruits:recruit_detail" like_recruit.id %}">{{ like_recruit.title }}</a></p>
         <p>deadline : {{ like_recruit.deadline|date:'Y.m.d' }}</p>
         <p>seats : {{ like_recruit.members.count }}명 / {{ like_recruit.total_seats }}명</p>
         <p>tags : {% for tag in like_recruit.tags.all %}{{ tag }}{% if not forloop.last %},{% endif %}{% endfor %}</p>
