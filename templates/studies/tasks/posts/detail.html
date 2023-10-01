@@ -1,74 +1,48 @@
 {% load static custom_tags %}
-
 <!DOCTYPE html>
 <html lang="ko">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        {% block title %}
-        게시글 상세
-        {% endblock %}
-    </title>
-    <link href="{% static 'css/studies/posts/detail.css' %}" rel="stylesheet">
-    <link href="{% static 'css/codehilite_styles.css' %}" rel="stylesheet">
-
-</head>
-
-<body>
-    <div class="detail">
-        <div class="bottom">
-            <button class="modify" onclick="location.href='#'">수정</button>
-            <button class="delete" onclick="location.href='#'">삭제</button>
-            <button class="study" onclick=location.href="{% url 'manager:post_list' post.task.id %}">목록</button>
-        </div>
-        <div class="title-wrap">
-            <div class="title">
-                제목
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}게시글 상세{% endblock %}
+        </title>
+        <link href="{% static 'css/studies/posts/detail.css' %}" rel="stylesheet">
+        <link href="{% static 'css/codehilite_styles.css' %}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="detail">
+            <div class="bottom">
+                <button class="modify"
+                        onclick="location .href='{% url 'manager:post_modify' post.id %}'">수정</button>
+                <button class="delete" onclick="location.href='#'">삭제</button>
+                <button class="study"
+                        onclick="location .href='{% url 'manager:post_list' post.task.id %}'">목록</button>
             </div>
-            <div class="content">
-                {{ post.title }}
+            <div class="title-wrap">
+                <div class="title">제목</div>
+                <div class="content">{{ post.title }}</div>
             </div>
-        </div>
-        <div class="created-wrap">
-            <div class="title">
-                작성일
+            <div class="created-wrap">
+                <div class="title">작성일</div>
+                <div class="content">{{ post.created_at|date:"Y.m.d" }}</div>
             </div>
-            <div class="content">
-                {{ post.created_at|date:"Y.m.d" }}
+            <div class="author-wrap">
+                <div class="title">작성자</div>
+                <div class="content">{{ post.author }}</div>
             </div>
-        </div>
-        <div class="author-wrap">
-            <div class="title">
-                작성자
+            <div class="content-wrap">
+                <div class="title">내용</div>
+                <div class="content">{{ post.content | formatted_markdown }}</div>
             </div>
-            <div class="content">
-                {{ post.author }}
+            <div class="file-wrap">
+                <div class="title">첨부파일</div>
+                <div class="content">
+                    {% if post.files.exists %}
+                        {% for file in post.files.all %}<a href="{{ file.url }}" download>download{{ forloop.counter }}</a>{% endfor %}
+                    {% endif %}
+                </div>
             </div>
         </div>
-        <div class="content-wrap">
-            <div class="title">
-                내용
-            </div>
-            <div class="content">
-                {{ post.content | formatted_markdown }}
-            </div>
-        </div>
-        <div class="file-wrap">
-            <div class="title">
-                첨부파일
-            </div>
-            <div class="content">
-                {% if post.files.exists %}
-                {% for file in post.files.all %}
-                <a href="{{ file.url }}" download>download{{ forloop.counter }}</a>
-                {% endfor %}
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-</body>
-
+    </body>
 </html>
