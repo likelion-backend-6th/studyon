@@ -28,6 +28,10 @@ button {
     width: 50px;
 }
 
+.file-wrap a {
+    margin: 0 5px;
+}
+
 /* 마크다운 관련 css 수동 추가 */
 
 code {
