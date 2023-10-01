@@ -196,7 +196,7 @@ def update_post_with_files(request, pk):
     return render(request, template_name, context)
 
 
-class PostDeleteView(View):
+class PostDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         post = get_object_or_404(Post, id=pk)
 
