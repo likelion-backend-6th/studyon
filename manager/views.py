@@ -1,3 +1,4 @@
+from django.forms import modelformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, View, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,7 +10,7 @@ from django.contrib.auth.models import User
 from common.utils import s3_file_upload
 from recruit.models import Recruit
 from .models import File, Post, Study, Task
-from .forms import FileFormSet, PostCreateForm, StudyForm
+from .forms import FileFormSet, FileUpdateForm, PostActionForm, StudyForm
 
 
 class StudyView(LoginRequiredMixin, ListView):
@@ -107,10 +108,10 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 
 @login_required
 def create_post_with_files(request, pk):
-    template_name = "studies/tasks/posts/create.html"
+    template_name = "studies/tasks/posts/action.html"
 
     if request.method == "POST":
-        post_form = PostCreateForm(request.POST)
+        post_form = PostActionForm(request.POST)
         file_formset = FileFormSet(request.POST, request.FILES)
 
         if post_form.is_valid() and file_formset.is_valid():
@@ -135,9 +136,60 @@ def create_post_with_files(request, pk):
                 print(f"form.errors:{form.errors}")
 
     else:
-        post_form = PostCreateForm()
+        post_form = PostActionForm()
         file_formset = FileFormSet(queryset=File.objects.none())
 
     context = {"post_form": post_form, "file_formset": file_formset, "pk": pk}
+
+    return render(request, template_name, context)
+
+
+@login_required
+def update_post_with_files(request, pk):
+    template_name = "studies/tasks/posts/action.html"
+
+    post = get_object_or_404(Post, id=pk)
+    task_id = post.task_id
+    files = post.files.all()
+    exist_file_cnt = files.count()
+    min_file_form_cnt = 0 if files else 1
+    FileFormSet = modelformset_factory(
+        File, form=FileUpdateForm, extra=min_file_form_cnt
+    )
+
+    if request.method == "POST":
+        post_form = PostActionForm(request.POST, instance=post)
+        file_formset = FileFormSet(request.POST, request.FILES)
+
+        if post_form.is_valid() and file_formset.is_valid():
+            post_form.save()
+
+            if exist_file_cnt:
+                for i in range(exist_file_cnt):
+                    if request.POST.getlist(f"form-{i}-checkbox") == ["on"]:
+                        files[i].delete()
+
+            for file in file_formset.files.values():
+                url = s3_file_upload(file, "files")
+                instance = File.objects.create(url=url)
+                post.files.add(instance)
+
+            post_list_url = reverse("manager:post_list", kwargs={"pk": task_id})
+
+            return redirect(post_list_url)
+        else:
+            for form in file_formset:
+                print(f"form.errors:{form.errors}")
+
+    else:
+        post_form = PostActionForm(instance=post)
+        file_formset = FileFormSet(queryset=files)
+
+    context = {
+        "post_form": post_form,
+        "file_formset": file_formset,
+        "pk": pk,
+        "task_id": task_id,
+    }
 
     return render(request, template_name, context)
