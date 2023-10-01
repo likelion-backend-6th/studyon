@@ -90,6 +90,13 @@ class PostTest(TestCase):
             content="테스트 게시글 본문03",
         )
 
+        cls.file01 = File.objects.create(url="https://www.naver.com")
+
+        cls.file02 = File.objects.create(url="https://www.google.com")
+
+        cls.post01.files.add(cls.file01)
+        cls.post01.files.add(cls.file02)
+
         cls.post_data = {
             "title": "새 게시글",
             "task_id": cls.task01.id,
@@ -104,6 +111,23 @@ class PostTest(TestCase):
             "form-2-file": SimpleUploadedFile(
                 "test.txt", b"Test File Data03", content_type="text/plain"
             ),
+            "form-INITIAL_FORMS": 0,
+            "form-TOTAL_FORMS": 3,
+        }
+
+        cls.modify_data = {
+            "title": "수정 게시글",
+            "content": "수정 게시글 작성 내용",
+            "form-0-file": SimpleUploadedFile(
+                "test.txt", b"Test File Data01", content_type="text/plain"
+            ),
+            "form-1-file": SimpleUploadedFile(
+                "test.txt", b"Test File Data02", content_type="text/plain"
+            ),
+            "form-2-file": SimpleUploadedFile(
+                "test.txt", b"Test File Data03", content_type="text/plain"
+            ),
+            "form-0-checkbox": "on",
             "form-INITIAL_FORMS": 0,
             "form-TOTAL_FORMS": 3,
         }
@@ -140,10 +164,33 @@ class PostTest(TestCase):
 
         self.assertEqual(res.status_code, 302)
         self.assertEqual(Post.objects.count(), 4)
-        self.assertEqual(File.objects.count(), 3)
+        self.assertEqual(File.objects.count(), 5)
 
         self.assertTrue(
-            File.objects.first().url.startswith("https://kr.object.ncloudstorage.com")
+            File.objects.last().url.startswith("https://kr.object.ncloudstorage.com")
+        )
+
+        self.assertEqual(s3.upload_fileobj.call_count, 3)
+        self.assertEqual(s3.put_object_acl.call_count, 3)
+
+    @patch("common.utils.client")
+    def test_post_update(self, client: MagicMock):
+        s3 = MagicMock()
+        client.return_value = s3
+        s3.upload_fileobj.return_value = None
+        s3.put_object_acl.return_value = None
+
+        test_url = reverse("manager:post_modify", args=[self.post01.pk])
+        self.client.force_login(self.user01)
+
+        res: TemplateResponse = self.client.post(test_url, data=self.modify_data)
+
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(Post.objects.first().title, self.modify_data.get("title"))
+        self.assertEqual(File.objects.count(), 4)
+
+        self.assertTrue(
+            File.objects.last().url.startswith("https://kr.object.ncloudstorage.com")
         )
 
         self.assertEqual(s3.upload_fileobj.call_count, 3)
