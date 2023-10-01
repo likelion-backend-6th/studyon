@@ -13,74 +13,91 @@
 {% endblock style %}
 {% block content %}
     <div class="flex container mx-auto">
-        <div class="flex-auto">
+        <div class="flex-auto pr-8">
             <div class="pt-4">
-                <div class="flex">
-                    <form method="get" class="flex">
-                        <p>
-                            <label for="id_query">
-                                <i class="fa-regular fa-tag"></i>
+                <div class="flex justify-between">
+                    <form method="get" class="flex flex-auto justify-between pr-10">
+                        <div class="flex flex-col flex-auto">
+                            <h2 class="text-3xl text-cyan-500">스터디 검색</h2>
+                            <label class="p-2 bg-slate-200 rounded-sm border border-neutral-600 cursor-text">
+                                <i class="fa-solid fa-magnifying-glass"></i>
                                 <input type="text"
                                        name="query"
                                        maxlength="100"
                                        id="id_query"
-                                       placeholder="키워드를 입력해주세요.">
+                                       placeholder="키워드를 입력해주세요."
+                                       class="pl-4 bg-transparent outline-none placeholder-black">
                             </label>
-                        </p>
-                        <p>
-                            <label for="id_tag">
+                        </div>
+                        <div class="flex flex-col flex-auto pl-8">
+                            <h2 class="text-3xl text-cyan-500">테그 필터</h2>
+                            <label class="p-2 bg-slate-200 rounded-sm border border-neutral-600 cursor-text">
+                                <i class="fa-regular fa-tag rotate-[135deg]"></i>
                                 <input type="text"
                                        name="tag"
                                        maxlength="100"
                                        id="id_tag"
-                                       placeholder="테그를 입력해주세요.">
+                                       {% if tag %}value="{{ tag }}"{% endif %}
+                                       placeholder="테그를 입력해주세요."
+                                       class="pl-4 bg-transparent outline-none placeholder-black">
                             </label>
-                        </p>
+                        </div>
                         <button type="submit" hidden>검색</button>
                     </form>
-                    <a href="#">모집글 작성</a>
+                    <div>
+                        <a href="#">
+                            <div class="p-2 border-2 border-neutral-800">
+                                <i class="fa-solid fa-plus fa-xl"></i>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
-            <h3>전체 모집글</h3>
-            <ul>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-8 pt-8">
                 {% for recruit in recruits %}
-                    <li>
-                        <a href="{% url 'recruits:recruit_detail' recruit.id %}">title: {{ recruit.title }}</a>
-                        <br>
-                        process: {{ recruit.process }}
-                        <br>
-                        info: {{ recruit.info }}
-                        <br>
-                        tags:
-                        {% for tag in recruit.tags.all %}{{ tag.name }}{% endfor %}
-                        <br>
+                    <li class="w-full shadow-md rounded-xl p-3">
+                        <div class="w-full text-center relative text-sm">
+                            <span class="text-cyan-500">{{ recruit.deadline|date:'Y.m.d' }} 마감</span>
+                            <span class="absolute right-0 bg-yellow-200 p-0.5">?명/{{ recruit.total_seats }}명</span>
+                        </div>
+                        <a href="{% url 'recruits:recruit_detail' recruit.id %}">
+                            <div class="w-full pt-4">
+                                <h3 class="text-xl">{{ recruit.title }}</h3>
+                                <p>{{ recruit.process }}</p>
+                            </div>
+                        </a>
+                        <div class="flex">
+                            {% for tag in recruit.tags.all %}
+                                <a href="?tag={{ tag.name }}" class="mr-0.5 bg-cyan-300 rounded-sm">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
                         {% if user.is_authenticated %}
                             {% if recruit in liked_studies %}
-                                <a href="{% url 'recruits:unlike_recruit' recruit.pk %}">좋아요 취소</a>
+                                <a href="{% url 'recruits:unlike_recruit' recruit.pk %}">
+                                    <i class="fa-solid fa-heart text-red-400"></i>
+                                </a>
                             {% else %}
-                                <a href="{% url 'recruits:like_recruit' recruit.pk %}">좋아요</a>
+                                <a href="{% url 'recruits:like_recruit' recruit.pk %}">
+                                    <i class="fa-solid fa-heart"></i>
+                                </a>
                             {% endif %}
                         {% endif %}
                     </li>
                 {% endfor %}
             </ul>
-            {% if request.user.is_authenticated %}
-                <h3>참여중인 스터디</h3>
-                <ul>
-                    {% for study in in_studies %}<li>study title: {{ study.study.title }}</li>{% endfor %}
-                </ul>
-                <h3>좋아요한 모집글</h3>
-                <ul>
-                    {% for recruit in liked_studies %}<li>like: {{ recruit.title }}</li>{% endfor %}
-                </ul>
-            {% endif %}
         </div>
         <div id="sidebar" class="flex-none w-80">
             <div>
                 <h3>참여 중인 스터디</h3>
+                <ul>
+                    {% for study in in_studies %}<li>study title: {{ study.study.title }}</li>{% endfor %}
+                </ul>
             </div>
             <div>
                 <h3>좋아요 누른 스터디</h3>
+                <ul>
+                    {% for recruit in liked_studies %}<li>like: {{ recruit.title }}</li>{% endfor %}
+                </ul>
             </div>
         </div>
     </div>
