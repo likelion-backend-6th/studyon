@@ -195,3 +195,14 @@ class PostTest(TestCase):
 
         self.assertEqual(s3.upload_fileobj.call_count, 3)
         self.assertEqual(s3.put_object_acl.call_count, 3)
+
+    def test_post_delete(self):
+        test_url = reverse("manager:post_delete", args=[self.post01.pk])
+        self.client.force_login(self.user01)
+
+        res: TemplateResponse = self.client.post(test_url)
+
+        self.assertEqual(res.status_code, 204)
+        self.assertEqual(Post.objects.count(), 2)
+        with self.assertRaises(Post.DoesNotExist):
+            Post.objects.get(id=self.post01.pk)
