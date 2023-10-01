@@ -1,4 +1,5 @@
 from django.forms import modelformset_factory
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, View, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -193,3 +194,14 @@ def update_post_with_files(request, pk):
     }
 
     return render(request, template_name, context)
+
+
+class PostDeleteView(View):
+    def post(self, request, pk):
+        post = get_object_or_404(Post, id=pk)
+
+        try:
+            post.delete()
+            return HttpResponse(status=204)
+        except Exception as e:
+            return HttpResponse(str(e))
