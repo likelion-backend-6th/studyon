@@ -1,7 +1,7 @@
 from django.forms import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, View, UpdateView
+from django.views.generic import ListView, DetailView, View, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
@@ -91,7 +91,7 @@ class StudyModifyView(LoginRequiredMixin, UpdateView):
         return reverse("manager:study_detail", kwargs={"pk": self.object.id})
 
 
-class StudyTaskModifyView(LoginRequiredMixin, UpdateView):
+class TaskModifyView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskForm
     template_name = "studies/tasks/modify.html"
@@ -101,7 +101,7 @@ class StudyTaskModifyView(LoginRequiredMixin, UpdateView):
         return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
 
 
-class StudyTaskCompleteView(LoginRequiredMixin, View):
+class TaskCompleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         task = get_object_or_404(Task, id=pk)
         if task.is_finished:
@@ -110,6 +110,15 @@ class StudyTaskCompleteView(LoginRequiredMixin, View):
             task.is_finished = True
         task.save()
         return redirect("manager:study_detail", task.study.id)
+
+
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
+    model = Task
+    template_name = "studies/tasks/delete.html"
+    success_url = reverse_lazy("manager:study_detail")
+
+    def get_success_url(self):
+        return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
 
 
 class PostView(TaskAccessMixin, ListView):

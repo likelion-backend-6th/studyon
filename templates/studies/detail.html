@@ -47,6 +47,7 @@
                     {% csrf_token %}
                     <input type="submit" value="Complete">
                 </form>
+                <a href="{% url "manager:task_delete" task.id %}">Delete</a>
             </p>
     {% endfor %}
 </div>
