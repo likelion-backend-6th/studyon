@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
@@ -51,6 +53,7 @@ class RecruitView(ListView):
         return context
 
 
+@login_required
 def like_recruit(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk)
     if request.user.is_authenticated:
@@ -58,6 +61,7 @@ def like_recruit(request, pk):
     return redirect("recruits:index")
 
 
+@login_required()
 def unlike_recruit(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk)
     if request.user.is_authenticated:
@@ -76,6 +80,9 @@ class RecruitDetailView(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect("users:login")
+
         form = ApplicationForm(request.POST)
         recruit = self.get_object()
         if Register.objects.filter(recruit=recruit, requester=request.user).exists():
@@ -91,7 +98,7 @@ class RecruitDetailView(DetailView):
             return self.render_to_response(self.get_context_data(form=form))
 
 
-class RequestView(ListView):
+class RequestView(LoginRequiredMixin,ListView):
     model = Register
     template_name = "recruits/requests.html"
     context_object_name = "registers"
@@ -108,7 +115,7 @@ class RequestView(ListView):
         return context
 
 
-class ConfirmRegisterView(View):
+class ConfirmRegisterView(LoginRequiredMixin,View):
     def post(self, request, *args, **kwargs):
         register = Register.objects.get(pk=kwargs["pk"])
         register.is_joined = True
@@ -124,7 +131,7 @@ class ConfirmRegisterView(View):
         )
 
 
-class CancelRegisterView(View):
+class CancelRegisterView(LoginRequiredMixin,View):
     def post(self, request, *args, **kwargs):
         register = Register.objects.get(pk=kwargs["pk"])
         register.is_joined = False
@@ -134,7 +141,7 @@ class CancelRegisterView(View):
         )
 
 
-class RecruitCreateView(CreateView):
+class RecruitCreateView(LoginRequiredMixin,CreateView):
     model = Recruit
     context_object_name = "recruit"
     template_name = "recruits/recruit_form.html"
@@ -191,7 +198,7 @@ class RecruitCreateView(CreateView):
         return context
 
 
-class RecruitModifyView(UpdateView):
+class RecruitModifyView(LoginRequiredMixin,UpdateView):
     model = Recruit
     template_name = "recruits/recruit_form.html"
     view_type = "update"
@@ -241,7 +248,7 @@ class RecruitModifyView(UpdateView):
         return reverse_lazy("recruits:index")
 
 
-class RecruitDeleteView(DeleteView):
+class RecruitDeleteView(LoginRequiredMixin,DeleteView):
     model = Recruit
     template_name = "recruits/recruit_confirm_delete.html"
 
