@@ -13,6 +13,7 @@
         <p>like : {{ my_recruit.like_users.count }}</p>
         <p>target : {{ my_recruit.target }}</p>
         <p>process : {{ my_recruit.process }}</p>
+        <p><a href="{% url 'recruits:modify_recruit' my_recruit.id %}">수정</a></p>
     </div>
 {% endfor %}
 <hr>
