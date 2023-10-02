@@ -56,6 +56,7 @@
                 <input type="submit" value="Finished">
             </form>
         </p>
+        <a href="{% url "manager:study_delete" my_study.id %}">Delete</a>
     </div>
 {% endfor %}
 <hr>
