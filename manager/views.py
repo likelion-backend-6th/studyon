@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from common.utils import s3_file_upload
 from recruit.models import Recruit
 from .models import File, Post, Study, Task
-from .forms import FileFormSet, FileUpdateForm, PostActionForm, StudyForm
+from .forms import FileFormSet, FileUpdateForm, PostActionForm, StudyForm, TaskForm
 from .permissions import (
     PostAccessMixin,
     PostManageMixin,
@@ -89,6 +89,16 @@ class StudyModifyView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse("manager:study_detail", kwargs={"pk": self.object.id})
+
+
+class StudyTaskModifyView(LoginRequiredMixin, UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = "studies/tasks/modify.html"
+    success_url = reverse_lazy("manager:study_detail")
+
+    def get_success_url(self):
+        return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
 
 
 class PostView(TaskAccessMixin, ListView):
