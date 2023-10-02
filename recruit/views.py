@@ -98,7 +98,7 @@ class RecruitDetailView(DetailView):
             return self.render_to_response(self.get_context_data(form=form))
 
 
-class RequestView(LoginRequiredMixin,ListView):
+class RequestView(LoginRequiredMixin, ListView):
     model = Register
     template_name = "recruits/requests.html"
     context_object_name = "registers"
@@ -115,7 +115,7 @@ class RequestView(LoginRequiredMixin,ListView):
         return context
 
 
-class ConfirmRegisterView(LoginRequiredMixin,View):
+class ConfirmRegisterView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         register = Register.objects.get(pk=kwargs["pk"])
         register.is_joined = True
@@ -131,7 +131,7 @@ class ConfirmRegisterView(LoginRequiredMixin,View):
         )
 
 
-class CancelRegisterView(LoginRequiredMixin,View):
+class CancelRegisterView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         register = Register.objects.get(pk=kwargs["pk"])
         register.is_joined = False
@@ -141,7 +141,7 @@ class CancelRegisterView(LoginRequiredMixin,View):
         )
 
 
-class RecruitCreateView(LoginRequiredMixin,CreateView):
+class RecruitCreateView(LoginRequiredMixin, CreateView):
     model = Recruit
     context_object_name = "recruit"
     template_name = "recruits/recruit_form.html"
@@ -198,7 +198,7 @@ class RecruitCreateView(LoginRequiredMixin,CreateView):
         return context
 
 
-class RecruitModifyView(LoginRequiredMixin,UpdateView):
+class RecruitModifyView(LoginRequiredMixin, UpdateView):
     model = Recruit
     template_name = "recruits/recruit_form.html"
     view_type = "update"
@@ -248,7 +248,7 @@ class RecruitModifyView(LoginRequiredMixin,UpdateView):
         return reverse_lazy("recruits:index")
 
 
-class RecruitDeleteView(LoginRequiredMixin,DeleteView):
+class RecruitDeleteView(LoginRequiredMixin, DeleteView):
     model = Recruit
     template_name = "recruits/recruit_confirm_delete.html"
 
