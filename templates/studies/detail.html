@@ -28,7 +28,7 @@
     {% endfor %}
 </div>
 <div>
-    tasks : 
+    tasks : <a href="{% url "manager:task_create" study.id %}">Create</a>
     {% for task in tasks %}
         <p>
             {% if task.is_finished %}

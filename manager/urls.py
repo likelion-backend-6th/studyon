@@ -19,6 +19,11 @@ urlpatterns = [
         name="study_kickout",
     ),
     path(
+        "<int:study_id>/task/create/",
+        views.TaskCreateView.as_view(),
+        name="task_create",
+    ),
+    path(
         "tasks/<int:pk>/modify/",
         views.TaskModifyView.as_view(),
         name="task_modify",
