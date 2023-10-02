@@ -1,7 +1,13 @@
 from django.forms import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, View, UpdateView, DeleteView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    View,
+    UpdateView,
+    DeleteView,
+)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
@@ -95,6 +101,24 @@ class StudyDeleteView(LoginRequiredMixin, DeleteView):
     model = Study
     template_name = "studies/delete.html"
     success_url = reverse_lazy("manager:studies_list")
+
+
+class TaskCreateView(LoginRequiredMixin, View):
+    def get(self, request, study_id):
+        form = TaskForm()
+        return render(request, "studies/tasks/create.html", {"form": form})
+
+    def post(self, request, study_id):
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.study = get_object_or_404(Study, id=study_id)
+            task.author = request.user
+            task.save()
+            return redirect("manager:study_detail", study_id)
+        else:
+            form = TaskForm()
+            return render(request, "studies/tasks/create.html", {"form": form})
 
 
 class TaskModifyView(LoginRequiredMixin, UpdateView):
