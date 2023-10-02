@@ -19,13 +19,18 @@ urlpatterns = [
     ),
     path(
         "tasks/<int:pk>/modify/",
-        views.StudyTaskModifyView.as_view(),
+        views.TaskModifyView.as_view(),
         name="task_modify",
     ),
     path(
         "tasks/<int:pk>/complete/",
-        views.StudyTaskCompleteView.as_view(),
+        views.TaskCompleteView.as_view(),
         name="task_complete",
+    ),
+    path(
+        "tasks/<int:pk>/delete/",
+        views.TaskDeleteView.as_view(),
+        name="task_delete",
     ),
     path("tasks/<int:pk>/posts/new/", views.create_post_with_files, name="post_create"),
     path("tasks/<int:pk>/posts/", views.PostView.as_view(), name="post_list"),
