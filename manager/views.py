@@ -91,6 +91,12 @@ class StudyModifyView(LoginRequiredMixin, UpdateView):
         return reverse("manager:study_detail", kwargs={"pk": self.object.id})
 
 
+class StudyDeleteView(LoginRequiredMixin, DeleteView):
+    model = Study
+    template_name = "studies/delete.html"
+    success_url = reverse_lazy("manager:studies_list")
+
+
 class TaskModifyView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskForm
