@@ -101,6 +101,17 @@ class StudyTaskModifyView(LoginRequiredMixin, UpdateView):
         return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
 
 
+class StudyTaskCompleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        task = get_object_or_404(Task, id=pk)
+        if task.is_finished:
+            task.is_finished = False
+        else:
+            task.is_finished = True
+        task.save()
+        return redirect("manager:study_detail", task.study.id)
+
+
 class PostView(TaskAccessMixin, ListView):
     model = Post
     template_name = "studies/tasks/board.html"
