@@ -1,5 +1,5 @@
 <form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="create">
+    <input type="submit" value="{% if view.view_type == 'create' %}Create{% else %}Update{% endif %}">
 </form>

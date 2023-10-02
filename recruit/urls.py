@@ -27,4 +27,9 @@ urlpatterns = [
         name="cancel_request",
     ),
     path("recruits/new/", views.RecruitCreateView.as_view(), name="create_recruit"),
+    path(
+        "recruits/<int:pk>/modify/",
+        views.RecruitModifyView.as_view(),
+        name="modify_recruit",
+    ),
 ]
