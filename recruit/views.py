@@ -110,6 +110,9 @@ class ConfirmRegisterView(View):
         recruit = register.recruit
         recruit.members.add(register.requester)
         recruit.save()
+        study = recruit.study
+        study.members.add(register.requester)
+        study.save()
         return redirect(
             reverse_lazy("recruits:recruit_request", args=[register.recruit.id])
         )
