@@ -32,4 +32,9 @@ urlpatterns = [
         views.RecruitModifyView.as_view(),
         name="modify_recruit",
     ),
+    path(
+        "recruits/<int:pk>/delete/",
+        views.RecruitDeleteView.as_view(),
+        name="delete_recruit",
+    ),
 ]

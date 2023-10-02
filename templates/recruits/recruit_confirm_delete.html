@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form action="" method="post">
+        <p>정말로 삭제하실건가요?</p>
+        {% csrf_token %}
+        <button type="submit">삭제</button>
+        <a href="{% url 'manager:studies_list' %}">취소</a>
+    </form>
+{% endblock content %}

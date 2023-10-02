@@ -2,7 +2,13 @@ from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 
 from manager.models import Study
 from recruit.forms import SearchForm, ApplicationForm
@@ -230,6 +236,14 @@ class RecruitModifyView(UpdateView):
         instance = super().form_valid(form)
 
         return instance
+
+    def get_success_url(self):
+        return reverse_lazy("recruits:index")
+
+
+class RecruitDeleteView(DeleteView):
+    model = Recruit
+    template_name = "recruits/recruit_confirm_delete.html"
 
     def get_success_url(self):
         return reverse_lazy("recruits:index")
