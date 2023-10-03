@@ -158,14 +158,20 @@ class StudyDeleteView(LoginRequiredMixin, DeleteView):
 
 class TaskCreateView(LoginRequiredMixin, View):
     def get(self, request, study_id):
-        form = TaskForm()
-        return render(request, "studies/tasks/create.html", {"form": form})
+        study = get_object_or_404(Study, id=study_id)
+        if request.user in study.members.all():
+            form = TaskForm()
+            return render(request, "studies/tasks/create.html", {"form": form})
+        else:
+            return redirect("manager:study_detail", study_id)
 
     def post(self, request, study_id):
         form = TaskForm(request.POST)
-        if form.is_valid():
+        study = get_object_or_404(Study, id=study_id)
+        # 폼이 유효하고 요청자가 스터디 멤버일 경우
+        if form.is_valid() and request.user in study.members.all():
             task = form.save(commit=False)
-            task.study = get_object_or_404(Study, id=study_id)
+            task.study = study
             task.author = request.user
             task.save()
             return redirect("manager:study_detail", study_id)
@@ -180,25 +186,52 @@ class TaskModifyView(LoginRequiredMixin, UpdateView):
     template_name = "studies/tasks/modify.html"
     success_url = reverse_lazy("manager:study_detail")
 
+    def dispatch(self, request, *args, **kwargs):
+        # 요청유저가 스터디멤버에 없거나 task 생성자가 아닌 경우
+        if (
+            request.user not in self.get_object().study.members.all()
+            or request.user != self.get_object().creaotr
+        ):
+            return redirect("manager:study_detail", self.get_object().id)
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
 
 
 class TaskCompleteView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        task = get_object_or_404(Task, id=pk)
+        return redirect("manager:study_detail", task.study.id)
+
     def post(self, request, pk):
         task = get_object_or_404(Task, id=pk)
-        if task.is_finished:
-            task.is_finished = False
+        # 요청자가 스터디 장이거나 task 생성자 일 경우
+        if request.user == task.study.creator or request.user == task.author:
+            if task.is_finished:
+                task.is_finished = False
+            else:
+                task.is_finished = True
+            task.save()
+            return redirect("manager:study_detail", task.study.id)
+        # 그 외 post 요청
         else:
-            task.is_finished = True
-        task.save()
-        return redirect("manager:study_detail", task.study.id)
+            return redirect("manager:study_detail", task.study.id)
 
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = "studies/tasks/delete.html"
     success_url = reverse_lazy("manager:study_detail")
+
+    def dispatch(self, request, *args, **kwargs):
+        # 요청 유저가 스터디장이 아니거나 task 생성자가 아닐 경우
+        if (
+            request.user != self.get_object().study.creator
+            or request.user != self.get_object.author
+        ):
+            return redirect("manager:study_detail", self.get_object().study.id)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
