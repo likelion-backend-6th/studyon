@@ -1,7 +1,13 @@
 from django.forms import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, View, UpdateView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    View,
+    UpdateView,
+    DeleteView,
+)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
@@ -10,7 +16,7 @@ from django.contrib.auth.models import User
 from common.utils import s3_file_upload
 from recruit.models import Recruit
 from .models import File, Post, Study, Task
-from .forms import FileFormSet, FileUpdateForm, PostActionForm, StudyForm
+from .forms import FileFormSet, FileUpdateForm, PostActionForm, StudyForm, TaskForm
 from .permissions import (
     PostAccessMixin,
     PostManageMixin,
@@ -89,6 +95,60 @@ class StudyModifyView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse("manager:study_detail", kwargs={"pk": self.object.id})
+
+
+class StudyDeleteView(LoginRequiredMixin, DeleteView):
+    model = Study
+    template_name = "studies/delete.html"
+    success_url = reverse_lazy("manager:studies_list")
+
+
+class TaskCreateView(LoginRequiredMixin, View):
+    def get(self, request, study_id):
+        form = TaskForm()
+        return render(request, "studies/tasks/create.html", {"form": form})
+
+    def post(self, request, study_id):
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.study = get_object_or_404(Study, id=study_id)
+            task.author = request.user
+            task.save()
+            return redirect("manager:study_detail", study_id)
+        else:
+            form = TaskForm()
+            return render(request, "studies/tasks/create.html", {"form": form})
+
+
+class TaskModifyView(LoginRequiredMixin, UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = "studies/tasks/modify.html"
+    success_url = reverse_lazy("manager:study_detail")
+
+    def get_success_url(self):
+        return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
+
+
+class TaskCompleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        task = get_object_or_404(Task, id=pk)
+        if task.is_finished:
+            task.is_finished = False
+        else:
+            task.is_finished = True
+        task.save()
+        return redirect("manager:study_detail", task.study.id)
+
+
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
+    model = Task
+    template_name = "studies/tasks/delete.html"
+    success_url = reverse_lazy("manager:study_detail")
+
+    def get_success_url(self):
+        return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
 
 
 class PostView(TaskAccessMixin, ListView):

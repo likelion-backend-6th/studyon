@@ -12,10 +12,31 @@ urlpatterns = [
     path("<int:pk>/done", views.StudyDoneView.as_view(), name="study_done"),
     path("<int:pk>/finished", views.StudyFinishView.as_view(), name="study_finished"),
     path("<int:pk>/leave", views.StudyLeaveView.as_view(), name="study_leave"),
+    path("<int:pk>/delete", views.StudyDeleteView.as_view(), name="study_delete"),
     path(
         "<int:study_id>/kickout/<int:member_id>/",
         views.StudyKickoutView.as_view(),
         name="study_kickout",
+    ),
+    path(
+        "<int:study_id>/task/create/",
+        views.TaskCreateView.as_view(),
+        name="task_create",
+    ),
+    path(
+        "tasks/<int:pk>/modify/",
+        views.TaskModifyView.as_view(),
+        name="task_modify",
+    ),
+    path(
+        "tasks/<int:pk>/complete/",
+        views.TaskCompleteView.as_view(),
+        name="task_complete",
+    ),
+    path(
+        "tasks/<int:pk>/delete/",
+        views.TaskDeleteView.as_view(),
+        name="task_delete",
     ),
     path("tasks/<int:pk>/posts/new/", views.create_post_with_files, name="post_create"),
     path("tasks/<int:pk>/posts/", views.PostView.as_view(), name="post_list"),

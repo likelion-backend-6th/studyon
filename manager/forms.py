@@ -4,13 +4,19 @@ from django.forms import modelformset_factory
 
 from markdownx.fields import MarkdownxFormField
 
-from .models import File, Post, Study
+from .models import File, Post, Study, Task
 
 
 class StudyForm(forms.ModelForm):
     class Meta:
         model = Study
         fields = ["title", "tags", "start", "end", "process", "info"]
+
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ["title", "description", "start", "end"]
 
 
 class FileForm(forms.ModelForm):

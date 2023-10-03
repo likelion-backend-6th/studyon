@@ -25,16 +25,21 @@
             </div>
           {% endif %}
           <div class="flex">
-            <div class="flex items-center text-xl font-bold pr-6">
+            <div class="flex items-center text-xl font-bold">
               <a href={% url 'manager:studies_list' %}>스터디 관리</a>
             </div>
-            <div class="flex items-center text-xl font-bold">
-              {% if user.is_authenticated %}
+            {% if user.is_authenticated %}
+              <div class="flex items-center text-xl font-bold pl-6">
                 <a href={% url 'users:logout' %}>로그아웃</a>
-              {% else %}
+              </div>
+            {% else %}
+              <div class="flex items-center text-xl font-bold pl-6">
                 <a href={% url 'users:login' %}>로그인</a>
-              {% endif %}
-            </div>
+              </div>
+              <div class="flex items-center text-xl font-bold pl-6">
+                <a href={% url 'users:signup' %}>회원가입</a>
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>

@@ -28,8 +28,26 @@
     {% endfor %}
 </div>
 <div>
-    tasks : 
+    tasks : <a href="{% url "manager:task_create" study.id %}">Create</a>
     {% for task in tasks %}
-        <p>{% if task.is_finished %}완료{% else %}미완료{% endif %} - [{{task.start|date:'Y.m.d'}}~{{task.end|date:'Y.m.d'}}] {{ task.title }} <a href="{% url "manager:post_list" task.id %}">Board</a></p>
+        <p>
+            {% if task.is_finished %}
+                완료
+            {% else %}
+                미완료
+            {% endif %}
+                 - [{{task.start|date:'Y.m.d'}}~{{task.end|date:'Y.m.d'}}] {{ task.title }} 
+                 <a href="{% url "manager:post_list" task.id %}">
+                    Board
+                </a> 
+                <a href="{% url "manager:task_modify" task.id %}">
+                    Modify
+                </a>
+                <form action="{% url "manager:task_complete" task.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Complete">
+                </form>
+                <a href="{% url "manager:task_delete" task.id %}">Delete</a>
+            </p>
     {% endfor %}
 </div>

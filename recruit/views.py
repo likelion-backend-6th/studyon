@@ -1,8 +1,16 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 
 from manager.models import Study
 from recruit.forms import SearchForm, ApplicationForm
@@ -45,6 +53,7 @@ class RecruitView(ListView):
         return context
 
 
+@login_required
 def like_recruit(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk)
     if request.user.is_authenticated:
@@ -52,6 +61,7 @@ def like_recruit(request, pk):
     return redirect("recruits:index")
 
 
+@login_required()
 def unlike_recruit(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk)
     if request.user.is_authenticated:
@@ -70,6 +80,9 @@ class RecruitDetailView(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect("users:login")
+
         form = ApplicationForm(request.POST)
         recruit = self.get_object()
         if Register.objects.filter(recruit=recruit, requester=request.user).exists():
@@ -85,7 +98,7 @@ class RecruitDetailView(DetailView):
             return self.render_to_response(self.get_context_data(form=form))
 
 
-class RequestView(ListView):
+class RequestView(LoginRequiredMixin, ListView):
     model = Register
     template_name = "recruits/requests.html"
     context_object_name = "registers"
@@ -102,7 +115,7 @@ class RequestView(ListView):
         return context
 
 
-class ConfirmRegisterView(View):
+class ConfirmRegisterView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         register = Register.objects.get(pk=kwargs["pk"])
         register.is_joined = True
@@ -110,12 +123,15 @@ class ConfirmRegisterView(View):
         recruit = register.recruit
         recruit.members.add(register.requester)
         recruit.save()
+        study = recruit.study
+        study.members.add(register.requester)
+        study.save()
         return redirect(
             reverse_lazy("recruits:recruit_request", args=[register.recruit.id])
         )
 
 
-class CancelRegisterView(View):
+class CancelRegisterView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         register = Register.objects.get(pk=kwargs["pk"])
         register.is_joined = False
@@ -125,10 +141,11 @@ class CancelRegisterView(View):
         )
 
 
-class RecruitCreateView(CreateView):
+class RecruitCreateView(LoginRequiredMixin, CreateView):
     model = Recruit
     context_object_name = "recruit"
     template_name = "recruits/recruit_form.html"
+    view_type = "create"
     fields = [
         "title",
         "tags",
@@ -179,3 +196,61 @@ class RecruitCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+class RecruitModifyView(LoginRequiredMixin, UpdateView):
+    model = Recruit
+    template_name = "recruits/recruit_form.html"
+    view_type = "update"
+    fields = [
+        "title",
+        "tags",
+        "deadline",
+        "start",
+        "end",
+        "total_seats",
+        "target",
+        "process",
+        "info",
+        "files",
+    ]
+
+    def form_valid(self, form):
+        start_date = form.cleaned_data.get("start")
+        end_date = form.cleaned_data.get("end")
+        deadline = form.cleaned_data.get("deadline")
+
+        if end_date and start_date and end_date <= start_date:
+            form.add_error("end", "End date should be after the start date.")
+            return self.form_invalid(form)
+
+        if deadline and start_date and deadline > start_date:
+            form.add_error(
+                "deadline", "Deadline should be on or before the start date."
+            )
+            return self.form_invalid(form)
+
+        study_instance = Study.objects.filter(id=self.object.study.id).first()
+
+        if study_instance:
+            study_instance.title = form.cleaned_data["title"]
+            study_instance.start = form.cleaned_data["start"]
+            study_instance.end = form.cleaned_data["end"]
+            study_instance.process = form.cleaned_data["process"]
+            study_instance.info = form.cleaned_data["info"]
+            study_instance.save()
+
+        instance = super().form_valid(form)
+
+        return instance
+
+    def get_success_url(self):
+        return reverse_lazy("recruits:index")
+
+
+class RecruitDeleteView(LoginRequiredMixin, DeleteView):
+    model = Recruit
+    template_name = "recruits/recruit_confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy("recruits:index")
