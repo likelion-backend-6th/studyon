@@ -15,7 +15,7 @@
     memebers : 
     {% for member in study.members.all %}
         <p>
-            {% if member.username != user.username %}
+            {% if member != study.creator %}
                 {{ member.username }}
                 {% if study.creator == user %}
                     <form action="{% url "manager:study_kickout" study.id member.id %}" method="post">
