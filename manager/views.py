@@ -26,17 +26,10 @@ from .permissions import (
 )
 
 
-class LoginRequired(LoginRequiredMixin):
-    # 로그인 안되어 있을경우 login 화면으로 리디렉션
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect("users:login")
-        return super().dispatch(request, *args, **kwargs)
-
-
-class StudyView(LoginRequired, ListView):
+class StudyView(LoginRequiredMixin, ListView):
     model = Study
     template_name = "studies/index.html"
+    login_url = "users:login"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,10 +44,11 @@ class StudyView(LoginRequired, ListView):
         return context
 
 
-class StudyDetailView(LoginRequired, DetailView):
+class StudyDetailView(LoginRequiredMixin, DetailView):
     model = Study
     template_name = "studies/detail.html"
     context_object_name = "study"
+    login_url = "users:login"
 
     def dispatch(self, request, *args, **kwargs):
         # 스터디에 포함되어 있지 않은 인원이 url 통해 들어올 경우 모집글로 리디렉션
@@ -68,7 +62,9 @@ class StudyDetailView(LoginRequired, DetailView):
         return context
 
 
-class StudyDoneView(LoginRequired, View):
+class StudyDoneView(LoginRequiredMixin, View):
+    login_url = "users:login"
+
     # url로 get 요청을 할경우 스터디 상세페이지 리디렉션
     def get(self, reqeust, pk):
         return redirect("manager:study_detail", pk)
@@ -85,7 +81,9 @@ class StudyDoneView(LoginRequired, View):
             return redirect("manager:study_detail", pk)
 
 
-class StudyFinishView(LoginRequired, View):
+class StudyFinishView(LoginRequiredMixin, View):
+    login_url = "users:login"
+
     # url로 get 요청을 할경우 스터디 상세페이지 리디렉션
     def get(self, reqeust, pk):
         return redirect("manager:study_detail", pk)
@@ -102,7 +100,9 @@ class StudyFinishView(LoginRequired, View):
             return redirect("manager:study_detail", pk)
 
 
-class StudyLeaveView(LoginRequired, View):
+class StudyLeaveView(LoginRequiredMixin, View):
+    login_url = "users:login"
+
     # url로 get 요청을 할경우 스터디 목록페이지 리디렉션
     def get(self, reqeust, pk):
         return redirect("manager:studies_list")
@@ -119,7 +119,9 @@ class StudyLeaveView(LoginRequired, View):
             return redirect("manager:studies_list")
 
 
-class StudyKickoutView(LoginRequired, View):
+class StudyKickoutView(LoginRequiredMixin, View):
+    login_url = "users:login"
+
     # url로 get 요청을 할경우 스터디 상세페이지 리디렉션
     def get(self, reqeust, study_id, member_id):
         return redirect("manager:study_detail", study_id)
@@ -136,11 +138,12 @@ class StudyKickoutView(LoginRequired, View):
             return redirect("manager:study_detail", study_id)
 
 
-class StudyModifyView(LoginRequired, UpdateView):
+class StudyModifyView(LoginRequiredMixin, UpdateView):
     model = Study
     form_class = StudyForm
     template_name = "studies/modify.html"
     success_url = reverse_lazy("manager:study_detail")
+    login_url = "users:login"
 
     def dispatch(self, request, *args, **kwargs):
         # 요청유저와 스터디장이 다를 경우 스터디 상세페이지 리디렉션
@@ -152,10 +155,11 @@ class StudyModifyView(LoginRequired, UpdateView):
         return reverse("manager:study_detail", kwargs={"pk": self.object.id})
 
 
-class StudyDeleteView(LoginRequired, DeleteView):
+class StudyDeleteView(LoginRequiredMixin, DeleteView):
     model = Study
     template_name = "studies/delete.html"
     success_url = reverse_lazy("manager:studies_list")
+    login_url = "users:login"
 
     def dispatch(self, request, *args, **kwargs):
         # 요청유저와 스터디장이 다를 경우 스터디 상세페이지 리디렉션
@@ -164,7 +168,9 @@ class StudyDeleteView(LoginRequired, DeleteView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class TaskCreateView(LoginRequired, View):
+class TaskCreateView(LoginRequiredMixin, View):
+    login_url = "users:login"
+
     def get(self, request, study_id):
         study = get_object_or_404(Study, id=study_id)
         if request.user in study.members.all():
@@ -188,11 +194,12 @@ class TaskCreateView(LoginRequired, View):
             return render(request, "studies/tasks/create.html", {"form": form})
 
 
-class TaskModifyView(LoginRequired, UpdateView):
+class TaskModifyView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskForm
     template_name = "studies/tasks/modify.html"
     success_url = reverse_lazy("manager:study_detail")
+    login_url = "users:login"
 
     def dispatch(self, request, *args, **kwargs):
         # 요청유저가 스터디멤버에 없거나 task 생성자가 아닌 경우
@@ -207,7 +214,9 @@ class TaskModifyView(LoginRequired, UpdateView):
         return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
 
 
-class TaskCompleteView(LoginRequired, View):
+class TaskCompleteView(LoginRequiredMixin, View):
+    login_url = "users:login"
+
     def get(self, request, pk):
         task = get_object_or_404(Task, id=pk)
         return redirect("manager:study_detail", task.study.id)
@@ -227,10 +236,11 @@ class TaskCompleteView(LoginRequired, View):
             return redirect("manager:study_detail", task.study.id)
 
 
-class TaskDeleteView(LoginRequired, DeleteView):
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = "studies/tasks/delete.html"
     success_url = reverse_lazy("manager:study_detail")
+    login_url = "users:login"
 
     def dispatch(self, request, *args, **kwargs):
         # 요청 유저가 스터디장이 아니거나 task 생성자가 아닐 경우
