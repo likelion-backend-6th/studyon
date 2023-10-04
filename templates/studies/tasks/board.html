@@ -42,7 +42,7 @@
                     <div class="td">첨부파일</div>
                 </div>
             </div>
-            <div class="tbody">
+            <div class="tbody" id="post-list">
                 {% for post in posts %}
                     <div class="tr">
                         <div class="td">{{ post.created_at|date:"Y.m.d" }}</div>
@@ -60,4 +60,41 @@
             </div>
         </div>
     </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let page = 1;
+            let emptyPage = false;
+            let blockRequest = false;
+            let lastScrollY = 0;
+
+            window.addEventListener('scroll', function (e) {
+                let currentScrollY = window.scrollY;
+                let margin = document.body.clientHeight - window.innerHeight - 50;
+                
+                if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
+                    blockRequest = true;
+                    page += 1;
+                    fetch('?page=' + page)
+                        .then(response => response.text())
+                        .then(html => {
+                            let parser = new DOMParser();
+                            let doc = parser.parseFromString(html, 'text/html');
+                            let tbodyContent = doc.getElementById("post-list").innerHTML;
+
+                            if (tbodyContent === '') {
+                                emptyPage = true;
+                            } else {
+                                let postList = document.getElementById("post-list");
+                                postList.insertAdjacentHTML('beforeend', tbodyContent);
+                                blockRequest = false;
+                            }
+                        });
+                }
+
+                lastScrollY = currentScrollY;
+            });
+            let scrollEvent = new Event('scroll');
+            window.dispatchEvent(scrollEvent);
+        })
+    </script>
 </html>
