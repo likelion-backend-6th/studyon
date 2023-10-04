@@ -170,3 +170,7 @@ NCP_S3_ACCESS_KEY = os.getenv("NCP_S3_ACCESS_KEY", "")
 NCP_S3_SECRET_KEY = os.getenv("NCP_S3_SECRET_KEY", "")
 NCP_S3_ENDPOINT_URL = os.getenv("NCP_S3_ENDPOINT_URL", "")
 NCP_S3_BUCKET_NAME = os.getenv("NCP_S3_BUCKET_NAME", "")
+
+
+# Login URL
+LOGIN_URL = "/users/login/"
