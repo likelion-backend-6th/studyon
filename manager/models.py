@@ -82,6 +82,12 @@ class File(models.Model):
     url = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def get_file_name(self):
+        return f"{self.name}.{self.url.split('.')[-1]}"
+
+    def __str__(self):
+        return self.get_file_name()
+
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
