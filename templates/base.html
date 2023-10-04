@@ -13,14 +13,14 @@
     {% endblock style %}
   </head>
   <body>
-    <div class="h-full flex flex-col">
-      <div class="border-b border-neutral-600">
-        <div class="container mx-auto flex justify-between py-5">
+    <div class="h-full">
+      <div class="h-[60px] border-b border-neutral-300">
+        <div class="mx-auto max-w-5xl flex items-center h-full">
           <a href="{% url 'recruits:index' %}"class="flex">
-            <h1 class="my-auto text-5xl text-cyan-700 font-bold">StudyOn</h1>
+            <h1 class="self-center text-2xl text-cyan-700 font-bold">StudyOn</h1>
           </a>
           {% if user.is_authenticated %}
-            <div class="flex items-center text-xl font-bold">
+            <div class="flex items-center text-xl font-bold pl-20">
               <p>
                 Welcome,
                 {% if user.profile.nickname %}
@@ -32,22 +32,22 @@
               </p>
             </div>
           {% endif %}
-          <div class="flex">
+          <div class="ml-auto flex h-full">
             {% if user.is_authenticated %}
-              <div class="flex items-center text-xl font-bold">
+              <div class="flex items-center text-lg font-bold">
                 <a href={% url 'users:info' %}>내 정보</a>
               </div>
-              <div class="flex items-center text-xl font-bold pl-6">
+              <div class="flex items-center text-lg font-bold pl-6">
                 <a href={% url 'manager:studies_list' %}>스터디 관리</a>
               </div>
-              <div class="flex items-center text-xl font-bold pl-6">
+              <div class="flex items-center text-lg font-bold pl-6">
                 <a href={% url 'users:logout' %}>로그아웃</a>
               </div>
             {% else %}
-              <div class="flex items-center text-xl font-bold pl-6">
+              <div class="flex items-center text-lg font-bold pl-6">
                 <a href={% url 'users:login' %}>로그인</a>
               </div>
-              <div class="flex items-center text-xl font-bold pl-6">
+              <div class="flex items-center text-lg font-bold pl-6">
                 <a href={% url 'users:signup' %}>회원가입</a>
               </div>
             {% endif %}
