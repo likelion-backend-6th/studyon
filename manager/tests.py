@@ -254,7 +254,7 @@ class PostTest(TestCase):
         self.assertEqual(
             Post.objects.get(id=self.post01.pk).title, self.modify_data.get("title")
         )
-        self.assertEqual(File.objects.count(), 4)
+        self.assertEqual(File.objects.count(), 5)
 
         self.assertTrue(
             File.objects.last().url.startswith("https://kr.object.ncloudstorage.com")
@@ -295,6 +295,27 @@ class PostTest(TestCase):
     def test_post_delete_permission(self):
         test_url = reverse("manager:post_delete", args=[self.post04.pk])
         self.client.force_login(self.user01)
+
+        res: TemplateResponse = self.client.post(test_url)
+
+        self.assertEqual(res.status_code, 403)
+
+    def test_file_delete(self):
+        test_url = reverse("manager:file_delete", args=[self.file01.pk])
+        self.client.force_login(self.user01)
+
+        res: TemplateResponse = self.client.post(test_url)
+
+        print(File.objects.all())
+
+        self.assertEqual(res.status_code, 204)
+        self.assertEqual(File.objects.count(), 1)
+        with self.assertRaises(File.DoesNotExist):
+            File.objects.get(id=self.file01.pk)
+
+    def test_file_delete_permission(self):
+        test_url = reverse("manager:post_delete", args=[self.post01.pk])
+        self.client.force_login(self.user02)
 
         res: TemplateResponse = self.client.post(test_url)
 
