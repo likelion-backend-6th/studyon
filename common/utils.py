@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import datetime
 
@@ -25,7 +26,7 @@ def s3_file_upload(upload_file: InMemoryUploadedFile, parent_directory):
 
     file = upload_file.file
     name = upload_file.name
-    file_ext = name.split(".")[-1]
+    file_name, file_ext = os.path.splitext(name)
 
     file_id = str(uuid.uuid4())
 
@@ -36,7 +37,7 @@ def s3_file_upload(upload_file: InMemoryUploadedFile, parent_directory):
         file_url = f"{endpoint_url}/{bucket_name}/{file_path}"
         try:
             s3.put_object_acl(Bucket=bucket_name, Key=file_path, ACL="public-read")
-            return file_url
+            return file_name, file_url
         except Exception as e:
             print(f"Image setting to public failed: {e}")
     except Exception as e:
