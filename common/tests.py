@@ -23,7 +23,7 @@ class FileUploadTest(TestCase):
         )
 
         result = s3_file_upload(file, "files")
-        self.assertTrue(result.startswith("https://kr.object.ncloudstorage.com"))
+        self.assertTrue(result[1].startswith("https://kr.object.ncloudstorage.com"))
 
         s3.upload_fileobj.assert_called_once()
         s3.put_object_acl.assert_called_once()
