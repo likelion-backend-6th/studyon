@@ -10,7 +10,7 @@ class Recruit(models.Model):
         Study, on_delete=models.CASCADE, related_name="recruits"
     )
     creator = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="cretor_recruits"
+        User, on_delete=models.CASCADE, related_name="creator_recruits"
     )
     title = models.CharField(max_length=100)
     tags = TaggableManager()
