@@ -8,13 +8,13 @@ from django.views import View
 from django.views.generic import (
     ListView,
     DetailView,
-    CreateView,
     UpdateView,
     DeleteView,
+    FormView,
 )
 
 from manager.models import Study
-from recruit.forms import SearchForm, ApplicationForm
+from recruit.forms import SearchForm, ApplicationForm, RecruitForm
 from recruit.models import Recruit, Register
 
 
@@ -146,23 +146,11 @@ class CancelRegisterView(LoginRequiredMixin, View):
         )
 
 
-class RecruitCreateView(LoginRequiredMixin, CreateView):
-    model = Recruit
+class RecruitCreateView(LoginRequiredMixin, FormView):
+    form_class = RecruitForm
     context_object_name = "recruit"
     template_name = "recruits/recruit_form.html"
     view_type = "create"
-    fields = [
-        "title",
-        "tags",
-        "deadline",
-        "start",
-        "end",
-        "total_seats",
-        "target",
-        "process",
-        "info",
-        "files",
-    ]
 
     def form_valid(self, form):
         form.instance.creator = self.request.user
@@ -189,9 +177,13 @@ class RecruitCreateView(LoginRequiredMixin, CreateView):
             info=form.cleaned_data["info"],
         )
 
+        study.members.add(self.request.user)
+
         instance = form.save(commit=False)
         instance.study = study
         instance.save()
+
+        instance.members.add(self.request.user)
 
         return super().form_valid(form)
 
