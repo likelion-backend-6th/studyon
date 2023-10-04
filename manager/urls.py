@@ -10,7 +10,7 @@ urlpatterns = [
     path("<int:pk>/", views.StudyDetailView.as_view(), name="study_detail"),
     path("<int:pk>/modify/", views.StudyModifyView.as_view(), name="study_modify"),
     path(
-        "<int:pk>/recuting/", views.StudyRecrutingView.as_view(), name="study_recuting"
+        "<int:pk>/recruting/", views.StudyRecrutingView.as_view(), name="study_recuting"
     ),
     path(
         "<int:pk>/inprogress/",

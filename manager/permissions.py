@@ -4,7 +4,39 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest
 from django.shortcuts import redirect
 
-from manager.models import Post, Task
+from manager.models import Post, Task, Study
+
+
+# 스터디 멤버인지 확인
+class StudyAccessMixin(LoginRequiredMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        # 스터디에 포함되어 있지 않은 인원이 url 통해 들어올 경우 모집글로 리디렉션
+        study = self.get_study()
+        if request.user not in study.members.all():
+            raise PermissionDenied("Not Authorized to Access")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_study(self):
+        study_id = self.kwargs["pk"]
+        study = get_object_or_404(Study, id=study_id)
+        return study
+
+
+# 스터디 장인지 확인
+class StudyCreatorMixin(StudyAccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        study = super().get_study()
+        if request.user != study.creator:
+            raise PermissionDenied("Not Authorized to Access")
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class TaskAccessMixin(LoginRequiredMixin):
@@ -22,6 +54,19 @@ class TaskAccessMixin(LoginRequiredMixin):
         task_id = self.kwargs["pk"]
         task: Task = get_object_or_404(Task, id=task_id)
         return task
+
+
+# Task 생성자인지 확인
+class TaskAuthorMixin(TaskAccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        task = super().get_task()
+        if request.user != task.author:
+            raise PermissionDenied("Not Authorized to Access")
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class PostAccessMixin(LoginRequiredMixin):
