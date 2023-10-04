@@ -1,5 +1,3 @@
-from typing import Any
-from django.forms import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import (
@@ -14,7 +12,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib.auth.models import User
 
-from common.utils import s3_file_upload
+from common.utils import InfiniteListView, s3_file_upload
 from recruit.models import Recruit
 from .models import File, Post, Study, Task
 from .forms import (
@@ -274,7 +272,7 @@ class TaskDeleteView(TaskAuthorMixin, View):
             return redirect("manager:study_detail", task.study.id)
 
 
-class PostView(TaskAccessMixin, ListView):
+class PostView(TaskAccessMixin, InfiniteListView):
     model = Post
     template_name = "studies/tasks/board.html"
     context_object_name = "posts"
