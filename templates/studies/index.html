@@ -97,6 +97,18 @@
                             </p>
                         {% endif %}
                         <div class="flex pt-2">
+                            <form action='{% url "manager:study_recuting" my_study.id %}' method="post">
+                                {% csrf_token %}
+                                <input type="submit"
+                                       value="Recuting"
+                                       class="p-1 bg-cyan-600 text-white rounded-md mr-2">
+                            </form>
+                            <form action='{% url "manager:study_inprogress" my_study.id %}' method="post">
+                                {% csrf_token %}
+                                <input type="submit"
+                                       value="In Progress"
+                                       class="p-1 bg-cyan-600 text-white rounded-md mr-2">
+                            </form>
                             <form action='{% url "manager:study_done" my_study.id %}' method="post">
                                 {% csrf_token %}
                                 <input type="submit"
@@ -109,8 +121,12 @@
                                        value="Finished"
                                        class="p-1 bg-cyan-600 text-white rounded-md mr-2">
                             </form>
-                            <a href="{% url "manager:study_delete" my_study.id %}"
-                               class="p-1 bg-cyan-600 text-white rounded-md">Delete</a>
+                            <form action='{% url "manager:study_delete" my_study.id %}' method="post">
+                                {% csrf_token %}
+                                <input type="submit"
+                                       value="Delete"
+                                       class="p-1 bg-cyan-600 text-white rounded-md mr-2">
+                            </form>
                         </div>
                     </li>
                 {% endfor %}

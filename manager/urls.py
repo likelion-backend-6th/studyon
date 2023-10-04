@@ -9,6 +9,14 @@ urlpatterns = [
     path("", views.StudyView.as_view(), name="studies_list"),
     path("<int:pk>/", views.StudyDetailView.as_view(), name="study_detail"),
     path("<int:pk>/modify/", views.StudyModifyView.as_view(), name="study_modify"),
+    path(
+        "<int:pk>/recuting/", views.StudyRecrutingView.as_view(), name="study_recuting"
+    ),
+    path(
+        "<int:pk>/inprogress/",
+        views.StudyInProgressView.as_view(),
+        name="study_inprogress",
+    ),
     path("<int:pk>/done/", views.StudyDoneView.as_view(), name="study_done"),
     path("<int:pk>/finished/", views.StudyFinishView.as_view(), name="study_finished"),
     path("<int:pk>/leave/", views.StudyLeaveView.as_view(), name="study_leave"),

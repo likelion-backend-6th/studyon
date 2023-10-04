@@ -66,17 +66,24 @@
                                            value="Complete"
                                            class="p-1 px-2 bg-cyan-400 border-l border-black">
                                 </form>
-                                <a href="{% url "manager:task_delete" task.id %}"
-                                   class="p-1 px-2 bg-cyan-500 border-l border-black text-red-500">Delete</a>
+                                <form action="{% url "manager:task_delete" task.id %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="submit"
+                                           value="Delete"
+                                           class="p-1 px-2 bg-cyan-400 border-l border-black">
+                                </form>
                             </div>
                         </li>
                     {% empty %}
                         <li>task가 없습니다.</li>
                     {% endfor %}
                 </ul>
-                <div class="flex pt-3">
-                    <a href="{% url "manager:task_create" study.id %}"
-                       class="bg-cyan-500 p-2 rounded-lg text-white">New Task</a>
+                <div>
+                    <form action='{% url "manager:task_create" study.id %}' method="post">
+                        {{ task_form.as_p }}
+                        {% csrf_token %}
+                        <p><input type="submit" value="Create"></p>
+                    </form>
                 </div>
             </div>
         </div>
