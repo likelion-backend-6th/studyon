@@ -8,12 +8,18 @@ from .models import File, Post, Study, Task
 
 
 class StudyForm(forms.ModelForm):
+    start = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+    end = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+
     class Meta:
         model = Study
         fields = ["title", "tags", "start", "end", "process", "info"]
 
 
 class TaskForm(forms.ModelForm):
+    start = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+    end = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+
     class Meta:
         model = Task
         fields = ["title", "description", "start", "end"]
