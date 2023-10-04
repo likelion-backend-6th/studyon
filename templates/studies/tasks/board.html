@@ -1,57 +1,52 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="ko">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        {% block title %}
-        task별 게시판
-        {% endblock %}
-    </title>
-    <link href="{% static 'css/studies/board.css' %}" rel="stylesheet">
-</head>
-
-<body>
-    <div class="task">
-        <div class="title">
-            {{ task.title }}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}task별 게시판{% endblock %}
+        </title>
+        <link href="{% static 'css/studies/board.css' %}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="task">
+            <div class="title">{{ task.title }}</div>
+            <div class="description">{{ task.description }}</div>
         </div>
-        <div class="description">
-            {{ task.description }}
+        <div class="bottom">
+            <button class="create"
+                    onclick="location"
+                    .href="{% url 'manager:post_create' task.id %}">+</button>
+            <button class="study"
+                    onclick="location"
+                    .href="{% url 'manager:study_detail' task.study.id %}">목록</button>
         </div>
-    </div>
-    <div class="bottom">
-        <button class="create" onclick=location.href="{% url 'manager:post_create' task.id %}">+</button>
-        <button class="study" onclick=location.href="{% url 'manager:study_detail' task.study.id %}">목록</button>
-    </div>
-    <div class="table">
-        <div class="thead">
-            <div class="th">
-                <div class="td">날짜</div>
-                <div class="td">제목</div>
-                <div class="td">작성자</div>
-                <div class="td">첨부파일</div>
-            </div>
-        </div>
-        <div class="tbody">
-            {% for post in posts %}
-            <div class="tr">
-                <div class="td">{{ post.created_at|date:"Y.m.d" }}</div>
-                <div class="td"><a href="{% url 'manager:post_detail' post.id %}">{{ post.title }}</a></div>
-                <div class="td">{{ post.author.username }}</div>
-                <div class="td">
-                    {% if post.files.exists %}
-                    <a href="{{ post.files.last.url }}" download>download</a>
-                    {% endif %}
+        <div class="table">
+            <div class="thead">
+                <div class="th">
+                    <div class="td">날짜</div>
+                    <div class="td">제목</div>
+                    <div class="td">작성자</div>
+                    <div class="td">첨부파일</div>
                 </div>
             </div>
-            {% endfor %}
+            <div class="tbody">
+                {% for post in posts %}
+                    <div class="tr">
+                        <div class="td">{{ post.created_at|date:"Y.m.d" }}</div>
+                        <div class="td">
+                            <a href="{% url 'manager:post_detail' post.id %}">{{ post.title }}</a>
+                        </div>
+                        <div class="td">{{ post.author.username }}</div>
+                        <div class="td">
+                            {% if post.files.exists %}
+                                <a href="{{ post.files.last.url }}" download>{{ post.files.last.get_file_name|truncatechars:7 }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-
-</body>
-
+    </body>
 </html>
