@@ -11,14 +11,14 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
-
+from django.db.models import Q
 from django.contrib.auth.models import User
+
 from common.utils import s3_file_upload
 from recruit.models import Recruit
 from .models import File, Post, Study, Task
 from .forms import (
     FileUploadFormSet,
-    FileForm,
     PostActionForm,
     StudyForm,
     TaskForm,
@@ -282,6 +282,13 @@ class PostView(TaskAccessMixin, ListView):
     def get_queryset(self):
         task_id = self.kwargs["pk"]
         queryset = Post.objects.filter(task_id=task_id)
+
+        query = self.request.GET.get("query")
+        if query:
+            queryset = queryset.filter(
+                Q(title__icontains=query) | Q(content__icontains=query)
+            ).distinct()
+
         return queryset
 
     def get_context_data(self, **kwargs):
