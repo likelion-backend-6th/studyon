@@ -227,6 +227,7 @@ class RecruitModifyView(LoginRequiredMixin, UpdateView):
         start_date = form.cleaned_data.get("start")
         end_date = form.cleaned_data.get("end")
         deadline = form.cleaned_data.get("deadline")
+        tags = form.cleaned_data.get("tags")
 
         if end_date and start_date and end_date <= start_date:
             form.add_error("end", "End date should be after the start date.")
@@ -237,6 +238,15 @@ class RecruitModifyView(LoginRequiredMixin, UpdateView):
                 "deadline", "Deadline should be on or before the start date."
             )
             return self.form_invalid(form)
+
+        if len(tags) > 3:
+            form.add_error("tags", "You can only select up to 3 tags.")
+            return self.form_invalid(form)
+        tag_list = Tags()
+        for tag in tags:
+            if tag not in tag_list:
+                form.add_error("tags", f"{tag} is not a valid tag.")
+                return self.form_invalid(form)
 
         study_instance = Study.objects.filter(id=self.object.study.id).first()
 
