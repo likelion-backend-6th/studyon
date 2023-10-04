@@ -47,6 +47,7 @@ class UserTest(TestCase):
             reverse("users:signup"),
             {
                 "username": "new_user",
+                "nickname": "new_user",
                 "password": "new_user",
                 "password_check": "new_user",
             },
@@ -60,6 +61,7 @@ class UserTest(TestCase):
             reverse("users:signup"),
             {
                 "username": "new_user",
+                "nickname": "new_user",
                 "password": "new_user",
                 "password_check": "bad_password",
             },
@@ -73,6 +75,7 @@ class UserTest(TestCase):
             reverse("users:signup"),
             {
                 "username": "base_user",
+                "nickname": "base_user",
                 "password": "base_user",
                 "password_check": "base_user",
             },
