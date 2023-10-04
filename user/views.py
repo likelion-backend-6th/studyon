@@ -1,12 +1,12 @@
 from typing import Any
-from django.db import models
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
-from django.views.generic import View, ListView
-from django.contrib.auth.models import User
-from django.contrib import auth
 
-from .models import Review
+from django.contrib import auth
+from django.contrib.auth.models import User
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect, render
+from django.views.generic import ListView, View
+
+from .models import Profile, Review
 
 
 def logout(request):
@@ -45,14 +45,20 @@ class SignupView(View):
 
     def post(self, request):
         username = request.POST["username"]
+        nickname = request.POST["nickname"]
         password = request.POST["password"]
         password_check = request.POST["password_check"]
         if User.objects.filter(username=username).exists():
             return render(
                 request, self.template_name, {"error": "username is already exists"}
             )
+        if Profile.objects.filter(nickname=nickname).exists():
+            return render(
+                request, self.template_name, {"error": "nickname is already exists"}
+            )
         if password == password_check:
-            User.objects.create_user(username=username, password=password)
+            user = User.objects.create_user(username=username, password=password)
+            Profile.objects.create(user=user, nickname=nickname)
             return redirect("users:login")
         else:
             return render(
