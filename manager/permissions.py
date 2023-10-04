@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest
 from django.shortcuts import redirect
 
-from manager.models import Post, Task, Study
+from manager.models import File, Post, Task, Study
 
 
 # 스터디 멤버인지 확인
@@ -101,6 +101,23 @@ class PostManageMixin(LoginRequiredMixin):
         post_id = self.kwargs["pk"]
         post: Post = get_object_or_404(Post, id=post_id)
         return post
+
+
+class FileManageMixin(LoginRequiredMixin):
+    def dispatch(self, request: HttpRequest, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        file: File = self.get_file()
+        if request.user != file.posts.first().author:
+            raise PermissionDenied("Not Authorized to Access")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_file(self):
+        file_id = self.kwargs["pk"]
+        file: File = get_object_or_404(File, id=file_id)
+        return file
 
 
 def task_access_permission(func):
