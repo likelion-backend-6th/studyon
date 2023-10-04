@@ -251,7 +251,9 @@ class PostTest(TestCase):
         res: TemplateResponse = self.client.post(test_url, data=self.modify_data)
 
         self.assertEqual(res.status_code, 302)
-        self.assertEqual(Post.objects.first().title, self.modify_data.get("title"))
+        self.assertEqual(
+            Post.objects.get(id=self.post01.pk).title, self.modify_data.get("title")
+        )
         self.assertEqual(File.objects.count(), 4)
 
         self.assertTrue(
