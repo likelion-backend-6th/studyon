@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
@@ -29,8 +30,12 @@ class RecruitView(ListView):
         tag = self.request.GET.get("tag")
 
         if query:
-            queryset = queryset.filter(title__icontains=query)
-
+            queryset = queryset.filter(
+                Q(title__icontains=query)
+                | Q(process__icontains=query)
+                | Q(info__icontains=query)
+                | Q(target__icontains=query)
+            ).distinct()
         if tag:
             queryset = queryset.filter(tags__name__icontains=tag)
 
