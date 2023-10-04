@@ -51,4 +51,5 @@ urlpatterns = [
     path("posts/<int:pk>/modify/", views.update_post_with_files, name="post_modify"),
     path("posts/<int:pk>/", views.PostDetailView.as_view(), name="post_detail"),
     path("posts/<int:pk>/delete/", views.PostDeleteView.as_view(), name="post_delete"),
+    path("files/<int:pk>/delete/", views.FileDeleteView.as_view(), name="file_delete"),
 ]
