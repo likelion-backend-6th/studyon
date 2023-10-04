@@ -61,6 +61,40 @@ class StudyDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
+class StudyRecrutingView(LoginRequiredMixin, View):
+    # url로 get 요청을 할경우 스터디 상세페이지 리디렉션
+    def get(self, reqeust, pk):
+        return redirect("manager:study_detail", pk)
+
+    def post(self, request, pk):
+        study = get_object_or_404(Study, id=pk, is_active=True)
+        # 요청유저와 스터디생성자가 같을 경우
+        if request.user == study.creator:
+            study.status = 1
+            study.save()
+            return redirect("manager:studies_list")
+        # 그 외 post 요청
+        else:
+            return redirect("manager:study_detail", pk)
+
+
+class StudyInProgressView(LoginRequiredMixin, View):
+    # url로 get 요청을 할경우 스터디 상세페이지 리디렉션
+    def get(self, reqeust, pk):
+        return redirect("manager:study_detail", pk)
+
+    def post(self, request, pk):
+        study = get_object_or_404(Study, id=pk, is_active=True)
+        # 요청유저와 스터디생성자가 같을 경우
+        if request.user == study.creator:
+            study.status = 2
+            study.save()
+            return redirect("manager:studies_list")
+        # 그 외 post 요청
+        else:
+            return redirect("manager:study_detail", pk)
+
+
 class StudyDoneView(LoginRequiredMixin, View):
     # url로 get 요청을 할경우 스터디 상세페이지 리디렉션
     def get(self, reqeust, pk):
