@@ -78,9 +78,12 @@
                         <li>task가 없습니다.</li>
                     {% endfor %}
                 </ul>
-                <div class="flex pt-3">
-                    <a href="{% url "manager:task_create" study.id %}"
-                       class="bg-cyan-500 p-2 rounded-lg text-white">New Task</a>
+                <div>
+                    <form action='{% url "manager:task_create" study.id %}' method="post">
+                        {{ task_form.as_p }}
+                        {% csrf_token %}
+                        <p><input type="submit" value="Create"></p>
+                    </form>
                 </div>
             </div>
         </div>

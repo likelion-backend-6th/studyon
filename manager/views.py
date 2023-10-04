@@ -58,6 +58,8 @@ class StudyDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["tasks"] = Task.objects.filter(study=self.object, is_active=True)
+        if self.request.user in self.object.members.all():
+            context["task_form"] = TaskForm()
         return context
 
 
@@ -199,12 +201,7 @@ class StudyDeleteView(LoginRequiredMixin, View):
 
 class TaskCreateView(LoginRequiredMixin, View):
     def get(self, request, study_id):
-        study = get_object_or_404(Study, id=study_id, is_active=True)
-        if request.user in study.members.all():
-            form = TaskForm()
-            return render(request, "studies/tasks/create.html", {"form": form})
-        else:
-            return redirect("manager:study_detail", study_id)
+        return redirect("manager:study_detail", study_id)
 
     def post(self, request, study_id):
         form = TaskForm(request.POST)
@@ -217,8 +214,7 @@ class TaskCreateView(LoginRequiredMixin, View):
             task.save()
             return redirect("manager:study_detail", study_id)
         else:
-            form = TaskForm()
-            return render(request, "studies/tasks/create.html", {"form": form})
+            return redirect("manager:study_detail", study_id)
 
 
 class TaskModifyView(LoginRequiredMixin, UpdateView):
