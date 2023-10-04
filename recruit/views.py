@@ -13,7 +13,7 @@ from django.views.generic import (
     FormView,
 )
 
-from manager.models import Study
+from manager.models import Study, File
 from recruit.forms import SearchForm, ApplicationForm, RecruitForm
 from recruit.models import Recruit, Register
 from common.utils import Tags
@@ -196,6 +196,14 @@ class RecruitCreateView(LoginRequiredMixin, FormView):
 
         instance.members.add(self.request.user)
 
+        for tag in form.cleaned_data["tags"]:
+            instance.tags.add(tag)
+
+        for file in self.request.FILES.getlist("files"):
+            file_instance = File(url=file)
+            file_instance.save()
+            instance.files.add(file_instance)
+
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -207,21 +215,10 @@ class RecruitCreateView(LoginRequiredMixin, FormView):
 
 
 class RecruitModifyView(LoginRequiredMixin, UpdateView):
+    form_class = RecruitForm
     model = Recruit
     template_name = "recruits/recruit_form.html"
     view_type = "update"
-    fields = [
-        "title",
-        "tags",
-        "deadline",
-        "start",
-        "end",
-        "total_seats",
-        "target",
-        "process",
-        "info",
-        "files",
-    ]
 
     def form_valid(self, form):
         start_date = form.cleaned_data.get("start")
