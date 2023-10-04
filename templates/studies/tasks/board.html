@@ -14,13 +14,24 @@
             <div class="title">{{ task.title }}</div>
             <div class="description">{{ task.description }}</div>
         </div>
-        <div class="bottom">
-            <button class="create"
-                    onclick="location"
-                    .href="{% url 'manager:post_create' task.id %}">+</button>
-            <button class="study"
-                    onclick="location"
-                    .href="{% url 'manager:study_detail' task.study.id %}">목록</button>
+        <div class="header">
+            <form method="get" class="search">
+                <input type="text"
+                       name="query"
+                       maxlength="30"
+                       id="id_query"
+                       placeholder="키워드를 입력해주세요."
+                       class="search">
+                <button type="submit" hidden>검색</button>
+            </form>
+            <div class="btn">
+                <button class="create"
+                        onclick="location"
+                        .href="{% url 'manager:post_create' task.id %}">+</button>
+                <button class="study"
+                        onclick="location"
+                        .href="{% url 'manager:study_detail' task.study.id %}">목록</button>
+            </div>
         </div>
         <div class="table">
             <div class="thead">
