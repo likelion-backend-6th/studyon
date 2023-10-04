@@ -78,6 +78,7 @@ class Task(models.Model):
 
 
 class File(models.Model):
+    name = models.CharField(max_length=50)
     url = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -94,3 +95,11 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.task}에서 {self.author}의 게시글 : {self.title}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["-created_at"]),
+            models.Index(fields=["title"]),
+            models.Index(fields=["content"]),
+        ]
+        ordering = ["-created_at"]
