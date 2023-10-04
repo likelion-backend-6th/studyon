@@ -24,6 +24,7 @@ from .forms import (
     TaskForm,
 )
 from .permissions import (
+    FileManageMixin,
     PostAccessMixin,
     PostManageMixin,
     TaskAccessMixin,
@@ -344,25 +345,13 @@ def update_post_with_files(request, pk):
     post = get_object_or_404(Post, id=pk)
     task_id = post.task_id
     files = post.files.all()
-    exist_file_cnt = files.count()
-    FileFormSet = modelformset_factory(File, form=FileForm, extra=0)
 
     if request.method == "POST":
         post_form = PostActionForm(request.POST, instance=post)
-        file_formset = FileFormSet(request.POST)
         file_upload_formset = FileUploadFormSet(request.POST, request.FILES)
 
-        if (
-            post_form.is_valid()
-            and file_formset.is_valid()
-            and file_upload_formset.is_valid()
-        ):
+        if post_form.is_valid() and file_upload_formset.is_valid():
             post_form.save()
-
-            if exist_file_cnt:
-                for i in range(exist_file_cnt):
-                    if request.POST.getlist(f"form-{i}-checkbox") == ["on"]:
-                        files[i].delete()
 
             for file in file_upload_formset.files.values():
                 name, url = s3_file_upload(file, "files")
@@ -373,18 +362,17 @@ def update_post_with_files(request, pk):
 
             return redirect(post_list_url)
         else:
-            for form in file_formset:
+            for form in file_upload_formset:
                 print(f"form.errors:{form.errors}")
 
     else:
         post_form = PostActionForm(instance=post)
-        file_formset = FileFormSet(queryset=files)
         file_upload_formset = FileUploadFormSet(queryset=File.objects.none())
 
     context = {
         "post_form": post_form,
-        "file_formset": file_formset,
         "file_upload_formset": file_upload_formset,
+        "files": files,
         "pk": pk,
         "task_id": task_id,
     }
@@ -398,6 +386,17 @@ class PostDeleteView(PostManageMixin, View):
 
         try:
             post.delete()
+            return HttpResponse(status=204)
+        except Exception as e:
+            return HttpResponse(str(e))
+
+
+class FileDeleteView(FileManageMixin, View):
+    def post(self, request, pk):
+        file = get_object_or_404(File, id=pk)
+
+        try:
+            file.delete()
             return HttpResponse(status=204)
         except Exception as e:
             return HttpResponse(str(e))
