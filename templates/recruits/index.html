@@ -12,26 +12,26 @@
           type="text/css">
 {% endblock style %}
 {% block content %}
-    <div class="flex container mx-auto h-full">
+    <div class="mx-auto max-w-5xl flex">
         <div class="flex-auto pr-8">
-            <div class="pt-4">
+            <div class="pt-20">
                 <div class="flex justify-between">
                     <form method="get" class="flex flex-auto justify-between pr-10">
                         <div class="flex flex-col flex-auto">
-                            <h2 class="text-3xl text-cyan-500">스터디 검색</h2>
-                            <label class="p-2 bg-slate-200 rounded-sm border border-neutral-600 cursor-text">
+                            <h2 class="text-2xl text-cyan-500">스터디 검색</h2>
+                            <label class="mt-2 p-2 px-4 rounded-full border border-cyan-600 cursor-text">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                                 <input type="text"
                                        name="query"
                                        maxlength="100"
                                        id="id_query"
                                        placeholder="키워드를 입력해주세요."
-                                       class="pl-4 bg-transparent outline-none placeholder-black">
+                                       class="pl-2 bg-transparent outline-none placeholder-black">
                             </label>
                         </div>
                         <div class="flex flex-col flex-auto pl-8">
-                            <h2 class="text-3xl text-cyan-500">테그 필터</h2>
-                            <label class="p-2 bg-slate-200 rounded-sm border border-neutral-600 cursor-text">
+                            <h2 class="text-2xl text-cyan-500">테그 필터</h2>
+                            <label class="mt-2 p-2 px-4 rounded-full border border-cyan-600 cursor-text">
                                 <i class="fa-regular fa-tag"></i>
                                 <input type="text"
                                        name="tag"
@@ -39,14 +39,14 @@
                                        id="id_tag"
                                        {% if tag %}value="{{ tag }}"{% endif %}
                                        placeholder="테그를 입력해주세요."
-                                       class="pl-4 bg-transparent outline-none placeholder-black">
+                                       class="pl-2 bg-transparent outline-none placeholder-black">
                             </label>
                         </div>
                         <button type="submit" hidden>검색</button>
                     </form>
                     <div>
                         <a href="{% url 'recruits:create_recruit' %}">
-                            <div class="p-2 border-2 border-neutral-800">
+                            <div class="p-2 border-2 border-cyan-600">
                                 <i class="fa-solid fa-plus fa-xl"></i>
                             </div>
                         </a>
@@ -58,7 +58,7 @@
                     <li class="w-full shadow-md rounded-xl p-3">
                         <div class="w-full text-center relative text-sm">
                             <span class="text-cyan-500">{{ recruit.deadline|date:'Y.m.d' }} 마감</span>
-                            <span class="absolute right-0 bg-yellow-200 p-0.5">?명/{{ recruit.total_seats }}명</span>
+                            <span class="absolute right-0 bg-yellow-200 p-0.5">{{ recruit.members.count }}명/{{ recruit.total_seats }}명</span>
                         </div>
                         <a href="{% url 'recruits:recruit_detail' recruit.id %}">
                             <div class="w-full pt-4">
@@ -88,30 +88,32 @@
             </ul>
         </div>
         <div id="sidebar"
-             class="flex-none w-80 border-l border-r border-neutral-800 p-4 overflow-y-auto">
-            <div>
-                <h3 class="text-2xl text-center border-b border-neutral-500 pb-3">참여 중인 스터디</h3>
-                <ul class="p-4">
-                    {% for study in in_studies %}
-                        <li>
-                            <a href="{% url 'manager:study_detail' study.id %}">
-                                <i class="fa-solid fa-minus pr-4"></i>{{ study.study.title }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-2xl text-center border-b border-neutral-500 pb-3">좋아요 누른 스터디</h3>
-                <ul class="p-4">
-                    {% for recruit in liked_studies %}
-                        <li>
-                            <a href="{% url 'recruits:recruit_detail' recruit.id %}">
-                                <i class="fa-solid fa-minus pr-4"></i>{{ recruit.title }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
+             class="flex-none w-64 border-l border-r border-neutral-800 overflow-y-auto">
+            <div class="pt-20 px-4">
+                {% if in_studies %}
+                    <div class="pb-8">
+                        <h3 class="text-xl font-bold pb-2">참여 중인 스터디</h3>
+                        <ul class="p-2 bg-neutral-200 rounded-md">
+                            {% for study in in_studies %}
+                                <a href="{% url 'manager:study_detail' study.id %}">
+                                    <li class="border-b border-neutral-600 last:border-none">{{ study.study.title }}</li>
+                                </a>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if liked_studies %}
+                    <div>
+                        <h3 class="text-xl font-bold pb-2">좋아요 누른 스터디</h3>
+                        <ul class="p-2 bg-neutral-200 rounded-md">
+                            {% for recruit in liked_studies %}
+                                <a href="{% url 'recruits:recruit_detail' recruit.id %}">
+                                    <li class="border-b border-neutral-600 last:border-none">{{ recruit.title }}</li>
+                                </a>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
