@@ -16,6 +16,7 @@ from django.views.generic import (
 from manager.models import Study
 from recruit.forms import SearchForm, ApplicationForm
 from recruit.models import Recruit, Register
+from common.utils import Tags
 
 
 # Create your views here.
@@ -169,6 +170,7 @@ class RecruitCreateView(LoginRequiredMixin, CreateView):
         start_date = form.cleaned_data.get("start")
         end_date = form.cleaned_data.get("end")
         deadline = form.cleaned_data.get("deadline")
+        tags = form.cleaned_data.get("tags")
 
         if end_date and start_date and end_date <= start_date:
             form.add_error("end", "End date should be after the start date.")
@@ -179,6 +181,15 @@ class RecruitCreateView(LoginRequiredMixin, CreateView):
                 "deadline", "Deadline should be on or before the start date."
             )
             return self.form_invalid(form)
+
+        if len(tags) > 3:
+            form.add_error("tags", "You can only select up to 3 tags.")
+            return self.form_invalid(form)
+        tag_list = Tags()
+        for tag in tags:
+            if tag not in tag_list:
+                form.add_error("tags", f"{tag} is not a valid tag.")
+                return self.form_invalid(form)
 
         study = Study.objects.create(
             creator=self.request.user,
