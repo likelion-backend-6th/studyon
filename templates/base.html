@@ -27,6 +27,9 @@
           <div class="flex">
             {% if user.is_authenticated %}
               <div class="flex items-center text-xl font-bold">
+                <a href={% url 'users:info' %}>내 정보</a>
+              </div>
+              <div class="flex items-center text-xl font-bold pl-6">
                 <a href={% url 'manager:studies_list' %}>스터디 관리</a>
               </div>
               <div class="flex items-center text-xl font-bold pl-6">
