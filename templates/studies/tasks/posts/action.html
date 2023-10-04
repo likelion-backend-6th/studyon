@@ -44,12 +44,18 @@
                             첨부파일
                             <button id="add-form" type="button">+</button>
                         </div>
-                        {% if request.resolver_match.url_name != "post_create" %}
-                            <div class="content" id="formset-container">
-                                {{ file_formset.management_form }}
-                                {% for file_form in file_formset %}<div class="file-form-wrap">{{ file_form.as_p }}</div>{% endfor %}
-                            </div>
-                        {% endif %}
+                        <div class="content" id="file-container">
+                            {% if request.resolver_match.url_name != "post_create" %}
+                                {% for file in files %}
+                                    <div class="exist-file" id="{{ file.id }}">
+                                        <a href="{{ file.url }}" download>{{ file.get_file_name }}</a>
+                                        <button class="remove-file"
+                                                data-id="{{ file.id }}"
+                                                data-url="{% url 'manager:file_delete' file.id %}">-</button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
                         <div class="content" id="upload-formset-container">
                             {{ file_upload_formset.management_form }}
                             {% for file_upload_form in file_upload_formset %}
@@ -69,12 +75,12 @@
             </div>
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
-                    let formNum = document.querySelectorAll(".file-form-wrap input[type=checkbox]:checked").length + document.querySelectorAll(".file-upload-form-wrap").length - 1;
+                    let formNum = document.querySelectorAll(".exist-file").length + document.querySelectorAll(".file-upload-form-wrap").length - 1;
                     let container = document.getElementById("upload-formset-container");
-                    let addButton = document.getElementById("add-form");
+                    let addBtn = document.getElementById("add-form");
                     let totalForms = document.getElementById("id_form-TOTAL_FORMS");
                 
-                    addButton.addEventListener('click', addForm);
+                    addBtn.addEventListener('click', addForm);
                     container.addEventListener('click', function (e) {
                         if (e.target && e.target.classList.contains('delete-form')) {
                             deleteForm(e.target);
@@ -85,7 +91,7 @@
                         e.preventDefault();
 
                         let uploadedForms = document.querySelectorAll(".file-upload-form-wrap").length - 1;
-                        formNum = document.querySelectorAll(".file-form-wrap input[type=checkbox]:checked").length + uploadedForms;
+                        formNum = document.querySelectorAll(".exist-file").length + uploadedForms;
                 
                         if (formNum < 4) {
                             let newForm = container.querySelector('.file-upload-form-wrap').cloneNode(true);
@@ -99,15 +105,15 @@
                                 textarea.value = '';
                             }
                 
-                            let deleteButton = document.createElement('button');
-                            deleteButton.type = 'button';
-                            deleteButton.textContent = '-';
-                            deleteButton.classList.add('delete-form');
-                            deleteButton.addEventListener('click', function () {
+                            let deleteBtn = document.createElement('button');
+                            deleteBtn.type = 'button';
+                            deleteBtn.textContent = '-';
+                            deleteBtn.classList.add('delete-form');
+                            deleteBtn.addEventListener('click', function () {
                                 deleteForm(this);
                             });
                 
-                            newForm.appendChild(deleteButton);
+                            newForm.appendChild(deleteBtn);
                             container.appendChild(newForm);
                 
                             totalForms.value = formNum + 1;
@@ -128,18 +134,41 @@
                         });
                     }
 
-                    let checkboxes = document.querySelectorAll(".file-form-wrap input[type='checkbox']");
+                    let file_container = document.getElementById("file-container");
 
-                    checkboxes.forEach(function (checkbox) {
-                        checkbox.addEventListener('change', function () {
-                            if (!this.checked) {
-                                let fileFormWrap = this.closest('.file-form-wrap');
-                                if (fileFormWrap) {
-                                    fileFormWrap.remove();
-                                }
-                            }
-                        });
+                    file_container.addEventListener('click', function (e) {
+                        if (e.target && e.target.classList.contains('remove-file')) {
+                            e.preventDefault();
+                            removeFile(e.target);
+                        }
                     });
+
+                    function removeFile(e) {
+                        
+                        let removeUrl = e.getAttribute('data-url');
+                        let file_id = e.getAttribute('data-id');
+
+                        fetch(removeUrl, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                let fileElement = document.getElementById(`${file_id}`);
+                                if (fileElement) {
+                                    fileElement.parentNode.removeChild(fileElement);
+                                }
+                            } else {
+                                console.error('삭제 실패');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('에러:', error);
+                        });
+                    }
                 });
             </script>
         </body>
