@@ -77,9 +77,11 @@
                             let newDiv = document.createElement('div');
                             newDiv.classList.add('file-form');
                             let newForm = fileForm[0].cloneNode(true);
-                            let pTags = newForm.querySelectorAll('p');
-                            newForm.removeChild(pTags[1]);
-                            newForm.removeChild(pTags[2]);
+                            {% if request.resolver_match.url_name != "post_create" %}
+                                let pTags = newForm.querySelectorAll('p');
+                                newForm.removeChild(pTags[1]);
+                                newForm.removeChild(pTags[2]);
+                            {% endif %}
                             let formRegex = RegExp(`form-(\\d){1}-`, 'g');
                             console.log(newForm)
 
