@@ -25,7 +25,7 @@ class TaskForm(forms.ModelForm):
         fields = ["title", "description", "start", "end"]
 
 
-class FileForm(forms.ModelForm):
+class FileUploadForm(forms.ModelForm):
     file = forms.FileField(
         label="",
         required=False,
@@ -44,30 +44,18 @@ class FileForm(forms.ModelForm):
         return file
 
 
-FileFormSet = modelformset_factory(File, form=FileForm, extra=1, max_num=5)
+FileUploadFormSet = modelformset_factory(File, form=FileUploadForm, extra=1, max_num=5)
 
 
-class FileUpdateForm(forms.ModelForm):
-    file = forms.FileField(
-        label="",
-        required=False,
-        widget=forms.FileInput(attrs={"class": "file"}),
-    )
+class FileForm(forms.ModelForm):
     checkbox = forms.BooleanField(
-        label="", required=False, widget=forms.CheckboxInput()
+        label="", required=False, widget=forms.CheckboxInput(), initial=True
     )
     url = forms.URLField(label="", disabled=True, required=False)
 
     class Meta:
         model = File
-        fields = ("file", "url", "checkbox")
-
-    def clean_file(self):
-        file = self.cleaned_data.get("file")
-        if file:
-            if file.size > 3 * 1024 * 1024:  # 3MB
-                raise ValidationError("Maximum File Size: 3MB")
-        return file
+        fields = ("url", "checkbox")
 
 
 class PostActionForm(forms.ModelForm):
