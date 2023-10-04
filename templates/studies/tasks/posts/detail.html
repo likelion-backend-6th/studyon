@@ -41,7 +41,7 @@
                 <div class="title">첨부파일</div>
                 <div class="content">
                     {% if post.files.exists %}
-                        {% for file in post.files.all %}<a href="{{ file.url }}" download>download{{ forloop.counter }}</a>{% endfor %}
+                        {% for file in post.files.all %}<a href="{{ file.url }}" download>{{ file.get_file_name }}</a>{% endfor %}
                     {% endif %}
                 </div>
             </div>
