@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 
 from pathlib import Path
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -57,6 +58,13 @@ INSTALLED_APPS += [
 INSTALLED_APPS += [
     "taggit",
     "markdownx",
+    # allauth
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",  # 구글 로그인
+    "allauth.socialaccount.providers.github",  # 깃헙 로그인
+    "allauth.socialaccount.providers.naver",  # 네이버 로그인
 ]
 
 MIDDLEWARE = [
@@ -67,6 +75,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # allauth
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -82,6 +92,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -174,3 +185,24 @@ NCP_S3_BUCKET_NAME = os.getenv("NCP_S3_BUCKET_NAME", "")
 
 # Login URL
 LOGIN_URL = "/users/login/"
+LOGIN_REDIRECT_URL = reverse_lazy("recruits:index")
+
+# social login
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+SITE_ID = 1
+SOCIALACCOUNT_PROVIDERS = {
+    "github": {
+        "redirect_uri": reverse_lazy("recruits:index"),
+        "SCOPE": [
+            "user:email",
+        ],
+    },
+    "google": {
+        "SCOPE": [
+            "email",
+        ]
+    },
+}

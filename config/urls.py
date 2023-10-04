@@ -27,6 +27,7 @@ urlpatterns = [
     path("users/", include("user.urls")),
     path("", include("recruit.urls")),
     path("markdownx/", include("markdownx.urls")),
+    path("accounts/", include("allauth.urls")),
 ]
 
 if settings.DEBUG:
