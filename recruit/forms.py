@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 from recruit.models import Register, Recruit
 
@@ -19,6 +20,7 @@ class RecruitForm(forms.ModelForm):
     end = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
     deadline = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
     total_seats = forms.IntegerField(initial=2)
+    file = forms.FileField(required=False)
 
     class Meta:
         model = Recruit
@@ -32,5 +34,12 @@ class RecruitForm(forms.ModelForm):
             "target",
             "process",
             "info",
-            "files",
+            "file",
         ]
+
+    def clean_file(self):
+        file = self.cleaned_data.get("file")
+        if file:
+            if file.size > 3 * 1024 * 1024:  # 3MB
+                raise ValidationError("Maximum File Size: 3MB")
+        return file

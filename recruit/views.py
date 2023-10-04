@@ -16,7 +16,7 @@ from django.views.generic import (
 from manager.models import Study, File
 from recruit.forms import SearchForm, ApplicationForm, RecruitForm
 from recruit.models import Recruit, Register
-from common.utils import Tags
+from common.utils import Tags, s3_file_upload
 
 
 # Create your views here.
@@ -199,8 +199,9 @@ class RecruitCreateView(LoginRequiredMixin, FormView):
         for tag in form.cleaned_data["tags"]:
             instance.tags.add(tag)
 
-        for file in self.request.FILES.getlist("files"):
-            file_instance = File(url=file)
+        for file in self.request.FILES.getlist("file"):
+            name, url = s3_file_upload(file, "files")
+            file_instance = File(url=url, name=name)
             file_instance.save()
             instance.files.add(file_instance)
 
