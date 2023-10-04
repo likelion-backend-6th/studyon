@@ -32,7 +32,7 @@ body {
     align-items: center;
 }
 
-.file-upload-form-wrap, .file-form-wrap {
+.file-upload-form-wrap, .exist-file {
     display: flex;
     flex-direction: row;
     align-items: center;
