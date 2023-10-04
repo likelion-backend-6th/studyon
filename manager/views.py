@@ -307,8 +307,8 @@ def create_post_with_files(request, pk):
             )
 
             for file in file_formset.files.values():
-                url = s3_file_upload(file, "files")
-                instance = File.objects.create(url=url)
+                name, url = s3_file_upload(file, "files")
+                instance = File.objects.create(name=name, url=url)
                 post.files.add(instance)
 
             post_list_url = reverse("manager:post_list", kwargs={"pk": pk})
@@ -353,8 +353,8 @@ def update_post_with_files(request, pk):
                         files[i].delete()
 
             for file in file_formset.files.values():
-                url = s3_file_upload(file, "files")
-                instance = File.objects.create(url=url)
+                name, url = s3_file_upload(file, "files")
+                instance = File.objects.create(name=name, url=url)
                 post.files.add(instance)
 
             post_list_url = reverse("manager:post_list", kwargs={"pk": task_id})
