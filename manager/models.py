@@ -87,7 +87,7 @@ class Post(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="posts")
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     content = MarkdownxField()
-    files = models.ManyToManyField(File, related_name="posts")
+    files = models.ManyToManyField(File, related_name="posts", blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
