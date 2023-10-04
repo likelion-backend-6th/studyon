@@ -16,7 +16,13 @@ from django.contrib.auth.models import User
 from common.utils import s3_file_upload
 from recruit.models import Recruit
 from .models import File, Post, Study, Task
-from .forms import FileFormSet, FileUpdateForm, PostActionForm, StudyForm, TaskForm
+from .forms import (
+    FileUploadFormSet,
+    FileForm,
+    PostActionForm,
+    StudyForm,
+    TaskForm,
+)
 from .permissions import (
     PostAccessMixin,
     PostManageMixin,
@@ -295,9 +301,9 @@ def create_post_with_files(request, pk):
 
     if request.method == "POST":
         post_form = PostActionForm(request.POST)
-        file_formset = FileFormSet(request.POST, request.FILES)
+        file_upload_formset = FileUploadFormSet(request.POST, request.FILES)
 
-        if post_form.is_valid() and file_formset.is_valid():
+        if post_form.is_valid() and file_upload_formset.is_valid():
             post_data = post_form.cleaned_data
             post = Post.objects.create(
                 title=post_data["title"],
@@ -306,7 +312,7 @@ def create_post_with_files(request, pk):
                 content=post_data["content"],
             )
 
-            for file in file_formset.files.values():
+            for file in file_upload_formset.files.values():
                 name, url = s3_file_upload(file, "files")
                 instance = File.objects.create(name=name, url=url)
                 post.files.add(instance)
@@ -315,14 +321,18 @@ def create_post_with_files(request, pk):
 
             return redirect(post_list_url)
         else:
-            for form in file_formset:
+            for form in file_upload_formset:
                 print(f"form.errors:{form.errors}")
 
     else:
         post_form = PostActionForm()
-        file_formset = FileFormSet(queryset=File.objects.none())
+        file_upload_formset = FileUploadFormSet(queryset=File.objects.none())
 
-    context = {"post_form": post_form, "file_formset": file_formset, "pk": pk}
+    context = {
+        "post_form": post_form,
+        "file_upload_formset": file_upload_formset,
+        "pk": pk,
+    }
 
     return render(request, template_name, context)
 
@@ -335,16 +345,18 @@ def update_post_with_files(request, pk):
     task_id = post.task_id
     files = post.files.all()
     exist_file_cnt = files.count()
-    min_file_form_cnt = 0 if files else 1
-    FileFormSet = modelformset_factory(
-        File, form=FileUpdateForm, extra=min_file_form_cnt
-    )
+    FileFormSet = modelformset_factory(File, form=FileForm, extra=0)
 
     if request.method == "POST":
         post_form = PostActionForm(request.POST, instance=post)
-        file_formset = FileFormSet(request.POST, request.FILES)
+        file_formset = FileFormSet(request.POST)
+        file_upload_formset = FileUploadFormSet(request.POST, request.FILES)
 
-        if post_form.is_valid() and file_formset.is_valid():
+        if (
+            post_form.is_valid()
+            and file_formset.is_valid()
+            and file_upload_formset.is_valid()
+        ):
             post_form.save()
 
             if exist_file_cnt:
@@ -352,7 +364,7 @@ def update_post_with_files(request, pk):
                     if request.POST.getlist(f"form-{i}-checkbox") == ["on"]:
                         files[i].delete()
 
-            for file in file_formset.files.values():
+            for file in file_upload_formset.files.values():
                 name, url = s3_file_upload(file, "files")
                 instance = File.objects.create(name=name, url=url)
                 post.files.add(instance)
@@ -367,10 +379,12 @@ def update_post_with_files(request, pk):
     else:
         post_form = PostActionForm(instance=post)
         file_formset = FileFormSet(queryset=files)
+        file_upload_formset = FileUploadFormSet(queryset=File.objects.none())
 
     context = {
         "post_form": post_form,
         "file_formset": file_formset,
+        "file_upload_formset": file_upload_formset,
         "pk": pk,
         "task_id": task_id,
     }
