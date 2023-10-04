@@ -22,12 +22,12 @@ urlpatterns = [
     path("<int:pk>/leave/", views.StudyLeaveView.as_view(), name="study_leave"),
     path("<int:pk>/delete/", views.StudyDeleteView.as_view(), name="study_delete"),
     path(
-        "<int:study_id>/kickout/<int:member_id>/",
+        "<int:pk>/kickout/<int:member_id>/",
         views.StudyKickoutView.as_view(),
         name="study_kickout",
     ),
     path(
-        "<int:study_id>/task/create/",
+        "<int:pk>/task/create/",
         views.TaskCreateView.as_view(),
         name="task_create",
     ),

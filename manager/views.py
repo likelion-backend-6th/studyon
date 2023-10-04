@@ -146,19 +146,19 @@ class StudyLeaveView(StudyAccessMixin, View):
 
 class StudyKickoutView(StudyCreatorMixin, View):
     # url로 get 요청을 할경우 스터디 상세페이지 리디렉션
-    def get(self, reqeust, study_id, member_id):
-        return redirect("manager:study_detail", study_id)
+    def get(self, reqeust, pk, member_id):
+        return redirect("manager:study_detail", pk)
 
-    def post(self, request, study_id, member_id):
+    def post(self, request, pk, member_id):
         user = get_object_or_404(User, id=member_id)
-        study = get_object_or_404(Study, id=study_id, is_active=True)
+        study = get_object_or_404(Study, id=pk, is_active=True)
         # 요청 유저가 스터디장이고 퇴출유저가 스터디 멤버에 포함되어 있을 경우
         if request.user == study.creator and user in study.members.all():
             study.members.remove(user)
             study.save()
-            return redirect("manager:study_detail", study_id)
+            return redirect("manager:study_detail", pk)
         else:
-            return redirect("manager:study_detail", study_id)
+            return redirect("manager:study_detail", pk)
 
 
 class StudyModifyView(StudyCreatorMixin, UpdateView):
@@ -196,21 +196,21 @@ class StudyDeleteView(StudyCreatorMixin, View):
 
 
 class TaskCreateView(StudyAccessMixin, View):
-    def get(self, request, study_id):
-        return redirect("manager:study_detail", study_id)
+    def get(self, request, pk):
+        return redirect("manager:study_detail", pk)
 
-    def post(self, request, study_id):
+    def post(self, request, pk):
         form = TaskForm(request.POST)
-        study = get_object_or_404(Study, id=study_id, is_active=True)
+        study = get_object_or_404(Study, id=pk, is_active=True)
         # 폼이 유효하고 요청자가 스터디 멤버일 경우
         if form.is_valid() and request.user in study.members.all():
             task = form.save(commit=False)
             task.study = study
             task.author = request.user
             task.save()
-            return redirect("manager:study_detail", study_id)
+            return redirect("manager:study_detail", pk)
         else:
-            return redirect("manager:study_detail", study_id)
+            return redirect("manager:study_detail", pk)
 
 
 class TaskModifyView(TaskAuthorMixin, UpdateView):
