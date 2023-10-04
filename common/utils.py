@@ -4,6 +4,8 @@ from datetime import datetime
 
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.views.generic import ListView
+from django.core.paginator import PageNotAnInteger, EmptyPage
 
 from boto3 import client
 
@@ -63,3 +65,22 @@ class Tags:
     # in operator
     def __contains__(self, key):
         return key in self.tag_list
+
+
+class InfiniteListView(ListView):
+    def paginate_queryset(self, queryset, page_size):
+        paginator = self.get_paginator(
+            queryset,
+            page_size,
+            orphans=self.get_paginate_orphans(),
+            allow_empty_first_page=self.get_allow_empty(),
+        )
+        page_kwarg = self.page_kwarg
+        page = self.kwargs.get(page_kwarg) or self.request.GET.get(page_kwarg) or 1
+        try:
+            page = paginator.page(page)
+        except PageNotAnInteger:
+            page = paginator.page(1)
+        except EmptyPage:
+            return (paginator, 1, [], False)
+        return (paginator, page, page.object_list, page.has_other_pages())
