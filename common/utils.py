@@ -41,3 +41,24 @@ def s3_file_upload(upload_file: InMemoryUploadedFile, parent_directory):
             print(f"Image setting to public failed: {e}")
     except Exception as e:
         print(f"Image upload failed: {e}")
+
+
+class Tags:
+    tag_list = ["database", "frontend", "backend", "CD/CD", "python", "비대면", "게임"]
+
+    # for in, list() operator
+    def __iter__(self):
+        self.current = -1
+        self.high = len(self.tag_list)
+        return self
+
+    # for in, list() operator
+    def __next__(self):
+        self.current += 1
+        if self.current < self.high:
+            return self.tag_list[self.current]
+        raise StopIteration
+
+    # in operator
+    def __contains__(self, key):
+        return key in self.tag_list
