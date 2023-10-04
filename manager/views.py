@@ -278,6 +278,7 @@ class PostView(TaskAccessMixin, ListView):
     model = Post
     template_name = "studies/tasks/board.html"
     context_object_name = "posts"
+    paginate_by = 20
 
     def get_queryset(self):
         task_id = self.kwargs["pk"]
