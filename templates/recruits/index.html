@@ -72,6 +72,7 @@
                             {% endfor %}
                         </div>
                         {% if user.is_authenticated %}
+                            <span>{{ recruit.like_users.count }}</span>
                             {% if recruit in liked_studies %}
                                 <a href="{% url 'recruits:unlike_recruit' recruit.pk %}">
                                     <i class="fa-solid fa-heart text-red-400"></i>
