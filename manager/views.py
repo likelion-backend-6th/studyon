@@ -1,3 +1,4 @@
+from typing import Any
 from django.forms import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -56,7 +57,7 @@ class StudyDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["tasks"] = Task.objects.filter(study=self.object)
+        context["tasks"] = Task.objects.filter(study=self.object, is_active=True)
         return context
 
 
@@ -66,7 +67,7 @@ class StudyDoneView(LoginRequiredMixin, View):
         return redirect("manager:study_detail", pk)
 
     def post(self, request, pk):
-        study = get_object_or_404(Study, id=pk)
+        study = get_object_or_404(Study, id=pk, is_active=True)
         # 요청유저와 스터디생성자가 같을 경우
         if request.user == study.creator:
             study.status = 4
@@ -83,7 +84,7 @@ class StudyFinishView(LoginRequiredMixin, View):
         return redirect("manager:study_detail", pk)
 
     def post(self, request, pk):
-        study = get_object_or_404(Study, id=pk)
+        study = get_object_or_404(Study, id=pk, is_active=True)
         # 요청유저와 스터디생성자가 같을 경우
         if request.user == study.creator:
             study.status = 3
@@ -100,7 +101,7 @@ class StudyLeaveView(LoginRequiredMixin, View):
         return redirect("manager:studies_list")
 
     def post(self, request, pk):
-        study = get_object_or_404(Study, id=pk)
+        study = get_object_or_404(Study, id=pk, is_active=True)
         # 요청유저가 스터디 멤버에 포함되어 있고 스터디장이 아닐 경우
         if request.user in study.members.all() and request.user != study.creator:
             study.members.remove(request.user)
@@ -118,7 +119,7 @@ class StudyKickoutView(LoginRequiredMixin, View):
 
     def post(self, request, study_id, member_id):
         user = get_object_or_404(User, id=member_id)
-        study = get_object_or_404(Study, id=study_id)
+        study = get_object_or_404(Study, id=study_id, is_active=True)
         # 요청 유저가 스터디장이고 퇴출유저가 스터디 멤버에 포함되어 있을 경우
         if request.user == study.creator and user in study.members.all():
             study.members.remove(user)
@@ -143,6 +144,11 @@ class StudyModifyView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse("manager:study_detail", kwargs={"pk": self.object.id})
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["study"] = get_object_or_404(Study, id=self.object.id, is_active=True)
+        return context
+
 
 class StudyDeleteView(LoginRequiredMixin, View):
     def get(self, request, pk):
@@ -151,7 +157,7 @@ class StudyDeleteView(LoginRequiredMixin, View):
 
     def post(self, reuqest, pk):
         # 스터디의 is_active를 False 로 변경
-        study = get_object_or_404(Study, id=pk)
+        study = get_object_or_404(Study, id=pk, is_active=True)
         study.is_active = False
         study.save()
         return redirect("manager:studies_list")
@@ -159,7 +165,7 @@ class StudyDeleteView(LoginRequiredMixin, View):
 
 class TaskCreateView(LoginRequiredMixin, View):
     def get(self, request, study_id):
-        study = get_object_or_404(Study, id=study_id)
+        study = get_object_or_404(Study, id=study_id, is_active=True)
         if request.user in study.members.all():
             form = TaskForm()
             return render(request, "studies/tasks/create.html", {"form": form})
@@ -168,7 +174,7 @@ class TaskCreateView(LoginRequiredMixin, View):
 
     def post(self, request, study_id):
         form = TaskForm(request.POST)
-        study = get_object_or_404(Study, id=study_id)
+        study = get_object_or_404(Study, id=study_id, is_active=True)
         # 폼이 유효하고 요청자가 스터디 멤버일 경우
         if form.is_valid() and request.user in study.members.all():
             task = form.save(commit=False)
@@ -199,14 +205,19 @@ class TaskModifyView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["task"] = get_object_or_404(Task, id=self.object.id, is_active=True)
+        return context
+
 
 class TaskCompleteView(LoginRequiredMixin, View):
     def get(self, request, pk):
-        task = get_object_or_404(Task, id=pk)
+        task = get_object_or_404(Task, id=pk, is_active=True)
         return redirect("manager:study_detail", task.study.id)
 
     def post(self, request, pk):
-        task = get_object_or_404(Task, id=pk)
+        task = get_object_or_404(Task, id=pk, is_active=True)
         # 요청자가 스터디 장이거나 task 생성자 일 경우
         if request.user == task.study.creator or request.user == task.author:
             if task.is_finished:
@@ -222,13 +233,13 @@ class TaskCompleteView(LoginRequiredMixin, View):
 
 class TaskDeleteView(LoginRequiredMixin, View):
     def get(self, request, pk):
-        task = get_object_or_404(Task, id=pk)
+        task = get_object_or_404(Task, id=pk, is_active=True)
         # url 로 get 요청을 보낼 경우 스터디 상세페이지 리디렉션
         return redirect("manager:study_detail", task.study.id)
 
     def post(self, reuqest, pk):
         # task의 is_active를 False 로 변경
-        task = get_object_or_404(Task, id=pk)
+        task = get_object_or_404(Task, id=pk, is_active=True)
         task.is_active = False
         task.save()
         return redirect("manager:study_detail", task.study.id)
