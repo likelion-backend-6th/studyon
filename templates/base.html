@@ -14,7 +14,7 @@
   </head>
   <body>
     <div class="h-full">
-      <div class="h-[60px] border-b border-neutral-300">
+      <div class="fixed w-full h-[60px] border-b border-neutral-300 bg-[rgba(255,255,255,.88)] backdrop-blur-xl backdrop-saturate-150 z-50">
         <div class="mx-auto max-w-5xl flex items-center h-full">
           <a href="{% url 'recruits:index' %}"class="flex">
             <h1 class="self-center text-2xl text-cyan-700 font-bold">StudyOn</h1>
@@ -52,6 +52,7 @@
           </div>
         </div>
       </div>
+      <div class="h-[60px]"></div>
       <div class="h-full">
         {% block content %}
         {% endblock content %}
