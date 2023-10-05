@@ -1,100 +1,89 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>
-            {% block title %}task별 게시판{% endblock %}
-        </title>
-        <link href="{% static 'css/studies/board.css' %}" rel="stylesheet">
-    </head>
-    <body>
-        <div class="task">
-            <div class="title">{{ task.title }}</div>
-            <div class="description">{{ task.description }}</div>
+{% block style %}
+<link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+{% endblock style %}
+{% block content %}
+<div class="flex flex-col items-center max-w-5xl mx-auto">
+    <div class="flex flex-col items-start w-full my-4 task">
+        <div class="text-3xl font-bold title">{{ task.title }}</div>
+        <div class="mt-4 text-xl description">{{ task.description }}</div>
+    </div>
+    <div class="flex justify-between xl:w-full lg:w-[768px] sm:w-3/4 header">
+        <form method="get" class="search">
+            <label class="p-2 px-4 mt-2 border rounded-full border-neutral-600 cursor-text">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="query" maxlength="30" id="id_query" placeholder="키워드를 입력해주세요." class="search">
+            </label>
+            <button type="submit" hidden>검색</button>
+        </form>
+        <div class="btn">
+            <button class="create" onclick="location" .href="{% url 'manager:post_create' task.id %}">+</button>
+            <button class="study" onclick="location" .href="{% url 'manager:study_detail' task.study.id %}">목록</button>
         </div>
-        <div class="header">
-            <form method="get" class="search">
-                <input type="text"
-                       name="query"
-                       maxlength="30"
-                       id="id_query"
-                       placeholder="키워드를 입력해주세요."
-                       class="search">
-                <button type="submit" hidden>검색</button>
-            </form>
-            <div class="btn">
-                <button class="create"
-                        onclick="location"
-                        .href="{% url 'manager:post_create' task.id %}">+</button>
-                <button class="study"
-                        onclick="location"
-                        .href="{% url 'manager:study_detail' task.study.id %}">목록</button>
+    </div>
+    <div class="xl:w-full lg:w-[768px] sm:w-3/4 xl:bg-green-100 lg:bg-yellow-200 sm:bg-red-200 ">
+        <div class="thead">
+            <div class="grid grid-cols-4">
+                <div class="td">날짜</div>
+                <div class="td">제목</div>
+                <div class="td">작성자</div>
+                <div class="td">첨부파일</div>
             </div>
         </div>
-        <div class="table">
-            <div class="thead">
-                <div class="th">
-                    <div class="td">날짜</div>
-                    <div class="td">제목</div>
-                    <div class="td">작성자</div>
-                    <div class="td">첨부파일</div>
+        <div class="tbody" id="post-list">
+            {% for post in posts %}
+            <div class="grid grid-cols-4">
+                <div class="td">{{ post.created_at|date:"Y.m.d" }}</div>
+                <div class="td">
+                    <a href="{% url 'manager:post_detail' post.id %}">{{ post.title }}</a>
+                </div>
+                <div class="td">{{ post.author.username }}</div>
+                <div class="td">
+                    {% if post.files.exists %}
+                    <a href="{{ post.files.last.url }}" download>{{ post.files.last.get_file_name|truncatechars:7 }}</a>
+                    {% endif %}
                 </div>
             </div>
-            <div class="tbody" id="post-list">
-                {% for post in posts %}
-                    <div class="tr">
-                        <div class="td">{{ post.created_at|date:"Y.m.d" }}</div>
-                        <div class="td">
-                            <a href="{% url 'manager:post_detail' post.id %}">{{ post.title }}</a>
-                        </div>
-                        <div class="td">{{ post.author.username }}</div>
-                        <div class="td">
-                            {% if post.files.exists %}
-                                <a href="{{ post.files.last.url }}" download>{{ post.files.last.get_file_name|truncatechars:7 }}</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+            {% endfor %}
         </div>
-    </body>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            let page = 1;
-            let emptyPage = false;
-            let blockRequest = false;
-            let lastScrollY = 0;
-
-            window.addEventListener('scroll', function (e) {
-                let currentScrollY = window.scrollY;
-                let margin = document.body.clientHeight - window.innerHeight - 50;
-                
-                if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
-                    blockRequest = true;
-                    page += 1;
-                    fetch('?page=' + page)
-                        .then(response => response.text())
-                        .then(html => {
-                            let parser = new DOMParser();
-                            let doc = parser.parseFromString(html, 'text/html');
-                            let tbodyContent = doc.getElementById("post-list").innerHTML;
-
-                            if (tbodyContent === '') {
-                                emptyPage = true;
-                            } else {
-                                let postList = document.getElementById("post-list");
-                                postList.insertAdjacentHTML('beforeend', tbodyContent);
-                                blockRequest = false;
-                            }
-                        });
-                }
-
-                lastScrollY = currentScrollY;
-            });
-            let scrollEvent = new Event('scroll');
-            window.dispatchEvent(scrollEvent);
-        })
-    </script>
-</html>
+    </div>
+</div>
+{% endblock content %}
+{% block domready %}
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        let page = 1;
+        let emptyPage = false;
+        let blockRequest = false;
+        let lastScrollY = 0;
+        window.addEventListener('scroll', function (e) {
+            let currentScrollY = window.scrollY;
+            let margin = document.body.clientHeight - window.innerHeight - 50;
+            if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
+                blockRequest = true;
+                page += 1;
+                fetch('?page=' + page)
+                    .then(response => response.text())
+                    .then(html => {
+                        let parser = new DOMParser();
+                        let doc = parser.parseFromString(html, 'text/html');
+                        let tbodyContent = doc.getElementById("post-list").innerHTML;
+                        if (tbodyContent === '') {
+                            emptyPage = true;
+                        } else {
+                            let postList = document.getElementById("post-list");
+                            postList.insertAdjacentHTML('beforeend', tbodyContent);
+                            blockRequest = false;
+                        }
+                    });
+            }
+            lastScrollY = currentScrollY;
+        });
+        let scrollEvent = new Event('scroll');
+        window.dispatchEvent(scrollEvent);
+    })
+</script>
+{% endblock domready %}
