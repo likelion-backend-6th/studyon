@@ -86,3 +86,25 @@ class MyHistoryView(ListView):
         if request.user.is_authenticated:
             return super().get(request, *args, **kwargs)
         return redirect("users:login")
+
+
+class UserSocialSignupView(View):
+    def get(self, request):
+        profile = Profile.objects.filter(user=request.user)
+        if not profile:
+            return render(request, "users/social_signup.html")
+        else:
+            return redirect("recruits:index")
+
+    def post(self, request):
+        nickname = request.POST["nickname"]
+        if Profile.objects.filter(nickname=nickname).exists():
+            return render(
+                request,
+                "users/social_signup.html",
+                {"error": "nickname is already exists"},
+            )
+        else:
+            user = request.user
+            Profile.objects.create(user=request.user, nickname=nickname)
+            return redirect("users:social_signup")
