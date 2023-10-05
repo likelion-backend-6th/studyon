@@ -194,15 +194,29 @@ AUTHENTICATION_BACKENDS = [
 ]
 SITE_ID = 1
 SOCIALACCOUNT_PROVIDERS = {
+    "naver": {
+        "APP": {
+            "client_id": os.getenv("NAVER_CLIENT_ID"),
+            "secret": os.getenv("NAVER_SECRET_KEY"),
+        }
+    },
     "github": {
+        "APP": {
+            "client_id": os.getenv("GITHUB_CLIENT_ID"),
+            "secret": os.getenv("GITHUB_SECRET_KEY"),
+        },
         "redirect_uri": reverse_lazy("recruits:index"),
         "SCOPE": [
             "user:email",
         ],
     },
     "google": {
+        "APP": {
+            "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+            "secret": os.getenv("GOOGLE_SECRET_KEY"),
+        },
         "SCOPE": [
             "email",
-        ]
+        ],
     },
 }
