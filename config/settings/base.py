@@ -185,9 +185,8 @@ NCP_S3_BUCKET_NAME = os.getenv("NCP_S3_BUCKET_NAME", "")
 
 # Login URL
 LOGIN_URL = "/users/login/"
-LOGIN_REDIRECT_URL = reverse_lazy("recruits:index")
+LOGIN_REDIRECT_URL = reverse_lazy("users:social_signup")
 
-# social login
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
@@ -205,7 +204,7 @@ SOCIALACCOUNT_PROVIDERS = {
             "client_id": os.getenv("GITHUB_CLIENT_ID"),
             "secret": os.getenv("GITHUB_SECRET_KEY"),
         },
-        "redirect_uri": reverse_lazy("recruits:index"),
+        "redirect_uri": LOGIN_REDIRECT_URL,
         "SCOPE": [
             "user:email",
         ],
