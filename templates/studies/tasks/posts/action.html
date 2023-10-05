@@ -1,175 +1,229 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>
-            {% block title %}
-                {% if request.resolver_match.url_name == "post_create" %}
-                    게시글 생성
-                {% else %}
-                    게시글 수정
-                {% endif %}
-            {% endblock %}
-        </title>
-        <link href="{% static 'css/studies/posts/action.css' %}" rel="stylesheet">
-        <link href="{% static 'css/codehilite_styles.css' %}" rel="stylesheet">
-    </head>
-    <body>
-        {% if request.resolver_match.url_name == "post_create" %}
-            <form method="post"
-                  action="{% url 'manager:post_create' pk %}"
-                  enctype="multipart/form-data">
-            {% else %}
-                <form method="post"
-                      action="{% url 'manager:post_modify' pk %}"
-                      enctype="multipart/form-data">
-                {% endif %}
-                {% csrf_token %}
-                <div class="detail">
-                    <div class="title-wrap">
-                        <div class="title">
-                            제목
-                            <button class="create" type="submit">완료</button>
-                        </div>
-                        <div class="content">{{ post_form.title }}</div>
+{% block style %}
+<link href="{% static 'css/codehilite_styles.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="flex flex-col items-center max-w-5xl mx-auto">
+    {% if request.resolver_match.url_name == "post_create" %}
+    <form method="post" action="{% url 'manager:post_create' pk %}" enctype="multipart/form-data"
+        class="sm:w-[768px] w-4/5">
+        {% else %}
+        <form method="post" action="{% url 'manager:post_modify' pk %}" enctype="multipart/form-data"
+            class="sm:w-[768px] w-4/5">
+            {% endif %}
+            {% csrf_token %}
+            <div class="flex flex-col mt-20 items-startmt-20 detail form-wrap">
+                <div class="w-full title-wrap">
+                    <div class="flex items-center justify-between title">
+                        <div class="text-lg font-bold">제목</div>
+                        <button class="create" type="submit" title="등록">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                class="w-5 h-5 hover:scale-125">
+                                <path fill-rule="evenodd"
+                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                    clip-rule="evenodd" />
+                            </svg>
+
+                        </button>
                     </div>
-                    <div class="content-wrap">
-                        <div class="title">내용</div>
-                        <div class="content">{{ post_form.content }}</div>
+                    <hr class="my-2">
+                    <div class="content">{{ post_form.title }}</div>
+                </div>
+                <div class="w-full content-wrap">
+                    <div class="mt-5 text-lg font-bold title">내용</div>
+                    <hr class="my-2">
+                    <div class="content">{{ post_form.content }}</div>
+                </div>
+                <div class="w-full file-wrap">
+                    <div class="flex items-center justify-between mt-5 title">
+                        <div class="text-lg font-bold">첨부파일</div>
+                        <button id="add-form" type="button" title="파일 추가">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5 hover:scale-125">
+                                <path stroke-linecap=" round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+
+                        </button>
                     </div>
-                    <div class="file-wrap">
-                        <div class="title">
-                            첨부파일
-                            <button id="add-form" type="button">+</button>
+                    <hr class="my-2">
+                    <div class="content" id="file-container">
+                        {% if request.resolver_match.url_name != "post_create" %}
+                        {% for file in files %}
+                        <div class="flex justify-between exist-file" id="{{ file.id }}">
+                            <a href="{{ file.url }}" class="my-1 text-[#0000ff] underline hover:font-bold"
+                                title="파일 다운로드" download>
+                                {{file.get_file_name }}</a>
+                            <button class="remove-file" data-id="{{ file.id }}"
+                                data-url="{% url 'manager:file_delete' file.id %}" title="파일 삭제">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="w-4 h-4 fill-slate-500">
+                                    <path fill-rule="evenodd"
+                                        d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
                         </div>
-                        <div class="content" id="file-container">
-                            {% if request.resolver_match.url_name != "post_create" %}
-                                {% for file in files %}
-                                    <div class="exist-file" id="{{ file.id }}">
-                                        <a href="{{ file.url }}" download>{{ file.get_file_name }}</a>
-                                        <button class="remove-file"
-                                                data-id="{{ file.id }}"
-                                                data-url="{% url 'manager:file_delete' file.id %}">-</button>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                        <div class="content" id="upload-formset-container">
-                            {{ file_upload_formset.management_form }}
-                            {% for file_upload_form in file_upload_formset %}
-                                <div class="file-upload-form-wrap">{{ file_upload_form.as_p }}</div>
-                            {% endfor %}
-                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="content" id="upload-formset-container">
+                        {{ file_upload_formset.management_form }}
+                        {% for file_upload_form in file_upload_formset %}
+                        <div class="flex justify-between my-3 file-upload-form-wrap">{{ file_upload_form.as_p }}</div>
+                        {% endfor %}
                     </div>
                 </div>
-            </form>
-            <div class="btn">
-                {% if request.resolver_match.url_name == 'post_create' %}
-                    <button class="list" onclick=location.href='{% url 'manager:post_list' pk %}'>목록</button>
-                {% else %}
-                    <button class="list"
-                            onclick="location.href='{% url 'manager:post_list' task_id %}'">목록</button>
-                {% endif %}
             </div>
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    let formNum = document.querySelectorAll(".exist-file").length + document.querySelectorAll(".file-upload-form-wrap").length - 1;
-                    let container = document.getElementById("upload-formset-container");
-                    let addBtn = document.getElementById("add-form");
-                    let totalForms = document.getElementById("id_form-TOTAL_FORMS");
-                
-                    addBtn.addEventListener('click', addForm);
-                    container.addEventListener('click', function (e) {
-                        if (e.target && e.target.classList.contains('delete-form')) {
-                            deleteForm(e.target);
-                        }
-                    });
-                
-                    function addForm(e) {
-                        e.preventDefault();
+        </form>
+        <div class="mt-5 btn">
+            {% if request.resolver_match.url_name == 'post_create' %}
+            <button class="mb-20 list" onclick=location.href="{% url 'manager:post_list' pk %}" title="게시판으로 돌아가기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                    class="w-6 h-6 hover:scale-125">
+                    <path class="text-[#6288ef]" fill-rule="evenodd"
+                        d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z"
+                        clip-rule="evenodd" />
+                    <path class="text-[#89dabf]" fill-rule="evenodd"
+                        d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+            {% else %}
+            <button class="mb-20 list" onclick=location.href="{% url 'manager:post_list' task_id %}" title="게시판으로 돌아가기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                    class="w-6 h-6 hover:scale-125">
+                    <path class="text-[#89dabf]" fill-rule="evenodd"
+                        d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z"
+                        clip-rule="evenodd" />
+                    <path class="text-[#6288ef]" fill-rule="evenodd"
+                        d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+            {% endif %}
+        </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let formNum = document.querySelectorAll(".exist-file").length + document.querySelectorAll(".file-upload-form-wrap").length - 1;
+        let container = document.getElementById("upload-formset-container");
+        let addBtn = document.getElementById("add-form");
+        let totalForms = document.getElementById("id_form-TOTAL_FORMS");
 
-                        let uploadedForms = document.querySelectorAll(".file-upload-form-wrap").length - 1;
-                        formNum = document.querySelectorAll(".exist-file").length + uploadedForms;
-                
-                        if (formNum < 4) {
-                            let newForm = container.querySelector('.file-upload-form-wrap').cloneNode(true);
-                            let formRegex = RegExp(`form-(\\d){1}-`, 'g');
-                            
-                            formNum++;
-                            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`);
-                            
-                            let textarea = newForm.querySelector('.content textarea');
-                            if (textarea) {
-                                textarea.value = '';
-                            }
-                
-                            let deleteBtn = document.createElement('button');
-                            deleteBtn.type = 'button';
-                            deleteBtn.textContent = '-';
-                            deleteBtn.classList.add('delete-form');
-                            deleteBtn.addEventListener('click', function () {
-                                deleteForm(this);
-                            });
-                
-                            newForm.appendChild(deleteBtn);
-                            container.appendChild(newForm);
-                
-                            totalForms.value = formNum + 1;
-                        } else {
-                            alert("최대 5개의 파일을 첨부할 수 있습니다.");
-                        }
-                    }
-                
-                    function deleteForm(button) {
-                        button.closest('.file-upload-form-wrap').remove();
-                        formNum--;
-                        totalForms.value = formNum + 1;
+        addBtn.addEventListener('click', addForm);
+        container.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('delete-form')) {
+                deleteForm(e.target);
+            }
+        });
 
-                        let forms = container.querySelectorAll('.file-upload-form-wrap');
-                        forms.forEach((form, index) => {
-                            let formRegex = RegExp(`form-(\\d){1}-`, 'g');
-                            form.innerHTML = form.innerHTML.replace(formRegex, `form-${index}-`);
-                        });
-                    }
+        function addForm(e) {
+            e.preventDefault();
 
-                    let file_container = document.getElementById("file-container");
+            let uploadedForms = document.querySelectorAll(".file-upload-form-wrap").length - 1;
+            formNum = document.querySelectorAll(".exist-file").length + uploadedForms;
 
-                    file_container.addEventListener('click', function (e) {
-                        if (e.target && e.target.classList.contains('remove-file')) {
-                            e.preventDefault();
-                            removeFile(e.target);
-                        }
-                    });
+            if (formNum < 4) {
+                let newForm = container.querySelector('.file-upload-form-wrap').cloneNode(true);
+                let formRegex = RegExp(`form-(\\d){1}-`, 'g');
 
-                    function removeFile(e) {
-                        
-                        let removeUrl = e.getAttribute('data-url');
-                        let file_id = e.getAttribute('data-id');
+                formNum++;
+                newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`);
 
-                        fetch(removeUrl, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRFToken': '{{ csrf_token }}',
-                                'Content-Type': 'application/json',
-                            },
-                        })
-                        .then(res => {
-                            if (res.ok) {
-                                let fileElement = document.getElementById(`${file_id}`);
-                                if (fileElement) {
-                                    fileElement.parentNode.removeChild(fileElement);
-                                }
-                            } else {
-                                console.error('삭제 실패');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('에러:', error);
-                        });
-                    }
+                let textarea = newForm.querySelector('.content textarea');
+                if (textarea) {
+                    textarea.value = '';
+                }
+
+                let svgHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                            class="w-5 h-5 hover:scale-110 hover:text-[#0000ff]">
+                            <path
+                                d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                        </svg>
+                `;
+
+                let deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.innerHTML = svgHTML;
+                deleteBtn.classList.add('delete-form');
+                deleteBtn.setAttribute("title", "추가 업로드 취소");
+                deleteBtn.addEventListener('click', function () {
+                    deleteForm(this);
                 });
-            </script>
-        </body>
-    </html>
+
+                newForm.appendChild(deleteBtn);
+                container.appendChild(newForm);
+
+                totalForms.value = formNum + 1;
+            } else {
+                alert("최대 5개의 파일을 첨부할 수 있습니다.");
+            }
+        }
+
+        function deleteForm(button) {
+            button.closest('.file-upload-form-wrap').remove();
+            formNum--;
+            totalForms.value = formNum + 1;
+
+            let forms = container.querySelectorAll('.file-upload-form-wrap');
+            forms.forEach((form, index) => {
+                let formRegex = RegExp(`form-(\\d){1}-`, 'g');
+                form.innerHTML = form.innerHTML.replace(formRegex, `form-${index}-`);
+            });
+        }
+
+        let file_container = document.getElementById("file-container");
+
+        file_container.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('remove-file')) {
+                e.preventDefault();
+                removeFile(e.target);
+            }
+        });
+
+        function removeFile(e) {
+
+            let removeUrl = e.getAttribute('data-url');
+            let file_id = e.getAttribute('data-id');
+
+            fetch(removeUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(res => {
+                    if (res.ok) {
+                        let fileElement = document.getElementById(`${file_id}`);
+                        if (fileElement) {
+                            fileElement.parentNode.removeChild(fileElement);
+                        }
+                    } else {
+                        console.error('삭제 실패');
+                    }
+                })
+                .catch(error => {
+                    console.error('에러:', error);
+                });
+        }
+
+        function changeContentFormWidth() {
+            let titleForm = document.getElementById("id_title");
+            let titleFormWidth = window.getComputedStyle(titleForm).getPropertyValue('width');
+
+            let contentForm = document.getElementById('id_content');
+            let contentFormWidth = window.getComputedStyle(contentForm).getPropertyValue('width');
+            contentForm.style.width = titleFormWidth;
+        }
+
+        window.addEventListener('load', changeContentFormWidth);
+        window.addEventListener('resize', changeContentFormWidth);
+
+    });
+</script>
+{% endblock script %}
