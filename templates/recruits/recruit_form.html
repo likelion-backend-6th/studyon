@@ -1,5 +1,126 @@
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="{% if view.view_type == 'create' %}Create{% else %}Update{% endif %}">
-</form>
+{% extends "base.html" %}
+{% block content %}
+    <div class="mx-auto max-w-5xl">
+        <form action=""
+              method="post"
+              enctype="multipart/form-data"
+              class="mt-10 pb-16">
+            {% csrf_token %}
+            <input id="id_title"
+                   type="text"
+                   name="title"
+                   maxlength="100"
+                   required
+                   placeholder="Title"
+                   class="w-full outline-none text-3xl font-bold placeholder-slate-400">
+            <div class="mt-10">
+                <p>테그 입력 부분(개발 필요)</p>
+                <label for="id_tags">Tags:</label>
+                <input type="text" name="tags" required="" id="id_tags">
+                <span class="helptext">A comma-separated list of tags.</span>
+            </div>
+            <div class="mt-10">
+                <p class="text-lg font-bold">마감일</p>
+                <hr class="my-2" />
+                <label for="id_deadline">
+                    <input id="id_deadline"
+                           type="date"
+                           name="deadline"
+                           required
+                           class="text-base bg-neutral-100 px-2 rounded-md">
+                </label>
+            </div>
+            <div class="mt-10">
+                <p class="text-lg font-bold">기간</p>
+                <hr class="my-2" />
+                <input id="id_start"
+                       type="date"
+                       name="start"
+                       required=""
+                       class="text-base bg-neutral-100 px-2 rounded-md">
+                <span class="mx-4">~</span>
+                <input id="id_end"
+                       type="date"
+                       name="end"
+                       required=""
+                       class="text-base bg-neutral-100 px-2 rounded-md">
+            </div>
+            <div class="mt-10">
+                <p class="text-lg font-bold">모집 인원</p>
+                <hr class="my-2" />
+                <input type="number"
+                       min="0"
+                       max="99"
+                       name="total_seats"
+                       value="2"
+                       required
+                       id="id_total_seats"
+                       class="outline-none bg-neutral-100 w-16 px-2 rounded-sm">
+            </div>
+            <div class="mt-10">
+                <p class="text-lg font-bold">모집 대상</p>
+                <hr class="my-2" />
+                <div class="w-full">
+                    <textarea id="id_target"
+                              name="target"
+                              required
+                              oninput="resize(this)"
+                              placeholder="모집 대상을 입력해주세요."
+                              class="resize-none outline-none w-full"></textarea>
+                </div>
+            </div>
+            <div class="mt-10">
+                <p class="text-lg font-bold">진행 방식</p>
+                <hr class="my-2" />
+                <textarea id="id_process"
+                          name="process"
+                          required
+                          oninput="resize(this)"
+                          placeholder="진행 방식을 입력해주세요."
+                          class="resize-none outline-none w-full"></textarea>
+            </div>
+            <div class="mt-10">
+                <p class="text-lg font-bold">추가 정보</p>
+                <hr class="my-2" />
+                <textarea id="id_info"
+                          name="info"
+                          required
+                          oninput="resize(this)"
+                          placeholder="추가 정보를 입력해주세요."
+                          class="resize-none outline-none w-full"></textarea>
+            </div>
+            <div class="mt-10">
+                <p class="text-lg font-bold">파일 등록</p>
+                <hr class="my-2" />
+                <input id="id_file"
+                       type="file"
+                       name="file"
+                       class="file:border-none file:bg-neutral-200 file:hover:bg-neutral-300 file:rounded-sm cursor-pointer">
+            </div>
+            <input type="submit" value="Create" hidden>
+        </form>
+    </div>
+    <div class="sticky bottom-0 bg-white border-t border-neutral-300">
+        <div class="mx-auto max-w-5xl">
+            <div class="h-16">
+                <div class="flex h-full justify-between">
+                    <p class="self-center font-bold">뭔가 뭔가 뭔가 뭔가 글 뭔가 뭔가 한 글</p>
+                    <button class="self-center px-5 py-3 bg-neutral-600 hover:bg-neutral-700 text-white rounded-md"
+                            onClick="submit()">작성 완료</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block script %}
+    <script>
+        function resize(obj) {
+            obj.style.height = 'auto';
+            obj.style.height = `${obj.scrollHeight}px`;
+        }
+
+        function submit() {
+            document.querySelector('input[type="submit"]').click();
+        }
+    </script>
+{% endblock script %}
