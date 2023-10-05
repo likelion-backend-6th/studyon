@@ -1,5 +1,87 @@
-<form method="post">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <p><input type="submit" value="Modity"></p>
-</form>
+{% extends "base.html" %}
+{% load static %}
+{% block style %}
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}"
+          rel="stylesheet"
+          type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}"
+          rel="stylesheet"
+          type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}"
+          rel="stylesheet"
+          type="text/css">
+{% endblock style %}
+{% block content %}
+    <div class="mx-auto max-w-5xl pt-10 min-h-[calc(100%-68px)]">
+        <form method="post" class="pb-16">
+            {% csrf_token %}
+            <input id="id_title"
+                   type="text"
+                   name="title"
+                   maxlength="100"
+                   value="{{ form.title.value|default:''|safe }}"
+                   required
+                   placeholder="Title"
+                   class="w-full outline-none text-3xl font-bold placeholder-slate-400">
+            <div class="mt-10">
+                <p class="text-lg font-bold">기간</p>
+                <hr class="my-2" />
+                <input id="id_start"
+                       type="date"
+                       name="start"
+                       value="{{ form.start.value|default:''|safe }}"
+                       required=""
+                       class="text-base bg-neutral-100 px-2 rounded-md">
+                <span class="mx-4">~</span>
+                <input id="id_end"
+                       type="date"
+                       name="end"
+                       value="{{ form.end.value|default:''|safe }}"
+                       required=""
+                       class="text-base bg-neutral-100 px-2 rounded-md">
+            </div>
+            <div class="mt-10">
+                <p class="text-lg font-bold">진행 방식</p>
+                <hr class="my-2" />
+                <textarea id="id_process"
+                          name="process"
+                          required
+                          oninput="resize(this)"
+                          placeholder="진행 방식을 입력해주세요."
+                          class="resize-none outline-none w-full">{{ form.process.value|default:''|safe }}</textarea>
+            </div>
+            <div class="mt-10">
+                <p class="text-lg font-bold">추가 정보</p>
+                <hr class="my-2" />
+                <textarea id="id_info"
+                          name="info"
+                          required
+                          oninput="resize(this)"
+                          placeholder="추가 정보를 입력해주세요."
+                          class="resize-none outline-none w-full">{{ form.info.value|default:''|safe }}</textarea>
+            </div>
+            <input type="submit" hidden>
+        </form>
+    </div>
+    <div class="sticky bottom-0 h-[68px] bg-white border-t border-neutral-300">
+        <div class="mx-auto max-w-5xl h-full">
+            <div class="flex h-full justify-between">
+                <p class="self-center font-bold">뭔가 뭔가 뭔가 뭔가 글 뭔가 뭔가 한 글</p>
+                <button class="self-center px-5 py-3 bg-neutral-600 hover:bg-neutral-700 text-white rounded-md"
+                        onClick="submit()">수정 완료</button>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block script %}
+    <script>
+        function resize(obj) {
+            obj.innerText = obj.value;
+            obj.style.height = 'auto';
+            obj.style.height = `${obj.scrollHeight}px`;
+        }
+        function submit() {
+            document.querySelector('input[type="submit"]').click();
+        }
+    </script>
+{% endblock script %}
