@@ -5,8 +5,6 @@ from django.forms import modelformset_factory
 from markdownx.fields import MarkdownxFormField
 from markdownx.widgets import MarkdownxWidget
 
-from yaml import Mark
-
 from .models import File, Post, Study, Task
 
 
