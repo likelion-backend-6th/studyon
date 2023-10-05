@@ -46,6 +46,7 @@
                     <input id="id_deadline"
                            type="date"
                            name="deadline"
+                           value="{{ form.deadline.value|default:''|safe }}"
                            required
                            class="text-base bg-neutral-100 px-2 rounded-md">
                 </label>
@@ -56,12 +57,14 @@
                 <input id="id_start"
                        type="date"
                        name="start"
+                       value="{{ form.start.value|default:''|safe }}"
                        required=""
                        class="text-base bg-neutral-100 px-2 rounded-md">
                 <span class="mx-4">~</span>
                 <input id="id_end"
                        type="date"
                        name="end"
+                       value="{{ form.end.value|default:''|safe }}"
                        required=""
                        class="text-base bg-neutral-100 px-2 rounded-md">
             </div>
@@ -72,7 +75,7 @@
                        min="0"
                        max="99"
                        name="total_seats"
-                       value="2"
+                       value="{{ form.total_seats.value|default:''|safe }}"
                        required
                        id="id_total_seats"
                        class="outline-none bg-neutral-100 w-16 px-2 rounded-sm">
@@ -86,7 +89,7 @@
                               required
                               oninput="resize(this)"
                               placeholder="모집 대상을 입력해주세요."
-                              class="resize-none outline-none w-full"></textarea>
+                              class="resize-none outline-none w-full">{{ form.target.value|default:''|safe }}</textarea>
                 </div>
             </div>
             <div class="mt-10">
@@ -97,7 +100,7 @@
                           required
                           oninput="resize(this)"
                           placeholder="진행 방식을 입력해주세요."
-                          class="resize-none outline-none w-full"></textarea>
+                          class="resize-none outline-none w-full">{{ form.process.value|default:''|safe }}</textarea>
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">추가 정보</p>
@@ -107,7 +110,7 @@
                           required
                           oninput="resize(this)"
                           placeholder="추가 정보를 입력해주세요."
-                          class="resize-none outline-none w-full"></textarea>
+                          class="resize-none outline-none w-full">{{ form.info.value|default:''|safe }}</textarea>
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">파일 등록</p>
@@ -116,6 +119,7 @@
                        type="file"
                        name="file"
                        class="file:border-none file:bg-neutral-200 file:hover:bg-neutral-300 file:rounded-sm cursor-pointer">
+                {{ form }}
             </div>
             <input type="submit" value="Create" hidden>
         </form>
@@ -135,6 +139,7 @@
 {% block script %}
     <script>
         function resize(obj) {
+            obj.innerText = obj.value;
             obj.style.height = 'auto';
             obj.style.height = `${obj.scrollHeight}px`;
         }
@@ -234,6 +239,7 @@
             id_tags.value = selected_tags.join(',',"");
         }
 
+        document.getElementById('id_tags').value = selected_tags.join(',',"");
         draw(tags)
     </script>
 {% endblock script %}
