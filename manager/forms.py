@@ -13,7 +13,7 @@ class StudyForm(forms.ModelForm):
 
     class Meta:
         model = Study
-        fields = ["title", "tags", "start", "end", "process", "info"]
+        fields = ["title", "start", "end", "process", "info"]
 
 
 class TaskForm(forms.ModelForm):
