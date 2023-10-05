@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container mx-auto max-w-3xl pt-6">
+        <h1 class="text-center text-3xl font-blod">회원정보 추가입력</h1>
+        {% if user %}
+            <form action="{% url "users:social_signup" %}"
+                method="post"
+                class="pt-4 max-w-md mx-auto">
+                {% csrf_token %}
+                <input type="text"
+                    name="nickname"
+                    placeholder="nickname"
+                    required
+                    class="w-full outline-none border-2 border-cyan-600 p-2 rounded-xl mt-4">
+                <input type="submit"
+                    name="submit"
+                    value="Signup"
+                    class="w-full border-2 bg-green-600 text-white p-2 rounded-xl mt-4 cursor-pointer">
+            </form>
+            {% if error %}{{ error }}{% endif %}
+        {% else %}
+            <p><a href="{% url "users:login" %}">로그인</a> 하기</p>
+        {% endif %}
+    </div>
+{% endblock content %}
