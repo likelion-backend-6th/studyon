@@ -105,6 +105,7 @@
 </div>
 {% endblock content %}
 {% block script %}
+{{ post_form.media }}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let formNum = document.querySelectorAll(".exist-file").length + document.querySelectorAll(".file-upload-form-wrap").length - 1;
