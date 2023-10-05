@@ -7,43 +7,58 @@
 {% endblock style %}
 {% block content %}
 <div class="flex flex-col items-center max-w-5xl mx-auto">
-    <div class="flex flex-col items-start w-full my-4 task">
-        <div class="text-3xl font-bold title">{{ task.title }}</div>
-        <div class="mt-4 text-xl description">{{ task.description }}</div>
+    <div class="flex flex-col items-start xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 mt-20 task">
+        <div class="text-5xl font-bold title">{{ task.title }}</div>
+        <div class="mt-10 mb-10 text-3xl description">{{ task.description }}</div>
     </div>
-    <div class="flex justify-between xl:w-full lg:w-[768px] sm:w-3/4 header">
-        <form method="get" class="search">
-            <label class="p-2 px-4 mt-2 border rounded-full border-neutral-600 cursor-text">
+    <div class="flex my-4 items-center justify-between xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 header">
+        <form method="get" class="mr-3 search">
+            <label class="px-4 py-2 border rounded-full border-neutral-600 cursor-text">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" name="query" maxlength="30" id="id_query" placeholder="키워드를 입력해주세요." class="search">
+                <input type="text" name="query" maxlength="30" id="id_query" placeholder="키워드를 입력해주세요."
+                    class="pl-2 bg-transparent outline-none placeholder-black search xl:w-[300px] lg:w-[200px] sm:w-[150px] w-[100px]">
             </label>
             <button type="submit" hidden>검색</button>
         </form>
-        <div class="btn">
-            <button class="create" onclick="location" .href="{% url 'manager:post_create' task.id %}">+</button>
-            <button class="study" onclick="location" .href="{% url 'manager:study_detail' task.study.id %}">목록</button>
+        <div class="flex item-center btn">
+            <button class="px-3 mr-4 create" onclick=location.href="{% url 'manager:post_create' task.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6 hover:scale-125">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+            </button>
+            <button class="px-3 study" onclick=location.href="{% url 'manager:study_detail' task.study.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6 hover:scale-125">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+            </button>
         </div>
     </div>
-    <div class="xl:w-full lg:w-[768px] sm:w-3/4 xl:bg-green-100 lg:bg-yellow-200 sm:bg-red-200 ">
+    <div class="xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 border-y border-neutral-200 shadow-lg">
         <div class="thead">
-            <div class="grid grid-cols-4">
-                <div class="td">날짜</div>
-                <div class="td">제목</div>
-                <div class="td">작성자</div>
-                <div class="td">첨부파일</div>
+            <div
+                class="flex flex-row items-center h-10 text-lg border-y border-neutral-500 rounded-t-lg bg-[#4059E1] text-white">
+                <div class="mx-2 text-center basis-1/6 td">날짜</div>
+                <div class="mx-2 text-center basis-3/6 td">제목</div>
+                <div class="mx-2 text-center basis-1/6 td">작성자</div>
+                <div class="hidden mx-2 text-center basis-1/6 sm:block td">첨부파일</div>
             </div>
         </div>
         <div class="tbody" id="post-list">
             {% for post in posts %}
-            <div class="grid grid-cols-4">
-                <div class="td">{{ post.created_at|date:"Y.m.d" }}</div>
-                <div class="td">
+            <div
+                class="flex flex-row items-center h-8 border-y border-neutral-200 hover:scale-105 hover:border-y hover:bg-[#c9f5e6]/75 hover:shadow-[0_10px_10px_-10px_rgba(0,0,0,0.9)] text-sm">
+                <div class="mx-2 text-center basis-1/6 td">{{ post.created_at|date:"Y.m.d" }}</div>
+                <div class="mx-2 basis-3/6 td hover:text-[#4059E1] hover:underline">
                     <a href="{% url 'manager:post_detail' post.id %}">{{ post.title }}</a>
                 </div>
-                <div class="td">{{ post.author.username }}</div>
-                <div class="td">
+                <div class="mx-2 text-center basis-1/6 td">{{ post.author.username }}</div>
+                <div class="hidden mx-2 text-center basis-1/6 sm:block td">
                     {% if post.files.exists %}
-                    <a href="{{ post.files.last.url }}" download>{{ post.files.last.get_file_name|truncatechars:7 }}</a>
+                    <a href="{{ post.files.last.url }}" class="text-xs text-[#0000ff] underline"
+                        download>{{post.files.last.get_file_name|truncatechars:7 }}</a>
                     {% endif %}
                 </div>
             </div>
