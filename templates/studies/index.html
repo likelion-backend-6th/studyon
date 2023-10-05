@@ -12,83 +12,82 @@
           type="text/css">
 {% endblock style %}
 {% block content %}
-    <div class="container mx-auto pt-6">
-        <h1 class="text-3xl font-bold">스터디 관리 메인페이지</h1>
-        <div class="pt-4">
-            <h2 class="text-xl">내가 생성한 모집글</h2>
-            <ul class="grid grid-cols-4 gap-4">
-                {% for my_recruit in my_recruits %}
-                    <li class="p-2 border-2 border-cyan-500 rounded-md">
-                        <a href="{% url "recruits:recruit_detail" my_recruit.id %}">
-                            <h3 class="text-xl font-bold">{{ my_recruit.title }}</h3>
-                        </a>
-                        <div class="flex justify-between">
-                            <span>{{ my_recruit.deadline|date:'Y.m.d' }}</span>
-                            <span class="bg-yellow-200">{{ my_recruit.members.count }}명 / {{ my_recruit.total_seats }}명</span>
-                        </div>
-                        <p>대상 : {{ my_recruit.target }}</p>
-                        <p>{{ my_recruit.process }}</p>
-                        <div class="pt-2">
-                            {% for tag in my_recruit.tags.all %}<span class="mr-0.5 bg-cyan-300 rounded-sm">{{ tag }}</span>{% endfor %}
-                        </div>
-                        <div class="flex pt-2 justify-between">
-                            <div class="text-xl">
-                                <span>{{ my_recruit.like_users.count }}</span>
-                                <i class="fa-solid fa-heart text-red-400"></i>
+    <div class="relative">
+        <div class="box-border fixed inset-y-0 right-0 border-solid border-2">
+            <div class=''>
+                <h2>내가 생성한 모집글</h2>
+                <ul>
+                    {% for my_recruit in my_recruits %}
+                        <li>
+                            <a href="{% url "recruits:recruit_detail" my_recruit.id %}">
+                                <h3>{{ my_recruit.title }}</h3>
+                            </a>
+                            <div>
+                                <span>{{ my_recruit.deadline|date:'Y.m.d' }}</span>
+                                <span>{{ my_recruit.members.count }}명 / {{ my_recruit.total_seats }}명</span>
                             </div>
-                            <div class="flex">
-                                <a href="{% url 'recruits:modify_recruit' my_recruit.id %}"
-                                   class="p-1 bg-cyan-600 text-white rounded-md">수정</a>
-                                <a href="{% url 'recruits:delete_recruit' my_recruit.id %}"
-                                   class="p-1 bg-red-600 text-white rounded-md ml-3">삭제</a>
+                            <p>대상 : {{ my_recruit.target }}</p>
+                            <p>{{ my_recruit.process }}</p>
+                            <div>
+                                {% for tag in my_recruit.tags.all %}<span>{{ tag }}</span>{% endfor %}
                             </div>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
+                            <div>
+                                <div>
+                                    <span>{{ my_recruit.like_users.count }}</span>
+                                    <i class="fa-solid fa-heart text-red-400"></i>
+                                </div>
+                                <div>
+                                    <a href="{% url 'recruits:modify_recruit' my_recruit.id %}">수정</a>
+                                    <a href="{% url 'recruits:delete_recruit' my_recruit.id %}">삭제</a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class=''>
+                <h2>내가 찜한 모집글</h2>
+                <ul>
+                    {% for like_recruit in like_recruits %}
+                        <li>
+                            <a href="{% url "recruits:recruit_detail" like_recruit.id %}">
+                                <h3>{{ like_recruit.title }}</h3>
+                            </a>
+                            <div>
+                                <span>{{ like_recruit.deadline|date:'Y.m.d' }}</span>
+                                <span>{{ like_recruit.members.count }}명 / {{ like_recruit.total_seats }}명</span>
+                            </div>
+                            <p>대상 : {{ like_recruit.target }}</p>
+                            <p>{{ like_recruit.process }}</p>
+                            <div>
+                                {% for tag in like_recruit.tags.all %}<span>{{ tag }}</span>{% endfor %}
+                            </div>
+                            <div>
+                                <div>
+                                    <span>{{ like_recruit.like_users.count }}</span>
+                                    <i class="fa-solid fa-heart text-red-400"></i>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-        <div class="pt-4">
-            <h2 class="text-xl">내가 찜한 모집글</h2>
-            <ul class="grid grid-cols-4 gap-4">
-                {% for like_recruit in like_recruits %}
-                    <li class="p-2 border-2 border-cyan-500 rounded-md">
-                        <a href="{% url "recruits:recruit_detail" like_recruit.id %}">
-                            <h3 class="text-xl font-bold">{{ like_recruit.title }}</h3>
-                        </a>
-                        <div class="flex justify-between">
-                            <span>{{ like_recruit.deadline|date:'Y.m.d' }}</span>
-                            <span class="bg-yellow-200">{{ like_recruit.members.count }}명 / {{ like_recruit.total_seats }}명</span>
-                        </div>
-                        <p>대상 : {{ like_recruit.target }}</p>
-                        <p>{{ like_recruit.process }}</p>
-                        <div class="pt-2">
-                            {% for tag in like_recruit.tags.all %}<span class="mr-0.5 bg-cyan-300 rounded-sm">{{ tag }}</span>{% endfor %}
-                        </div>
-                        <div class="flex pt-2 justify-between">
-                            <div class="text-xl">
-                                <span>{{ like_recruit.like_users.count }}</span>
-                                <i class="fa-solid fa-heart text-red-400"></i>
-                            </div>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="pt-4">
-            <h2 class="text-xl">내가 팀장인 스터디 목록</h2>
-            <ul class="grid grid-cols-4 gap-4">
+        <div class=''>
+            <h2>내가 팀장인 스터디 목록</h2>
+            <ul>
                 {% for my_study in my_studies %}
-                    <li class="p-2 border-2 border-cyan-500 rounded-md">
+                    <li>
                         <a href="{% url "manager:study_detail" my_study.id %}">
-                            <h3 class="text-xl font-bold">{{ my_study.title }}</h3>
+                            <h3>{{ my_study.title }}</h3>
                         </a>
-                        <div class="flex justify-between">
+                        <div>
                             <span>{{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</span>
                             <span>{{ my_study.get_status_display }}</span>
                         </div>
-                        <div class="pt-2">
+                        <div>
                             {% for member in my_study.members.all %}
-                                <span class="mr-0.5 bg-green-700 text-white rounded-sm">{{ member.username }}</span>
+                                <span>{{ member.username }}</span>
                             {% endfor %}
                         </div>
                         {% if my_study.study_tasks.all %}
@@ -96,57 +95,47 @@
                                 tasks : {{ my_study.finished_task.count }} / {{ my_study.study_tasks.count }} ( {{ my_study.finished_task_percent }}% )
                             </p>
                         {% endif %}
-                        <div class="flex pt-2">
+                        <div>
                             <form action='{% url "manager:study_recuting" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input type="submit"
-                                       value="Recuting"
-                                       class="p-1 bg-cyan-600 text-white rounded-md mr-2">
+                                <input type="submit" value="Recuting">
                             </form>
                             <form action='{% url "manager:study_inprogress" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input type="submit"
-                                       value="In Progress"
-                                       class="p-1 bg-cyan-600 text-white rounded-md mr-2">
+                                <input type="submit" value="In Progress">
                             </form>
                             <form action='{% url "manager:study_done" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input type="submit"
-                                       value="Complete"
-                                       class="p-1 bg-cyan-600 text-white rounded-md mr-2">
+                                <input type="submit" value="Complete">
                             </form>
                             <form action='{% url "manager:study_finished" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input type="submit"
-                                       value="Finished"
-                                       class="p-1 bg-cyan-600 text-white rounded-md mr-2">
+                                <input type="submit" value="Finished">
                             </form>
                             <form action='{% url "manager:study_delete" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input type="submit"
-                                       value="Delete"
-                                       class="p-1 bg-cyan-600 text-white rounded-md mr-2">
+                                <input type="submit" value="Delete">
                             </form>
                         </div>
                     </li>
                 {% endfor %}
             </ul>
         </div>
-        <div class="pt-4">
-            <h2 class="text-xl">내가 팀원인 스터디 목록</h2>
-            <ul class="grid grid-cols-4 gap-4">
+        <div class=''>
+            <h2>내가 팀원인 스터디 목록</h2>
+            <ul>
                 {% for in_study in in_studies %}
-                    <li class="p-2 border-2 border-cyan-500 rounded-md">
+                    <li>
                         <a href="{% url "manager:study_detail" in_study.id %}">
-                            <h3 class="text-xl font-bold">{{ in_study.title }}</h3>
+                            <h3>{{ in_study.title }}</h3>
                         </a>
-                        <div class="flex justify-between">
+                        <div>
                             <span>{{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</span>
                             <span>{{ in_study.get_status_display }}</span>
                         </div>
-                        <div class="pt-2">
+                        <div>
                             {% for member in in_study.members.all %}
-                                <span class="mr-0.5 bg-green-700 text-white rounded-sm">{{ member.username }}</span>
+                                <span>{{ member.username }}</span>
                             {% endfor %}
                         </div>
                         {% if in_study.study_tasks.all %}
@@ -154,12 +143,10 @@
                                 tasks : {{ in_study.finished_task.count }} / {{ in_study.study_tasks.count }} ( {{ in_study.finished_task_percent }}% )
                             </p>
                         {% endif %}
-                        <div class="flex pt-2">
+                        <div>
                             <form action='{% url "manager:study_leave" in_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input type="submit"
-                                       value="Leave"
-                                       class="p-1 bg-cyan-600 text-white rounded-md mr-2">
+                                <input type="submit"value="Leave">
                             </form>
                         </div>
                     </li>
