@@ -18,8 +18,16 @@ class StudyForm(forms.ModelForm):
 
 
 class TaskForm(forms.ModelForm):
-    start = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
-    end = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+    start = forms.DateField(
+        widget=forms.DateInput(
+            attrs={"type": "date", "class": "bg-neutral-100 px-2 rounded-md"}
+        )
+    )
+    end = forms.DateField(
+        widget=forms.DateInput(
+            attrs={"type": "date", "class": "bg-neutral-100 px-2 rounded-md"}
+        )
+    )
 
     class Meta:
         model = Task
