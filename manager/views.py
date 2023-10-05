@@ -11,6 +11,7 @@ from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 from common.utils import InfiniteListView, s3_file_upload
 from recruit.models import Recruit
@@ -210,11 +211,16 @@ class TaskCreateView(StudyAccessMixin, View):
         # 폼이 유효하고 요청자가 스터디 멤버일 경우
         if form.is_valid() and request.user in study.members.all():
             task = form.save(commit=False)
-            task.study = study
-            task.author = request.user
-            task.save()
-            return redirect("manager:study_detail", pk)
+            if task.start < task.end:
+                task.study = study
+                task.author = request.user
+                task.save()
+                return redirect("manager:study_detail", pk)
+            else:
+                messages.error(request, "Date form error")
+                return redirect("manager:study_detail", pk)
         else:
+            messages.error(request, "Form error")
             return redirect("manager:study_detail", pk)
 
 

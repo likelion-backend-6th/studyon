@@ -99,6 +99,11 @@
             <div class='flex flex-row'>
                 <input class='' type="{{ task_form.title.widget.input_type }}" placeholder='{{ task_form.title.label }}' name='{{ task_form.title.name }}'>
                 {{ task_form.start }} ~ {{ task_form.end }}
+                {% if messages %}
+                    {% for message in messages %}
+                    <span class='text-red-600'>{{ message }}</span>
+                    {% endfor %}
+                {% endif %}
                 {% csrf_token %}
                 <input class='ml-auto bg-yellow-100 rounded-lg px-1' type="submit" value="Create">
             </div>
