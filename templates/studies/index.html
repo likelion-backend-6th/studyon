@@ -17,7 +17,7 @@
             <p class='text-xl p-2'>내가 생성한 모집글</p>
             <div class='h-[270px] overflow-y-scroll'>
                 {% for my_recruit in my_recruits %}
-                    <div class='bg-slate-100 rounded-lg w-[90%] p-1 mb-1 ml-auto mr-auto'>
+                    <div class='shadow-md rounded-xl w-[90%] p-1 mb-1 ml-auto mr-auto'>
                         <div class='flex items-end'>
                             <a class='text-xl' href="{% url "recruits:recruit_detail" my_recruit.id %}">{{ my_recruit.title }}</a>
                             <span class='text-xs ml-auto'>~{{ my_recruit.deadline|date:'Y.m.d' }}</span>
@@ -34,7 +34,7 @@
             <p class='text-xl p-2'>내가 찜한 모집글</p>
             <div class='h-[270px] overflow-y-scroll'>
                 {% for like_recruit in like_recruits %}
-                    <div class='bg-slate-100 rounded-lg w-4/5 p-1 mb-1 ml-auto mr-auto'>
+                    <div class='shadow-md rounded-xl w-4/5 p-1 mb-1 ml-auto mr-auto'>
                         <div class='flex items-end'>
                             <a class='text-xl' href="{% url "recruits:recruit_detail" like_recruit.id %}">{{ like_recruit.title }}</a>
                             <span class='text-xs ml-auto'>~{{ like_recruit.deadline|date:'Y.m.d' }}</span>
@@ -42,8 +42,6 @@
                         <span class='text-sm'>모집인원 : {{ like_recruit.members.count }}명 / {{ like_recruit.total_seats }}명</span>
                         <div class='flex justify-end'>
                             <span class='mr-auto'>{{ like_recruit.like_users.count }} <i class="fa-solid fa-heart text-red-400"></i></span>
-                            <div class='mr-2 bg-sky-300 rounded-full text-xs p-1'><a href="{% url 'recruits:modify_recruit' like_recruit.id %}">수정</a></div>
-                            <div class='mr-2 bg-red-400 rounded-full text-xs p-1'><a href="{% url 'recruits:delete_recruit' like_recruit.id %}">삭제</a></div>
                         </div>
                     </div>
                 {% endfor %}
@@ -53,7 +51,7 @@
             <p class='text-4xl m-2'>나의 스터디</p>
             <div class='flex flex-row overflow-hidden w-full min-w-[250px] overflow-x-scroll pb-4'>
                 {% for my_study in my_studies %}
-                    <div class='bg-slate-50 mr-3 p-1 rounded-lg min-w-[250px] h-[250px]'>
+                    <div class='shadow-md rounded-xl ml-3 mr-3 p-1 min-w-[250px] h-[250px]'>
                         <div class='relative pt-2 flex items-end'>
                             <a class='text-2xl' href="{% url "manager:study_detail" my_study.id %}">{{ my_study.title }}</a>
                             <span class='text-xs ml-auto'>{{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</span>
@@ -96,7 +94,7 @@
             <p class='text-4xl m-2'>참여 스터디</p>
             <div class='flex flex-row overflow-hidden w-full min-w-[250px] overflow-x-scroll pb-4'>
                 {% for in_study in in_studies %}
-                    <div class='bg-slate-50 mr-3 p-1 rounded-lg min-w-[250px] h-[150px]'>
+                    <div class='shadow-md rounded-xl ml-3 mr-3 p-1 min-w-[250px] h-[150px]'>
                         <div class='relative pt-2 flex items-end'>
                             <a class='text-2xl' href="{% url "manager:study_detail" in_study.id %}">{{ in_study.title }}</a>
                             <span class='text-xs ml-auto'>{{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</span>
