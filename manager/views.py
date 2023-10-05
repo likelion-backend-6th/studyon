@@ -293,6 +293,10 @@ class PostView(TaskAccessMixin, InfiniteListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["task"] = get_object_or_404(Task, id=self.kwargs["pk"])
+
+        query = self.request.GET.get("query")
+        if query:
+            context["query"] = query
         return context
 
 
