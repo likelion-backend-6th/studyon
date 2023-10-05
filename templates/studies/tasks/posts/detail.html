@@ -1,72 +1,89 @@
+{% extends "base.html" %}
 {% load static custom_tags %}
-<!DOCTYPE html>
-<html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>
-            {% block title %}게시글 상세{% endblock %}
-        </title>
-        <link href="{% static 'css/studies/posts/detail.css' %}" rel="stylesheet">
-        <link href="{% static 'css/codehilite_styles.css' %}" rel="stylesheet">
-    </head>
-    <body>
-        <div class="detail">
-            <div class="bottom">
-                <button class="modify"
-                        onclick="location .href='{% url 'manager:post_modify' post.id %}'">수정</button>
-                <button class="delete"
-                        data-url="{% url 'manager:post_delete' post.id %}"
-                        data-task-id="{{ post.task.id }}">삭제</button>
-                <button class="study"
-                        onclick="location .href='{% url 'manager:post_list' post.task.id %}'">목록</button>
-            </div>
-            <div class="title-wrap">
-                <div class="title">제목</div>
-                <div class="content">{{ post.title }}</div>
-            </div>
-            <div class="created-wrap">
-                <div class="title">작성일</div>
-                <div class="content">{{ post.created_at|date:"Y.m.d" }}</div>
-            </div>
-            <div class="author-wrap">
-                <div class="title">작성자</div>
-                <div class="content">{{ post.author }}</div>
-            </div>
-            <div class="content-wrap">
-                <div class="title">내용</div>
-                <div class="content">{{ post.content | formatted_markdown }}</div>
-            </div>
-            <div class="file-wrap">
-                <div class="title">첨부파일</div>
-                <div class="content">
-                    {% if post.files.exists %}
-                        {% for file in post.files.all %}<a href="{{ file.url }}" download>{{ file.get_file_name }}</a>{% endfor %}
-                    {% endif %}
-                </div>
-            </div>
+{% block style %}
+<link href="{% static 'css/markdown_fix.css' %}" rel="stylesheet">
+<link href="{% static 'css/codehilite_styles.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="flex flex-col items-center max-w-5xl mx-auto detail">
+    <div class="flex items-center w-full h-10 mt-20 justify-evenly top">
+        <button class="inline-block modify" onclick=location.href="{% url 'manager:post_modify' post.id %}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                class="w-5 h-5 fill-[#89DADF] hover:scale-125">
+                <path
+                    d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                <path
+                    d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+            </svg>
+        </button>
+        <button class="inline-block delete" data-url="{% url 'manager:post_delete' post.id %}"
+            data-task-id="{{ post.task.id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                class="w-5 h-5 fill-[#6288EF] hover:scale-125">
+                <path fill-rule="evenodd"
+                    d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
+                    clip-rule="evenodd" />
+            </svg>
+        </button>
+        <button class="inline-block study" onclick=location.href="{% url 'manager:post_list' post.task.id %}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 stroke-[#4059E1] hover:scale-125 hover:text-[#0000ff]">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+        </button>
+    </div>
+    <div class="grid w-4/5 grid-cols-2 xl:w-5/6 lg:w-11/12 author-created-wrap">
+        <div class="mt-5 text-2xl font-bold title">작성자</div>
+        <div class="mt-5 text-2xl font-bold title">작성일</div>
+        <hr class="col-span-2 my-2">
+        <div class="content">{{ post.author }}</div>
+        <div class="content">{{ post.created_at|date:"Y.m.d" }}</div>
+    </div>
+    <div class="w-4/5 mt-5 xl:w-5/6 lg:w-11/12 title-wrap">
+        <div class="text-2xl font-bold title">제목</div>
+        <hr class="my-2">
+        <div class="content">{{ post.title }}</div>
+    </div>
+    <div class="w-4/5 xl:w-5/6 lg:w-11/12 content-wrap">
+        <div class="mt-5 text-2xl font-bold title">내용</div>
+        <hr class="my-2">
+        <div class="content">{{ post.content | formatted_markdown }}</div>
+    </div>
+    <div class="w-4/5 xl:w-5/6 lg:w-11/12 file-wrap">
+        <div class="mt-5 text-2xl font-bold title">첨부파일</div>
+        <hr class="my-2">
+        <div class="flex flex-col mb-20 content sm:flex-row">
+            {% if post.files.exists %}
+            {% for file in post.files.all %}<a href="{{ file.url }}"
+                class="mr-4 my-1 text-xs text-[#0000ff] underline hover:font-bold" title="파일 다운로드" download>
+                {{ file.get_file_name }}</a>{% endfor %}
+            {% endif %}
         </div>
-    </body>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let deleteBtn = document.querySelector(".delete");
-        
-            deleteBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-        
-                let deleteUrl = this.getAttribute('data-url');
-                let task_id = this.getAttribute('data-task-id');
-        
-                fetch(deleteUrl, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json',
-                    },
-                })
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let deleteBtn = document.querySelector(".delete");
+
+        deleteBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            let deleteUrl = this.getAttribute('data-url');
+            let task_id = this.getAttribute('data-task-id');
+
+            fetch(deleteUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
                 .then(res => {
                     if (res.ok) {
-                        window.location.href = "{% url 'manager:post_list' 0 %}".replace('0', task_id )
+                        window.location.href = "{% url 'manager:post_list' 0 %}".replace('0', task_id)
                     } else {
                         console.error('삭제 실패');
                     }
@@ -74,7 +91,7 @@
                 .catch(error => {
                     console.error('에러:', error);
                 });
-            });
         });
-    </script>
-</html>
+    });
+</script>
+{% endblock script %}
