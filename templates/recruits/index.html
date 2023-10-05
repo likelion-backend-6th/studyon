@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-8 pt-8">
+            <ul id="recruit-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-8 pt-8">
                 {% for recruit in recruits %}
                     <li>
                         <div class="shadow-md rounded-xl p-3">
@@ -121,3 +121,41 @@
         </div>
     </div>
 {% endblock content %}
+<script>
+    {% block domready %}
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let page = 1;
+            let emptyPage = false;
+            let blockRequest = false;
+            let lastScrollY = 0;
+
+            window.addEventListener('scroll', function (e) {
+                let currentScrollY = window.scrollY;
+                let margin = document.body.clientHeight - window.innerHeight - 50;
+
+                if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
+                    blockRequest = true;
+                    page += 1;
+                    fetch('?page=' + page)
+                        .then(response => response.text())
+                        .then(html => {
+                            let parser = new DOMParser();
+                            let doc = parser.parseFromString(html, 'text/html');
+                            let recruitContent = doc.getElementById("recruit-list").innerHTML;
+
+                            if (recruitContent === '') {
+                                emptyPage = true;
+                            } else {
+                                let recruitList = document.getElementById("recruit-list");
+                                recruitList.insertAdjacentHTML('beforeend', recruitContent);
+                                blockRequest = false;
+                            }
+                        });
+                }
+                lastScrollY = currentScrollY;
+            });
+            let scrollEvent = new Event('scroll');
+            window.dispatchEvent(scrollEvent);
+        })
+    {% endblock domready %}
+</script>
