@@ -2,13 +2,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import redirect, get_object_or_404, render
-from django.urls import reverse_lazy
+from django.shortcuts import redirect, get_object_or_404
 from django.views import View
 from django.views.generic import (
     ListView,
     DetailView,
-    UpdateView,
     DeleteView,
     FormView,
 )
@@ -217,11 +215,18 @@ class RecruitCreateView(LoginRequiredMixin, FormView):
         return context
 
 
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
+
+
 class RecruitModifyView(LoginRequiredMixin, UpdateView):
-    form_class = RecruitForm
     model = Recruit
+    form_class = RecruitForm
     template_name = "recruits/recruit_form.html"
-    view_type = "update"
+    context_object_name = "recruit"
+
+    def get_success_url(self):
+        return reverse_lazy("recruits:index")
 
     def form_valid(self, form):
         start_date = form.cleaned_data.get("start")
@@ -242,33 +247,29 @@ class RecruitModifyView(LoginRequiredMixin, UpdateView):
         if len(tags) > 3:
             form.add_error("tags", "You can only select up to 3 tags.")
             return self.form_invalid(form)
+
         tag_list = Tags()
+
         for tag in tags:
             if tag not in tag_list:
                 form.add_error("tags", f"{tag} is not a valid tag.")
                 return self.form_invalid(form)
 
-        study_instance = Study.objects.filter(id=self.object.study.id).first()
+        instance = self.object
 
-        if study_instance:
-            study_instance.title = form.cleaned_data["title"]
-            study_instance.start = form.cleaned_data["start"]
-            study_instance.end = form.cleaned_data["end"]
-            study_instance.process = form.cleaned_data["process"]
-            study_instance.info = form.cleaned_data["info"]
-            study_instance.save()
+        for file in self.request.FILES.getlist("file"):
+            name, url = s3_file_upload(file, "files")
+            file_instance = File(url=url, name=name)
+            file_instance.save()
+            instance.files.add(file_instance)
 
-        instance = super().form_valid(form)
+        instance.save()
 
-        return instance
-
-    def get_success_url(self):
-        return reverse_lazy("recruits:index")
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["tags"] = list(Tags())
-        print(context)
         return context
 
 
@@ -278,3 +279,13 @@ class RecruitDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy("recruits:index")
+
+
+class FileDeleteView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        file = get_object_or_404(File, pk=kwargs["file_pk"])
+        recruit = get_object_or_404(Recruit, pk=kwargs["recruit_pk"])
+        file.recruits.remove(recruit)  # Remove the association with the recruit.
+        if not file.recruits.exists():  # If there are no more associated recruits...
+            file.delete()  # ...then delete the file.
+        return redirect("recruits:modify_recruit", pk=recruit.id)

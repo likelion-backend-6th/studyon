@@ -28,7 +28,7 @@
                    class="w-full outline-none text-3xl font-bold placeholder-slate-400">
             <div class="mt-10">
                 <p class="text-lg font-bold">태그</p>
-                <hr class="my-2" />
+                <hr class="my-2"/>
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input id="tag"
                        type="text"
@@ -41,7 +41,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">마감일</p>
-                <hr class="my-2" />
+                <hr class="my-2"/>
                 <label for="id_deadline">
                     <input id="id_deadline"
                            type="date"
@@ -53,7 +53,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">기간</p>
-                <hr class="my-2" />
+                <hr class="my-2"/>
                 <input id="id_start"
                        type="date"
                        name="start"
@@ -70,7 +70,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">모집 인원</p>
-                <hr class="my-2" />
+                <hr class="my-2"/>
                 <input type="number"
                        min="0"
                        max="99"
@@ -82,7 +82,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">모집 대상</p>
-                <hr class="my-2" />
+                <hr class="my-2"/>
                 <div class="w-full">
                     <textarea id="id_target"
                               name="target"
@@ -94,7 +94,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">진행 방식</p>
-                <hr class="my-2" />
+                <hr class="my-2"/>
                 <textarea id="id_process"
                           name="process"
                           required
@@ -104,7 +104,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">추가 정보</p>
-                <hr class="my-2" />
+                <hr class="my-2"/>
                 <textarea id="id_info"
                           name="info"
                           required
@@ -114,11 +114,21 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">파일 등록</p>
-                <hr class="my-2" />
+                <hr class="my-2"/>
                 <input id="id_file"
                        type="file"
                        name="file"
                        class="file:border-none file:bg-neutral-200 file:hover:bg-neutral-300 file:rounded-sm cursor-pointer">
+            </div>
+            <div class="mt-4">
+                {% if recruit.files.exists %}
+                    {% for file in recruit.files.all %}
+                        <p>
+                            <a href="{{ file.url }}">{{ file.name }}</a>
+                            <a href="{% url 'recruits:file_delete' file_pk=file.id recruit_pk=recruit.id %}">Delete</a>
+                        </p>
+                    {% endfor %}
+                {% endif %}
             </div>
             <input type="submit" value="Create" hidden>
         </form>
@@ -129,7 +139,8 @@
                 <div class="flex h-full justify-between">
                     <p class="self-center font-bold">뭔가 뭔가 뭔가 뭔가 글 뭔가 뭔가 한 글</p>
                     <button class="self-center px-5 py-3 bg-neutral-600 hover:bg-neutral-700 text-white rounded-md"
-                            onClick="submit()">작성 완료</button>
+                            onClick="submit()">작성 완료
+                    </button>
                 </div>
             </div>
         </div>
@@ -142,6 +153,7 @@
             obj.style.height = 'auto';
             obj.style.height = `${obj.scrollHeight}px`;
         }
+
         function submit() {
             document.querySelector('input[type="submit"]').click();
         }
@@ -155,39 +167,40 @@
             const offset = 44032; /* '가'의 코드 */
             // 한국어 음절
             if (/[가-힣]/.test(ch)) {
-              const chCode = ch.charCodeAt(0) - offset;
-              // 종성이 있으면 문자 그대로를 찾는다.
-              if (chCode % 28 > 0) {
-                return ch;
-              }
-              const begin = Math.floor(chCode / 28) * 28 + offset;
-              const end = begin + 27;
-              return `[\\u${begin.toString(16)}-\\u${end.toString(16)}]`;
+                const chCode = ch.charCodeAt(0) - offset;
+                // 종성이 있으면 문자 그대로를 찾는다.
+                if (chCode % 28 > 0) {
+                    return ch;
+                }
+                const begin = Math.floor(chCode / 28) * 28 + offset;
+                const end = begin + 27;
+                return `[\\u${begin.toString(16)}-\\u${end.toString(16)}]`;
             }
             // 한글 자음
             if (/[ㄱ-ㅎ]/.test(ch)) {
-              const con2syl = {
-                'ㄱ': '가'.charCodeAt(0),
-                'ㄲ': '까'.charCodeAt(0),
-                'ㄴ': '나'.charCodeAt(0),
-                'ㄷ': '다'.charCodeAt(0),
-                'ㄸ': '따'.charCodeAt(0),
-                'ㄹ': '라'.charCodeAt(0),
-                'ㅁ': '마'.charCodeAt(0),
-                'ㅂ': '바'.charCodeAt(0),
-                'ㅃ': '빠'.charCodeAt(0),
-                'ㅅ': '사'.charCodeAt(0),
-              };
-              const begin = con2syl[ch] || ( ( ch.charCodeAt(0) - 12613 /* 'ㅅ'의 코드 */ ) * 588 + con2syl['ㅅ'] );
-              const end = begin + 587;
-              console.log(`[${ch}\\u${begin.toString(16)}-\\u${end.toString(16)}]`)
-              return `[${ch}\\u${begin.toString(16)}-\\u${end.toString(16)}]`;
+                const con2syl = {
+                    'ㄱ': '가'.charCodeAt(0),
+                    'ㄲ': '까'.charCodeAt(0),
+                    'ㄴ': '나'.charCodeAt(0),
+                    'ㄷ': '다'.charCodeAt(0),
+                    'ㄸ': '따'.charCodeAt(0),
+                    'ㄹ': '라'.charCodeAt(0),
+                    'ㅁ': '마'.charCodeAt(0),
+                    'ㅂ': '바'.charCodeAt(0),
+                    'ㅃ': '빠'.charCodeAt(0),
+                    'ㅅ': '사'.charCodeAt(0),
+                };
+                const begin = con2syl[ch] || ((ch.charCodeAt(0) - 12613 /* 'ㅅ'의 코드 */) * 588 + con2syl['ㅅ']);
+                const end = begin + 587;
+                console.log(`[${ch}\\u${begin.toString(16)}-\\u${end.toString(16)}]`)
+                return `[${ch}\\u${begin.toString(16)}-\\u${end.toString(16)}]`;
             }
             // 그 외엔 그대로 내보냄
             // escapeRegExp는 lodash에서 가져옴
             console.log(ch)
             return escapeRegExp(ch);
         }
+
         function createFuzzyMatcher(input) {
             const pattern = input.split('').map(ch2pattern).join('.*?');
             return new RegExp(pattern);
@@ -202,7 +215,7 @@
             tag_list.forEach(tag => {
                 const tag_element = document.createElement('div');
                 tag_element.classList.add('inline-block', 'bg-neutral-100', 'rounded-md', 'px-2', 'py-1', 'mx-1', 'my-1', 'cursor-pointer');
-                if(selected_tags.includes(tag)){
+                if (selected_tags.includes(tag)) {
                     tag_element.classList.add('bg-neutral-300');
                 }
                 tag_element.innerText = tag;
@@ -221,24 +234,24 @@
             draw(tags.filter(tag => createFuzzyMatcher(search).test(tag)));
         }
 
-        function toggle_tag(obj){
+        function toggle_tag(obj) {
             const checked_tags = document.getElementById('checkedbox');
             const tag = obj.innerText;
             const id_tags = document.getElementById('id_tags');
-            if(selected_tags.length >= 3 && !selected_tags.includes(tag)){
+            if (selected_tags.length >= 3 && !selected_tags.includes(tag)) {
                 return;
             }
-            if(selected_tags.includes(tag)){
+            if (selected_tags.includes(tag)) {
                 selected_tags.splice(selected_tags.indexOf(tag), 1);
                 obj.classList.remove('bg-neutral-300');
-            }else{
+            } else {
                 selected_tags.push(tag);
                 obj.classList.add('bg-neutral-300');
             }
-            id_tags.value = selected_tags.join(',',"");
+            id_tags.value = selected_tags.join(',', "");
         }
 
-        document.getElementById('id_tags').value = selected_tags.join(',',"");
+        document.getElementById('id_tags').value = selected_tags.join(',', "");
         draw(tags)
     </script>
 {% endblock script %}
