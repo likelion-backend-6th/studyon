@@ -75,13 +75,21 @@
         let emptyPage = false;
         let blockRequest = false;
         let lastScrollY = 0;
+        let inputQuery = document.getElementById("id_query");
+        let queryParameter = inputQuery.value;
+        console.log("queryParameter:", queryParameter)
+
         window.addEventListener('scroll', function (e) {
             let currentScrollY = window.scrollY;
             let margin = document.body.clientHeight - window.innerHeight - 300;
             if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
                 blockRequest = true;
                 page += 1;
-                fetch('?page=' + page)
+                let requestUrl = `?page=${page}`;
+                if (queryParameter) {
+                    requestUrl += `&query=${queryParameter}`
+                }
+                fetch(requestUrl)
                     .then(response => response.text())
                     .then(html => {
                         let parser = new DOMParser();
