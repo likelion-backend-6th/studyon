@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import (
@@ -13,17 +13,18 @@ from django.views.generic import (
     FormView,
 )
 
+from common.utils import Tags, s3_file_upload, InfiniteListView
 from manager.models import Study, File
 from recruit.forms import SearchForm, ApplicationForm, RecruitForm
 from recruit.models import Recruit, Register
-from common.utils import Tags, s3_file_upload
 
 
 # Create your views here.
-class RecruitView(ListView):
+class RecruitView(InfiniteListView):
     model = Recruit
     template_name = "recruits/index.html"
     context_object_name = "recruits"
+    paginate_by = 3
 
     def get_queryset(self):
         queryset = Recruit.objects.all()
