@@ -21,15 +21,13 @@
           </a>
           {% if user.is_authenticated %}
             <div class="flex items-center text-xl font-bold pl-20">
+              {% if user.profile.nickname %}
               <p>
                 Welcome,
-                {% if user.profile.nickname %}
                   {{ user.profile.nickname }}.
-                {% else %}
-                  {{ user.get_username }}.
-                {% endif %}
                 Thanks for logging in.
               </p>
+              {% endif %}
             </div>
           {% endif %}
           <div class="ml-auto flex h-full">
