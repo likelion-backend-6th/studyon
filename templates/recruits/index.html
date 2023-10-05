@@ -123,9 +123,9 @@
         </div>
     </div>
 {% endblock content %}
-<script>
-    {% block domready %}
-        document.addEventListener('DOMContentLoaded', (event) => {
+{% block script %}
+    <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
             let page = 1;
             let emptyPage = false;
             let blockRequest = false;
@@ -159,5 +159,5 @@
             let scrollEvent = new Event('scroll');
             window.dispatchEvent(scrollEvent);
         })
-    {% endblock domready %}
-</script>
+    </script>
+{% endblock script %}

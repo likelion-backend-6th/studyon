@@ -22,11 +22,11 @@
           {% if user.is_authenticated %}
             <div class="flex items-center text-xl font-bold pl-20">
               {% if user.profile.nickname %}
-              <p>
-                Welcome,
+                <p>
+                  Welcome,
                   {{ user.profile.nickname }}.
-                Thanks for logging in.
-              </p>
+                  Thanks for logging in.
+                </p>
               {% endif %}
             </div>
           {% endif %}
@@ -59,8 +59,6 @@
       </div>
     </div>
   </body>
+  {% block script %}
+  {% endblock script %}
 </html>
-<script>
-    {% block domready %}
-    {% endblock domready %}
-</script>
