@@ -364,9 +364,9 @@ def update_post_with_files(request, pk):
                 instance = File.objects.create(name=name, url=url)
                 post.files.add(instance)
 
-            post_list_url = reverse("manager:post_list", kwargs={"pk": task_id})
+            post_detail_url = reverse("manager:post_detail", kwargs={"pk": pk})
 
-            return redirect(post_list_url)
+            return redirect(post_detail_url)
         else:
             for form in file_upload_formset:
                 print(f"form.errors:{form.errors}")
