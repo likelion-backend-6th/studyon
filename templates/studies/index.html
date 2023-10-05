@@ -14,7 +14,7 @@
 {% block content %}
     <div class="relative max-w-5xl mx-auto">
         <div class="box-border absolute right-0 w-[224px] h-full bg-white bg-scroll">
-            <p class='text-xl p-2'>내가 생성한 모집글</p>
+            <p class='text-xl p-2'>나의 모집글</p>
             <div class='h-[270px] overflow-y-scroll'>
                 {% for my_recruit in my_recruits %}
                     <div class='shadow-md rounded-xl w-[90%] p-1 mb-1 ml-auto mr-auto'>
@@ -31,7 +31,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <p class='text-xl p-2'>내가 찜한 모집글</p>
+            <p class='text-xl p-2'>찜한 모집글</p>
             <div class='h-[270px] overflow-y-scroll'>
                 {% for like_recruit in like_recruits %}
                     <div class='shadow-md rounded-xl w-4/5 p-1 mb-1 ml-auto mr-auto'>

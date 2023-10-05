@@ -71,7 +71,7 @@
                         {% if task.is_finished %}
                             <form action="{% url "manager:task_complete" task.id %}" method="post">
                                 {% csrf_token %}
-                                <button type="submit"><i class="fa-solid fa-square-check border-solid border-2"></i></button>
+                                <button type="submit"><i class="fa-solid fa-square-check"></i></button>
                             </form>
                         {% else %}
                             <form action="{% url "manager:task_complete" task.id %}" method="post">
