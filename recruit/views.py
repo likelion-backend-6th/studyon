@@ -24,7 +24,7 @@ class RecruitView(InfiniteListView):
     model = Recruit
     template_name = "recruits/index.html"
     context_object_name = "recruits"
-    paginate_by = 3
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = Recruit.objects.all()
