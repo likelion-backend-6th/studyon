@@ -568,6 +568,10 @@ video {
   }
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .static {
   position: static;
 }
@@ -592,12 +596,16 @@ video {
   bottom: 0px;
 }
 
-.right-0 {
-  right: 0px;
-}
-
 .right-\[calc\(\(100\%-1024px\)\/2\)\] {
   right: calc((100% - 1024px) / 2);
+}
+
+.top-\[70px\] {
+  top: 70px;
+}
+
+.right-0 {
+  right: 0px;
 }
 
 .top-0 {
@@ -645,10 +653,6 @@ video {
   margin-bottom: 0.5rem;
 }
 
-.mb-1 {
-  margin-bottom: 0.25rem;
-}
-
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -659,6 +663,10 @@ video {
 
 .ml-3 {
   margin-left: 0.75rem;
+}
+
+.ml-6 {
+  margin-left: 1.5rem;
 }
 
 .ml-auto {
@@ -693,6 +701,14 @@ video {
   margin-top: 1rem;
 }
 
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+.mr-auto {
+  margin-right: auto;
+}
+
 .box-border {
   box-sizing: border-box;
 }
@@ -703,6 +719,10 @@ video {
 
 .inline-block {
   display: inline-block;
+}
+
+.inline {
+  display: inline;
 }
 
 .flex {
@@ -725,24 +745,8 @@ video {
   height: 4rem;
 }
 
-.h-\[150px\] {
-  height: 150px;
-}
-
-.h-\[250px\] {
-  height: 250px;
-}
-
-.h-\[270px\] {
-  height: 270px;
-}
-
 .h-\[60px\] {
   height: 60px;
-}
-
-.h-\[68px\] {
-  height: 68px;
 }
 
 .h-\[calc\(100\%-60px\)\] {
@@ -753,8 +757,64 @@ video {
   height: 100%;
 }
 
+.h-\[5px\] {
+  height: 5px;
+}
+
+.h-\[\] {
+  height: ;
+}
+
+.h-\[25px\] {
+  height: 25px;
+}
+
+.h-\[40px\] {
+  height: 40px;
+}
+
+.h-\[30px\] {
+  height: 30px;
+}
+
+.h-\[32px\] {
+  height: 32px;
+}
+
+.h-\[60px\] {
+  height: 60px;
+}
+
+.h-\[68px\] {
+  height: 68px;
+}
+
+.w-4\/5 {
+  width: 80%;
+}
+
+.h-\[calc\(100\%-60px\)\] {
+  height: calc(100% - 60px);
+}
+
+.h-full {
+  height: 100%;
+}
+
+.w-\[224px\] {
+  width: 224px;
+}
+
 .min-h-\[calc\(100\%-68px\)\] {
   min-height: calc(100% - 68px);
+}
+
+.w-\[90\%\] {
+  width: 90%;
+}
+
+.w-\[calc\(100\%-224px\)\] {
+  width: calc(100% - 224px);
 }
 
 .w-16 {
@@ -765,8 +825,8 @@ video {
   width: 5rem;
 }
 
-.w-4\/5 {
-  width: 80%;
+.w-\[\] {
+  width: ;
 }
 
 .w-52 {
@@ -777,20 +837,20 @@ video {
   width: 16rem;
 }
 
-.w-\[224px\] {
-  width: 224px;
+.w-\[40\%\] {
+  width: 40%;
 }
 
 .w-\[340px\] {
   width: 340px;
 }
 
-.w-\[90\%\] {
-  width: 90%;
+.w-\[45\%\] {
+  width: 45%;
 }
 
-.w-\[calc\(100\%-224px\)\] {
-  width: calc(100% - 224px);
+.w-\[5px\] {
+  width: 5px;
 }
 
 .w-\[calc\(100\%-360px\)\] {
@@ -823,6 +883,30 @@ video {
 
 .flex-none {
   flex: none;
+}
+
+.basis-1\/2 {
+  flex-basis: 50%;
+}
+
+.basis-2\/5 {
+  flex-basis: 40%;
+}
+
+.basis-1\/3 {
+  flex-basis: 33.333333%;
+}
+
+.basis-\[cl\] {
+  flex-basis: cl;
+}
+
+.basis-\[calc\] {
+  flex-basis: calc;
+}
+
+.basis-\[calc\(50\%-10px\)\] {
+  flex-basis: calc(50% - 10px);
 }
 
 .cursor-pointer {
@@ -865,6 +949,18 @@ video {
   place-content: center;
 }
 
+.content-center {
+  align-content: center;
+}
+
+.content-start {
+  align-content: flex-start;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
 .items-end {
   align-items: flex-end;
 }
@@ -891,6 +987,14 @@ video {
 
 .gap-8 {
   gap: 2rem;
+}
+
+.self-start {
+  align-self: flex-start;
+}
+
+.self-end {
+  align-self: flex-end;
 }
 
 .self-center {
@@ -955,6 +1059,10 @@ video {
 
 .border-t {
   border-top-width: 1px;
+}
+
+.border-solid {
+  border-style: solid;
 }
 
 .border-black {
@@ -1075,6 +1183,26 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
+.bg-yellow-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 240 138 / var(--tw-bg-opacity));
+}
+
+.bg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity));
+}
+
+.bg-sky-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(125 211 252 / var(--tw-bg-opacity));
+}
+
+.bg-slate-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(148 163 184 / var(--tw-bg-opacity));
+}
+
 .bg-scroll {
   background-attachment: scroll;
 }
@@ -1133,6 +1261,11 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 
 .pb-16 {
@@ -1419,6 +1552,10 @@ body {
 .file\:hover\:bg-neutral-300:hover::file-selector-button {
   --tw-bg-opacity: 1;
   background-color: rgb(212 212 212 / var(--tw-bg-opacity));
+}
+
+.group:hover .group-hover\:visible {
+  visibility: visible;
 }
 
 @media (min-width: 640px) {
