@@ -7,6 +7,7 @@ from django.views.generic import (
     UpdateView,
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect
 from django.db.models import Q
@@ -33,6 +34,22 @@ from .permissions import (
     StudyCreatorMixin,
     TaskAuthorMixin,
 )
+
+
+@login_required
+def studies_like_recruit(request, pk):
+    recruit = get_object_or_404(Recruit, pk=pk)
+    if request.user.is_authenticated:
+        recruit.like_users.add(request.user)
+    return redirect("manager:studies_list")
+
+
+@login_required()
+def studies_unlike_recruit(request, pk):
+    recruit = get_object_or_404(Recruit, pk=pk)
+    if request.user.is_authenticated:
+        recruit.like_users.remove(request.user)
+    return redirect("manager:studies_list")
 
 
 class StudyView(LoginRequiredMixin, ListView):

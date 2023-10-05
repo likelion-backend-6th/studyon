@@ -24,7 +24,17 @@
                         </div>
                         <span class='text-sm'>모집인원 : {{ my_recruit.members.count }}명 / {{ my_recruit.total_seats }}명</span>
                         <div class='flex justify-end'>
-                            <span class='mr-auto'>{{ my_recruit.like_users.count }} <i class="fa-solid fa-heart text-red-400"></i></span>
+                            <span class='mr-auto'>{{ my_recruit.like_users.count }} 
+                                {% if my_recruit in like_recruits %}
+                                    <a href="{% url 'manager:studies_unlike_recruit' my_recruit.pk %}">
+                                        <i class="fa-solid fa-heart text-red-400"></i>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'manager:studies_like_recruit' my_recruit.pk %}">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </a>
+                                {% endif %}
+                            </span>
                             <div class='mr-2 bg-sky-300 rounded-full text-xs p-1'><a href="{% url 'recruits:modify_recruit' my_recruit.id %}">수정</a></div>
                             <div class='mr-2 bg-red-400 rounded-full text-xs p-1'><a href="{% url 'recruits:delete_recruit' my_recruit.id %}">삭제</a></div>
                         </div>
@@ -34,16 +44,22 @@
             <p class='text-xl p-2'>찜한 모집글</p>
             <div class='h-[270px] overflow-y-scroll'>
                 {% for like_recruit in like_recruits %}
-                    <div class='shadow-md rounded-xl w-4/5 p-1 mb-1 ml-auto mr-auto'>
-                        <div class='flex items-end'>
-                            <a class='text-xl' href="{% url "recruits:recruit_detail" like_recruit.id %}">{{ like_recruit.title }}</a>
-                            <span class='text-xs ml-auto'>~{{ like_recruit.deadline|date:'Y.m.d' }}</span>
+                    {% if like_recruit.creator != user %}
+                        <div class='shadow-md rounded-xl w-4/5 p-1 mb-1 ml-auto mr-auto'>
+                            <div class='flex items-end'>
+                                <a class='text-xl' href="{% url "recruits:recruit_detail" like_recruit.id %}">{{ like_recruit.title }}</a>
+                                <span class='text-xs ml-auto'>~{{ like_recruit.deadline|date:'Y.m.d' }}</span>
+                            </div>
+                            <span class='text-sm'>모집인원 : {{ like_recruit.members.count }}명 / {{ like_recruit.total_seats }}명</span>
+                            <div class='flex justify-end'>
+                                <span class='mr-auto'>{{ like_recruit.like_users.count }} 
+                                    <a href="{% url 'manager:studies_unlike_recruit' like_recruit.pk %}">
+                                        <i class="fa-solid fa-heart text-red-400"></i>
+                                    </a>
+                                </span>
+                            </div>
                         </div>
-                        <span class='text-sm'>모집인원 : {{ like_recruit.members.count }}명 / {{ like_recruit.total_seats }}명</span>
-                        <div class='flex justify-end'>
-                            <span class='mr-auto'>{{ like_recruit.like_users.count }} <i class="fa-solid fa-heart text-red-400"></i></span>
-                        </div>
-                    </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
