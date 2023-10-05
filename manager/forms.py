@@ -3,6 +3,9 @@ from django.core.exceptions import ValidationError
 from django.forms import modelformset_factory
 
 from markdownx.fields import MarkdownxFormField
+from markdownx.widgets import MarkdownxWidget
+
+from yaml import Mark
 
 from .models import File, Post, Study, Task
 
@@ -29,7 +32,11 @@ class FileUploadForm(forms.ModelForm):
     file = forms.FileField(
         label="",
         required=False,
-        widget=forms.FileInput(attrs={"class": "file"}),
+        widget=forms.FileInput(
+            attrs={
+                "class": "file:border-none file:bg-neutral-200 file:hover:bg-neutral-300 file:rounded-sm cursor-pointer"
+            }
+        ),
     )
 
     class Meta:
@@ -51,7 +58,16 @@ class FileForm(forms.ModelForm):
     checkbox = forms.BooleanField(
         label="", required=False, widget=forms.CheckboxInput(), initial=True
     )
-    url = forms.URLField(label="", disabled=True, required=False)
+    url = forms.URLField(
+        label="",
+        disabled=True,
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+                "class": "file:border-none file:bg-neutral-200 file:hover:bg-neutral-300 file:rounded-sm cursor-pointer"
+            }
+        ),
+    )
 
     class Meta:
         model = File
@@ -59,7 +75,21 @@ class FileForm(forms.ModelForm):
 
 
 class PostActionForm(forms.ModelForm):
-    content = MarkdownxFormField()
+    title = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "w-full",
+                "placeholder": "제목을 입력해주세요.",
+            }
+        )
+    )
+    content = MarkdownxFormField(
+        widget=MarkdownxWidget(
+            attrs={
+                "placeholder": "내용을 입력해주세요.\n마크다운 문법을 사용할 수 있습니다.",
+            }
+        )
+    )
 
     class Meta:
         model = Post
