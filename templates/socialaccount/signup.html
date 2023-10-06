@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
     <p>이미 등록된 이메일 또는 아이디 입니다.</p>
-    <p>다른 소셜계정으로 <a href="{% url "users:login" %}"><strong>로그인</strong></a>하시거나</p>
-    <p><a href="{% url "users:signup" %}"><strong>회원가입</strong></a>을 진행하시기 바랍니다.</p>
+    <p>
+        다른 소셜계정으로 <a href="{% url "users:login" %}"><strong>로그인</strong></a>하시거나
+    </p>
+    <p>
+        <a href="{% url "users:signup" %}"><strong>회원가입</strong></a>을 진행하시기 바랍니다.
+    </p>
 {% endblock content %}
