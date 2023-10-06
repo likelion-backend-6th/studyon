@@ -24,14 +24,14 @@
     <div class="relative max-w-5xl mx-auto">
         <div class="box-border absolute right-0 w-[256px] bg-white border-solid border-l-2 h-full">
             <p class='text-xl p-2'>나의 모집글</p>
-            <div class='scroll_invisible h-[270px] overflow-y-scroll'>
+            <div class='scroll_invisible h-[275px] overflow-y-scroll'>
                 {% for my_recruit in my_recruits %}
-                    <div class='shadow-md rounded-xl w-[90%] p-1 mb-1 ml-auto mr-auto'>
-                        <div class='flex items-end'>
-                            <a class='text-xl' href="{% url "recruits:recruit_detail" my_recruit.id %}">{{ my_recruit.title }}</a>
-                            <span class='text-xs ml-auto'>~{{ my_recruit.deadline|date:'Y.m.d' }}</span>
+                    <div class='shadow-md w-[90%] p-1 mb-1 mx-auto'>
+                        <a class='block text-xl truncate w-[100px]' href="{% url "recruits:recruit_detail" my_recruit.id %}">{{ my_recruit.title }}</a>
+                        <div class='flex justify-between'>
+                            <span class='text-xs'>~{{ my_recruit.deadline|date:'Y.m.d' }}</span>
+                            <span class='text-sm'>{{ my_recruit.members.count }} / {{ my_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
                         </div>
-                        <span class='text-sm'>모집인원 : {{ my_recruit.members.count }}명 / {{ my_recruit.total_seats }}명</span>
                         <div class='flex justify-end'>
                             <span class='mr-auto'>{{ my_recruit.like_users.count }} 
                                 {% if my_recruit in like_recruits %}
@@ -66,15 +66,15 @@
                 {% endfor %}
             </div>
             <p class='text-xl p-2'>찜한 모집글</p>
-            <div class='scroll_invisible h-[270px] overflow-y-scroll'>
+            <div class='scroll_invisible h-[275px] overflow-y-scroll'>
                 {% for like_recruit in like_recruits %}
                     {% if like_recruit.creator != user %}
-                        <div class='shadow-md rounded-xl w-4/5 p-1 mb-1 ml-auto mr-auto'>
-                            <div class='flex items-end'>
-                                <a class='text-xl' href="{% url "recruits:recruit_detail" like_recruit.id %}">{{ like_recruit.title }}</a>
-                                <span class='text-xs ml-auto'>~{{ like_recruit.deadline|date:'Y.m.d' }}</span>
+                        <div class='shadow-md w-[90%] p-1 mb-1 mx-auto'>
+                            <a class='text-xl truncate w-[100px]' href="{% url "recruits:recruit_detail" like_recruit.id %}">{{ like_recruit.title }}</a>
+                            <div class='flex justify-between'>
+                                <span class='text-xs'>~{{ like_recruit.deadline|date:'Y.m.d' }}</span>
+                                <span class='text-sm'>{{ like_recruit.members.count }} / {{ like_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
                             </div>
-                            <span class='text-sm'>모집인원 : {{ like_recruit.members.count }}명 / {{ like_recruit.total_seats }}명</span>
                             <div class='flex justify-end'>
                                 <span class='mr-auto'>{{ like_recruit.like_users.count }} 
                                     <a href="{% url 'manager:studies_unlike_recruit' like_recruit.pk %}">
@@ -94,11 +94,11 @@
                     <div class='shadow-md mx-3 p-1 min-w-[250px] h-[100px] hover:h-[250px] overflow-hidden'>
                         <div class='relative pt-2 flex items-end'>
                             <a class='text-2xl truncate w-[100px]' href="{% url "manager:study_detail" my_study.id %}">{{ my_study.title }}</a>
-                            <span class='text-xs ml-auto'>{{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</span>
                             <span class='absolute top-0 right-0 text-xs bg-slate-100 pl-1 pr-1'>{{ my_study.get_status_display }}</span>
                         </div>
-                        <div class='m-1'>
-                            모집인원 : {{ my_study.members.count }}명 / {{ my_study.recruits.total_seats}}명
+                        <div class='m-1 flex justify-between'>
+                            <span class='text-xs self-center'>{{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</span>
+                            <span>{{ my_study.members.count }} / {{ my_study.recruits.total_seats}} <i class="fa-solid fa-user"></i></span>
                         </div>
                         <p>{% if my_study.study_tasks.all %}
                                 tasks : {{ my_study.finished_task.count }} / {{ my_study.study_tasks.count }} ( {{ my_study.finished_task_percent }}% )
@@ -137,11 +137,11 @@
                     <div class='shadow-md mx-3 p-1 min-w-[250px] h-[100px] hover:h-[150px] overflow-hidden'>
                         <div class='relative pt-2 flex items-end'>
                             <a class='text-2xl truncate w-[100px]' href="{% url "manager:study_detail" in_study.id %}">{{ in_study.title }}</a>
-                            <span class='text-xs ml-auto'>{{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</span>
                             <span class='absolute top-0 right-0 text-xs bg-slate-100 pl-1 pr-1'>{{ in_study.get_status_display }}</span>
                         </div>
-                        <div class='m-1'>
-                            모집인원 : {{ in_study.members.count }}명 / {{ in_study.recruits.total_seats}}명
+                        <div class='m-1 flex justify-between'>
+                            <span class='text-xs self-center'>{{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</span>
+                            <span>{{ in_study.members.count }} / {{ in_study.recruits.total_seats}} <i class="fa-solid fa-user"></i></span>
                         </div>
                         <p>{% if in_study.study_tasks.all %}
                                 tasks : {{ in_study.finished_task.count }} / {{ in_study.study_tasks.count }} ( {{ in_study.finished_task_percent }}% )
