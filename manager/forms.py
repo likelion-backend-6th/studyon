@@ -92,7 +92,7 @@ class PostActionForm(forms.ModelForm):
     content = MarkdownxFormField(
         widget=MarkdownxWidget(
             attrs={
-                "placeholder": "내용을 입력해주세요.\n마크다운 문법을 사용할 수 있습니다.",
+                "style": "display: none",
             }
         )
     )
