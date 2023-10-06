@@ -1,25 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="container mx-auto max-w-3xl pt-6">
-        <h1 class="text-center text-3xl font-blod">회원정보 추가입력</h1>
-        {% if user %}
+    <div class="flex justify-center items-center h-screen">
+        <div class="w-[460px] p-6 bg-white rounded-md">
+            <h1 class="text-center text-3xl font-bold block">회원정보 추가입력</h1>
             <form action="{% url "users:social_signup" %}"
-                method="post"
-                class="pt-4 max-w-md mx-auto">
+                  method="post"
+                  class="pt-4 max-w-md mx-auto">
                 {% csrf_token %}
+                <h3 class="mt-5 text-sm">별명</h3>
                 <input type="text"
-                    name="nickname"
-                    placeholder="nickname"
-                    required
-                    class="w-full outline-none border-2 border-cyan-600 p-2 rounded-xl mt-4">
+                       name="nickname"
+                       placeholder="사용할 이름을 입력해주세요."
+                       required
+                       class="w-full p-2 border-b-2 text-base focus:outline-none focus:ring-0 focus:border-gray-600 mt-3">
                 <input type="submit"
-                    name="submit"
-                    value="Signup"
-                    class="w-full border-2 bg-green-600 text-white p-2 rounded-xl mt-4 cursor-pointer">
+                       name="submit"
+                       value="회원가입"
+                       class="mt-20 h-14 cursor-pointer border-2 border-gray-600 bg-gray-600 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-gray-600 font-semibold">
             </form>
-            {% if error %}{{ error }}{% endif %}
-        {% else %}
-            <p><a href="{% url "users:login" %}">로그인</a> 하기</p>
-        {% endif %}
+        </div>
     </div>
 {% endblock content %}
