@@ -10,7 +10,10 @@ module.exports = {
       fontFamily: {
         'sans': ['Pretendard-Regular', ...defaultTheme.fontFamily.sans],
       },
-    }
+      colors: {
+        'base-black': "#373737",
+      }
+    },
   },
   plugins: [],
 }

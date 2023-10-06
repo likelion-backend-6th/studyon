@@ -9,6 +9,8 @@
   font-style: normal;
 }
 
-body {
-  height: 100vh;
+@layer base {
+  body {
+    @apply h-screen text-base-black;
+  }
 }
