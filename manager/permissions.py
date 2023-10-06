@@ -56,17 +56,17 @@ class TaskAccessMixin(LoginRequiredMixin):
         return task
 
 
-# Task 생성자인지 확인
+# Task 생성자 또는 스터디장인지 확인
 class TaskAuthorMixin(TaskAccessMixin):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
 
         task = super().get_task()
-        if request.user != task.author:
+        if request.user == task.author or task.study.creator == request.user:
+            return super().dispatch(request, *args, **kwargs)
+        else:
             raise PermissionDenied("Not Authorized to Access")
-
-        return super().dispatch(request, *args, **kwargs)
 
 
 class PostAccessMixin(LoginRequiredMixin):
