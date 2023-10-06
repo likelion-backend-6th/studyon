@@ -90,11 +90,12 @@ class PostActionForm(forms.ModelForm):
         )
     )
     content = MarkdownxFormField(
+        required=False,
         widget=MarkdownxWidget(
             attrs={
                 "style": "display: none",
             }
-        )
+        ),
     )
 
     class Meta:
