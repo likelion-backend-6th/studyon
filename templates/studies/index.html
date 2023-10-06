@@ -21,8 +21,8 @@
     </style>
 {% endblock style %}
 {% block content %}
-    <div class="relative max-w-5xl mx-auto border-solid border-2 border-t-0">
-        <div class="box-border absolute right-0 w-[224px] bg-white border-solid border-l-2 h-full">
+    <div class="relative max-w-5xl mx-auto">
+        <div class="box-border absolute right-0 w-[256px] bg-white border-solid border-l-2 h-full">
             <p class='text-xl p-2'>나의 모집글</p>
             <div class='scroll_invisible h-[270px] overflow-y-scroll'>
                 {% for my_recruit in my_recruits %}
@@ -44,8 +44,23 @@
                                     </a>
                                 {% endif %}
                             </span>
-                            <div class='mr-2 bg-sky-300 rounded-full text-xs p-1'><a href="{% url 'recruits:modify_recruit' my_recruit.id %}">수정</a></div>
-                            <div class='mr-2 bg-red-400 rounded-full text-xs p-1'><a href="{% url 'recruits:delete_recruit' my_recruit.id %}">삭제</a></div>
+                            <div class='mr-2 p-1'><a href="{% url 'recruits:modify_recruit' my_recruit.id %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="w-5 h-5 fill-[#89DADF] hover:scale-125">
+                                    <path
+                                        d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                                    <path
+                                        d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                                </svg>
+                            </a></div>
+                            <div class='mr-2 p-1'><a href="{% url 'recruits:delete_recruit' my_recruit.id %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="w-5 h-5 text-red-500 hover:scale-125">
+                                    <path fill-rule="evenodd"
+                                        d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </a></div>
                         </div>
                     </div>
                 {% endfor %}
@@ -72,15 +87,15 @@
                 {% endfor %}
             </div>
         </div>
-        <div class='box-border w-[calc(100%-224px)]'>
+        <div class='box-border w-[calc(100%-256px)]'>
             <p class='text-4xl p-2'>나의 스터디</p>
             <div class='flex flex-row overflow-hidden w-full min-w-[250px] h-[300px] overflow-x-scroll pb-4'>
                 {% for my_study in my_studies %}
-                    <div class='shadow-md rounded-xl mx-3 my-auto p-1 min-w-[250px] h-[250px]'>
+                    <div class='shadow-md mx-3 p-1 min-w-[250px] h-[100px] hover:h-[250px] overflow-hidden'>
                         <div class='relative pt-2 flex items-end'>
-                            <a class='text-2xl' href="{% url "manager:study_detail" my_study.id %}">{{ my_study.title }}</a>
+                            <a class='text-2xl truncate w-[100px]' href="{% url "manager:study_detail" my_study.id %}">{{ my_study.title }}</a>
                             <span class='text-xs ml-auto'>{{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</span>
-                            <span class='absolute top-0 right-0 text-xs bg-slate-400 rounded-lg pl-1 pr-1'>{{ my_study.get_status_display }}</span>
+                            <span class='absolute top-0 right-0 text-xs bg-slate-100 pl-1 pr-1'>{{ my_study.get_status_display }}</span>
                         </div>
                         <div class='m-1'>
                             모집인원 : {{ my_study.members.count }}명 / {{ my_study.recruits.total_seats}}명
@@ -94,23 +109,23 @@
                         <div class='grid grid-cols-2 gap-4 place-content-center mt-4'>
                             <form action='{% url "manager:study_recuting" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input class='cursor-pointer bg-slate-400 rounded-lg pl-1 pr-1' type="submit" value="Recuting">
+                                <input class='cursor-pointer text-[#373737] pl-1 pr-1' type="submit" value="Recuting">
                             </form>
                             <form action='{% url "manager:study_inprogress" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input class='cursor-pointer bg-slate-400 rounded-lg pl-1 pr-1' type="submit" value="In Progress">
+                                <input class='cursor-pointer text-[#373737] pl-1 pr-1' type="submit" value="In Progress">
                             </form>
                             <form action='{% url "manager:study_done" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input class='cursor-pointer bg-slate-400 rounded-lg pl-1 pr-1' type="submit" value="Complete">
+                                <input class='cursor-pointer text-[#373737] pl-1 pr-1' type="submit" value="Complete">
                             </form>
                             <form action='{% url "manager:study_finished" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input class='cursor-pointer bg-slate-400 rounded-lg pl-1 pr-1' type="submit" value="Finished">
+                                <input class='cursor-pointer text-[#373737] pl-1 pr-1' type="submit" value="Finished">
                             </form>
                             <form action='{% url "manager:study_delete" my_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input class='cursor-pointer bg-red-400 rounded-lg pl-1 pr-1' type="submit" value="Delete">
+                                <input class='cursor-pointer text-red-400 pl-1 pr-1' type="submit" value="Delete">
                             </form>
                         </div>
                     </div>
@@ -119,11 +134,11 @@
             <p class='text-4xl p-2'>참여 스터디</p>
             <div class='flex flex-row overflow-hidden w-full min-w-[250px] h-[250px] overflow-x-scroll pb-4'>
                 {% for in_study in in_studies %}
-                    <div class='shadow-md rounded-xl mx-3 my-auto p-1 min-w-[250px] h-[150px]'>
+                    <div class='shadow-md mx-3 p-1 min-w-[250px] h-[100px] hover:h-[150px] overflow-hidden'>
                         <div class='relative pt-2 flex items-end'>
-                            <a class='text-2xl' href="{% url "manager:study_detail" in_study.id %}">{{ in_study.title }}</a>
+                            <a class='text-2xl truncate w-[100px]' href="{% url "manager:study_detail" in_study.id %}">{{ in_study.title }}</a>
                             <span class='text-xs ml-auto'>{{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</span>
-                            <span class='absolute top-0 right-0 text-xs bg-slate-400 rounded-lg pl-1 pr-1'>{{ in_study.get_status_display }}</span>
+                            <span class='absolute top-0 right-0 text-xs bg-slate-100 pl-1 pr-1'>{{ in_study.get_status_display }}</span>
                         </div>
                         <div class='m-1'>
                             모집인원 : {{ in_study.members.count }}명 / {{ in_study.recruits.total_seats}}명
@@ -137,7 +152,7 @@
                         <div>
                             <form action='{% url "manager:study_leave" in_study.id %}' method="post">
                                 {% csrf_token %}
-                                <input class='cursor-pointer bg-red-400 rounded-lg pl-1 pr-1 mt-4' type="submit"value="Leave">
+                                <input class='cursor-pointer text-red-400 pl-1 pr-1 mt-4' type="submit"value="Leave">
                             </form>
                         </div>
                     </div>
