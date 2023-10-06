@@ -10,13 +10,15 @@
     <link href="{% static 'fontawesomefree/css/solid.css' %}"
           rel="stylesheet"
           type="text/css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock style %}
 {% block content %}
-    <div class="mx-auto max-w-5xl">
+    <div class="max-w-5xl mx-auto">
         <form action=""
               method="post"
               enctype="multipart/form-data"
-              class="mt-10 pb-16">
+              class="pb-16 mt-10">
             {% csrf_token %}
             <input id="id_title"
                    type="text"
@@ -25,7 +27,7 @@
                    value="{{ form.title.value|default:''|safe }}"
                    required
                    placeholder="Title"
-                   class="w-full outline-none text-3xl font-bold placeholder-slate-400">
+                   class="w-full text-3xl font-bold outline-none placeholder-slate-400">
             <div class="mt-10">
                 <p class="text-lg font-bold">태그</p>
                 <hr class="my-2" />
@@ -34,7 +36,7 @@
                        type="text"
                        placeholder="태그를 입력해주세요."
                        oninput="search(this)"
-                       class="outline-none bg-neutral-100 px-2 py-1 rounded-md">
+                       class="px-2 py-1 rounded-md outline-none bg-neutral-100">
                 <div id="checkedbox" class="mt-4"></div>
                 <div id="tagbox" class="mt-4"></div>
                 <input id="id_tags" type="text" name="tags" required hidden>
@@ -48,7 +50,8 @@
                            name="deadline"
                            value="{{ form.deadline.value|default:''|safe }}"
                            required
-                           class="text-base bg-neutral-100 px-2 rounded-md">
+                           placeholder="날짜 선택"
+                           class="px-2 text-base text-center rounded-md w-28 bg-neutral-100">
                 </label>
             </div>
             <div class="mt-10">
@@ -59,14 +62,16 @@
                        name="start"
                        value="{{ form.start.value|default:''|safe }}"
                        required=""
-                       class="text-base bg-neutral-100 px-2 rounded-md">
+                       placeholder="날짜 선택"
+                       class="px-2 text-base text-center rounded-md w-28 bg-neutral-100">
                 <span class="mx-4">~</span>
                 <input id="id_end"
                        type="date"
                        name="end"
                        value="{{ form.end.value|default:''|safe }}"
                        required=""
-                       class="text-base bg-neutral-100 px-2 rounded-md">
+                       placeholder="날짜 선택"
+                       class="px-2 text-base text-center rounded-md w-28 bg-neutral-100">
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">모집 인원</p>
@@ -78,7 +83,7 @@
                        value="{{ form.total_seats.value|default:''|safe }}"
                        required
                        id="id_total_seats"
-                       class="outline-none bg-neutral-100 w-16 px-2 rounded-sm">
+                       class="w-16 px-2 rounded-sm outline-none bg-neutral-100">
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">모집 대상</p>
@@ -89,7 +94,7 @@
                               required
                               oninput="resize(this)"
                               placeholder="모집 대상을 입력해주세요."
-                              class="resize-none outline-none w-full">{{ form.target.value|default:''|safe }}</textarea>
+                              class="w-full outline-none resize-none">{{ form.target.value|default:''|safe }}</textarea>
                 </div>
             </div>
             <div class="mt-10">
@@ -100,7 +105,7 @@
                           required
                           oninput="resize(this)"
                           placeholder="진행 방식을 입력해주세요."
-                          class="resize-none outline-none w-full">{{ form.process.value|default:''|safe }}</textarea>
+                          class="w-full outline-none resize-none">{{ form.process.value|default:''|safe }}</textarea>
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">추가 정보</p>
@@ -110,7 +115,7 @@
                           required
                           oninput="resize(this)"
                           placeholder="추가 정보를 입력해주세요."
-                          class="resize-none outline-none w-full">{{ form.info.value|default:''|safe }}</textarea>
+                          class="w-full outline-none resize-none">{{ form.info.value|default:''|safe }}</textarea>
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">파일 등록</p>
@@ -118,7 +123,7 @@
                 <input id="id_file"
                        type="file"
                        name="file"
-                       class="file:border-none file:bg-neutral-200 file:hover:bg-neutral-300 file:rounded-sm cursor-pointer">
+                       class="cursor-pointer file:border-none file:bg-neutral-200 file:hover:bg-neutral-300 file:rounded-sm">
             </div>
             <div class="mt-4">
                 {% if recruit.files.exists %}
@@ -134,11 +139,11 @@
         </form>
     </div>
     <div class="sticky bottom-0 bg-white border-t border-neutral-300">
-        <div class="mx-auto max-w-5xl">
+        <div class="max-w-5xl mx-auto">
             <div class="h-16">
-                <div class="flex h-full justify-between">
+                <div class="flex justify-between h-full">
                     <p class="self-center font-bold">뭔가 뭔가 뭔가 뭔가 글 뭔가 뭔가 한 글</p>
-                    <button class="self-center px-5 py-3 bg-neutral-600 hover:bg-neutral-700 text-white rounded-md"
+                    <button class="self-center px-5 py-3 text-white rounded-md bg-neutral-600 hover:bg-neutral-700"
                             onClick="submit()">작성 완료</button>
                 </div>
             </div>
@@ -146,6 +151,7 @@
     </div>
 {% endblock content %}
 {% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         function resize(obj) {
             obj.innerText = obj.value;
@@ -252,5 +258,17 @@
 
         document.getElementById('id_tags').value = selected_tags.join(',', "");
         draw(tags)
+        
+        flatpickr('#id_deadline', {
+            dateFormat: "Y-m-d",
+        });
+        
+        flatpickr('#id_start', {
+            dateFormat: "Y-m-d",
+        });
+        
+        flatpickr('#id_end', {
+            dateFormat: "Y-m-d",
+        });
     </script>
 {% endblock script %}
