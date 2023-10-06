@@ -6,7 +6,7 @@ on:
 
 jobs:
     lint:
-        name: black check
+        name: black and djLint check
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repository
@@ -19,8 +19,14 @@ jobs:
             - name: install black
               run: pip install black
 
+            - name: install djLint
+              run: pip install djlint
+
             - name: check black
               run: black --check .
+
+            - name: check djLint
+              run: djlint --profile django --check --lint .
 
     test:
         name: test with docker
