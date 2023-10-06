@@ -142,7 +142,7 @@ def post_manage_permission(func):
 
         post: Post = get_object_or_404(Post, id=pk)
 
-        if request.user != post.author:
+        if request.user != post.author or request.user == post.task.study.creator:
             raise PermissionDenied("Not Authorized to Access")
 
         return func(request, pk)
