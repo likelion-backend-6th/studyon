@@ -146,12 +146,14 @@
 - Django 기본 유저 인증 템플릿을 사용하지 않는 상황에서 LoginRequired 관련 permission 클래스/함수 사용 시, redirect되는 login url 지정하는 방법
     - 설정 파일에서 `LOGIN_URL`을 지정하면 됨
 - Django Form 에서 forms.DateInput을 사용해 날짜를 입력받는 방법
+- A. <lable><input type="date" id="{}"></label>을 이용하면 편하게 입력 받으 실 수 있습니다.
 - 한 번에 여러 개의 form을 입력받을 때 어떤 식으로 구현할 수 있는가?
     - Django formset을 이용하면 됨.
 - Django에서 Nested RelationShip 관계를 갖는 두 개의 모델을 한 꺼번에 입력 처리 받는 방법?
     - inline-formset을 이용하면 됨
     - 그러나 새로운 field를 추가해야 하는 상황에서의 사용 방법을 구현해보고자 하였으나 실패하여 일반 formset을 사용하여 구현
         - File 모델의 경우, file 객체를 업로드 받아 url을 db에 저장해야 하는 상황에서 inline-formset을 사용하여 구현하려고 하였으나 실패함
+    - A. 모델이 분리되어 있는 경우는 프론트에서 데이터를 한 번에 받고 내부 함수에서는 별도로 처리해주는 것이 조금 더 유지보수에 좋습니다.
 - ArgoCD에서 NCP 연결 시 OutofSync로 지속적인 sync 시도 문제
     - cilium identity 리소스가 임의로 생겨 발생하는 문제이므로 cilium identity 를 ignore 해주어 해결하였음.
 
