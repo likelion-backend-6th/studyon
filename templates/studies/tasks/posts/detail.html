@@ -9,7 +9,7 @@
 {% block content %}
 <div class="flex flex-col items-center max-w-5xl mx-auto detail">
     <div class="flex items-center w-full h-10 mb-5 mt-14 justify-evenly top">
-        {% if post.author == user %}
+        {% if post.author == user or post.task.study.creator == user %}
         <button class="inline-block modify" onclick=location.href="{% url 'manager:post_modify' post.id %}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                 class="w-6 h-6 fill-[#89DADF] hover:scale-125">
@@ -76,32 +76,35 @@
     document.addEventListener("DOMContentLoaded", function () {
         let deleteBtn = document.querySelector(".delete");
 
-        deleteBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (confirm("해당 게시글을 삭제하시겠습니까?")) {
-                let deleteUrl = this.getAttribute('data-url');
-                let task_id = this.getAttribute('data-task-id');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (confirm("해당 게시글을 삭제하시겠습니까?")) {
+                    let deleteUrl = this.getAttribute('data-url');
+                    let task_id = this.getAttribute('data-task-id');
 
-                fetch(deleteUrl, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(res => {
-                        if (res.ok) {
-                            window.location.href = "{% url 'manager:post_list' 0 %}".replace('0', task_id)
-                        } else {
-                            console.error('삭제 실패');
-                        }
+                    fetch(deleteUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json',
+                        },
                     })
-                    .catch(error => {
-                        console.error('에러:', error);
-                    });
-            } else {
-            }
-        });
+                        .then(res => {
+                            if (res.ok) {
+                                window.location.href = "{% url 'manager:post_list' 0 %}".replace('0', task_id)
+                            } else {
+                                console.error('삭제 실패');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('에러:', error);
+                        });
+                } else {
+                }
+            });
+        }
+
 
         let markdownContent = document.getElementById("markdown-content");
         let toastContents = markdownContent.textContent;
