@@ -93,8 +93,7 @@
                         <div class="ml-auto flex flex-row">
                             {% if task.author == user or study.creator == user %}
                                 <button class="inline-block modify"
-                                        onclick="location"
-                                        .href="{% url 'manager:task_modify' task.id %}">
+                                        onclick="location.href='{% url 'manager:task_modify' task.id %}'">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          viewBox="0 0 20 20"
                                          fill="currentColor"
