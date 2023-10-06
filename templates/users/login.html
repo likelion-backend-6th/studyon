@@ -26,28 +26,37 @@
                        class="mt-5 cursor-pointer border-2 border-gray-600 bg-gray-600 text-white py-1 w-full rounded-md hover:bg-transparent hover:text-gray-600 font-semibold">
             </form>
             <p class="text-xs mt-3 flex justify-center items-center">
-                <a href="{% url 'users:signup' %}" class="hover:text-gray-300">
-                    회원가입
-                </a>
+                <a href="{% url 'users:signup' %}" class="hover:text-gray-300">회원가입</a>
             </p>
-            <form action="{% provider_login_url "google" %}" method='post' class="pt-4 max-w-md mx-auto mt-2">
+            <form action="{% provider_login_url "google" %}"
+                  method='post'
+                  class="pt-4 max-w-md mx-auto mt-2">
                 {% csrf_token %}
                 <button class="mt-2 border cursor-pointer w-full text-base px-2 py-1 hover:border-gray-600 grid grid-cols-[auto,1fr] items-center">
-                    <img src="{% static 'image/google-logo.png' %}" alt="" class="w-5 h-auto">
+                    <img src="{% static 'image/google-logo.png' %}"
+                         alt=""
+                         width="20px"
+                         height="auto">
                     <span class="text-center">Google Login</span>
                 </button>
             </form>
             <form action="{% provider_login_url "naver" %}" method='post'>
                 {% csrf_token %}
                 <button class="mt-2 border cursor-pointer w-full text-base px-2 py-1 hover:border-gray-600 grid grid-cols-[auto,1fr] items-center">
-                    <img src="{% static 'image/naver-logo.png' %}" alt="" class="w-5 h-auto">
+                    <img src="{% static 'image/naver-logo.png' %}"
+                         alt=""
+                         width="20px"
+                         height="auto">
                     <span class="text-center">Naver Login</span>
                 </button>
             </form>
             <form action="{% provider_login_url "github" %}" method='post'>
                 {% csrf_token %}
                 <button class="mt-2 border cursor-pointer w-full text-base px-2 py-1 hover:border-gray-600 grid grid-cols-[auto,1fr] items-center">
-                    <img src="{% static 'image/github-logo.png' %}" alt="" class="w-5 h-auto">
+                    <img src="{% static 'image/github-logo.png' %}"
+                         alt=""
+                         width="20px"
+                         height="auto">
                     <span class="text-center">Github Login</span>
                 </button>
             </form>
