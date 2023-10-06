@@ -10,6 +10,8 @@
     <link href="{% static 'fontawesomefree/css/solid.css' %}"
           rel="stylesheet"
           type="text/css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock style %}
 {% block content %}
     <div class="mx-auto max-w-5xl pt-10 min-h-[calc(100%-68px)]">
@@ -22,7 +24,7 @@
                    value="{{ form.title.value|default:''|safe }}"
                    required
                    placeholder="Title"
-                   class="w-full outline-none text-3xl font-bold placeholder-slate-400">
+                   class="w-full text-3xl font-bold outline-none placeholder-slate-400">
             <div class="mt-10">
                 <p class="text-lg font-bold">기간</p>
                 <hr class="my-2" />
@@ -31,14 +33,14 @@
                        name="start"
                        value="{{ form.start.value|default:''|safe }}"
                        required=""
-                       class="text-base bg-neutral-100 px-2 rounded-md">
+                       class="px-2 text-base text-center rounded-md w-28 bg-neutral-100">
                 <span class="mx-4">~</span>
                 <input id="id_end"
                        type="date"
                        name="end"
                        value="{{ form.end.value|default:''|safe }}"
                        required=""
-                       class="text-base bg-neutral-100 px-2 rounded-md">
+                       class="px-2 text-base text-center rounded-md w-28 bg-neutral-100">
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">진행 방식</p>
@@ -48,7 +50,7 @@
                           required
                           oninput="resize(this)"
                           placeholder="진행 방식을 입력해주세요."
-                          class="resize-none outline-none w-full">{{ form.process.value|default:''|safe }}</textarea>
+                          class="w-full outline-none resize-none">{{ form.process.value|default:''|safe }}</textarea>
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">추가 정보</p>
@@ -58,22 +60,23 @@
                           required
                           oninput="resize(this)"
                           placeholder="추가 정보를 입력해주세요."
-                          class="resize-none outline-none w-full">{{ form.info.value|default:''|safe }}</textarea>
+                          class="w-full outline-none resize-none">{{ form.info.value|default:''|safe }}</textarea>
             </div>
             <input type="submit" hidden>
         </form>
     </div>
     <div class="sticky bottom-0 h-[68px] bg-white border-t border-neutral-300">
-        <div class="mx-auto max-w-5xl h-full">
-            <div class="flex h-full justify-between">
+        <div class="h-full max-w-5xl mx-auto">
+            <div class="flex justify-between h-full">
                 <p class="self-center font-bold">뭔가 뭔가 뭔가 뭔가 글 뭔가 뭔가 한 글</p>
-                <button class="self-center px-5 py-3 bg-neutral-600 hover:bg-neutral-700 text-white rounded-md"
+                <button class="self-center px-5 py-3 text-white rounded-md bg-neutral-600 hover:bg-neutral-700"
                         onClick="submit()">수정 완료</button>
             </div>
         </div>
     </div>
 {% endblock content %}
 {% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         function resize(obj) {
             obj.innerText = obj.value;
@@ -83,5 +86,13 @@
         function submit() {
             document.querySelector('input[type="submit"]').click();
         }
+        
+        flatpickr('#id_start', {
+            dateFormat: "Y-m-d",
+        });
+        
+        flatpickr('#id_end', {
+            dateFormat: "Y-m-d",
+        });
     </script>
 {% endblock script %}
