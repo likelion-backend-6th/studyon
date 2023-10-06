@@ -8,7 +8,7 @@
 {% endblock %}
 {% block content %}
 <div class="flex flex-col items-center max-w-5xl mx-auto detail">
-    <div class="flex items-center w-full h-10 mt-20 justify-evenly top">
+    <div class="flex items-center w-full h-10 mb-5 mt-14 justify-evenly top">
         {% if post.author == user %}
         <button class="inline-block modify" onclick=location.href="{% url 'manager:post_modify' post.id %}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
@@ -55,17 +55,17 @@
         <div class="hidden content" id="markdown-content">{{ post.content }}</div>
         <div id="viewer"></div>
     </div>
+    {% if post.files.exists %}
     <div class="w-4/5 xl:w-5/6 lg:w-11/12 file-wrap">
         <div class="mt-5 text-2xl font-bold title">첨부파일</div>
         <hr class="my-2">
         <div class="flex flex-col mb-20 content sm:flex-row">
-            {% if post.files.exists %}
             {% for file in post.files.all %}<a href="{{ file.url }}"
                 class="mr-4 my-1 text-xs text-[#0000ff] underline hover:font-bold" title="파일 다운로드" download>
                 {{ file.get_file_name }}</a>{% endfor %}
-            {% endif %}
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock content %}
 {% block script %}
