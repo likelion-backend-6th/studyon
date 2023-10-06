@@ -39,12 +39,10 @@
             {% for member in study.members.all %}
                 <div class="flex flex-wrap flex-row">
                     {% if member != study.creator %}
-                        {% if study.creator == user %}
-                            <form action="{% url "manager:study_kickout" study.id member.id %}" method="post" class='hover:text-red-500'>
-                                {% csrf_token %}
-                                <button type="submit">• {{ member.username }}</button>
-                            </form>
-                        {% endif %}
+                        <form action="{% url "manager:study_kickout" study.id member.id %}" method="post" class='hover:text-red-500'>
+                            {% csrf_token %}
+                            <button type="submit">• {{ member.username }}</button>
+                        </form>
                     {% else %}
                         <span class="mx-2">• {{ member.username }}<i class="fa-solid fa-crown"></i></span>
                     {% endif %}
