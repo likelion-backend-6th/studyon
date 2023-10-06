@@ -54,7 +54,7 @@
                 </div>
             </div>
             <ul id="recruit-list"
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-8 pt-8">
+                class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 {% if user.is_authenticated %}grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3{% endif %} gap-8 pt-8">
                 {% for recruit in recruits %}
                     <li>
                         <div class="shadow-md rounded-xl p-3">
@@ -92,35 +92,37 @@
                 {% endfor %}
             </ul>
         </div>
-        <div id="sidebar"
-             class="flex-none w-64 border-l border-r border-neutral-800 overflow-y-auto">
-            <div class="pt-20 px-4">
-                {% if in_studies %}
-                    <div class="pb-8">
-                        <h3 class="text-xl font-bold pb-2">참여 중인 스터디</h3>
-                        <ul class="p-2 bg-neutral-100 rounded-md">
-                            {% for study in in_studies %}
-                                <a href="{% url 'manager:study_detail' study.id %}">
-                                    <li class="border-b border-neutral-600 last:border-none">{{ study.study.title }}</li>
-                                </a>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-                {% if liked_studies %}
-                    <div>
-                        <h3 class="text-xl font-bold pb-2">좋아요 누른 스터디</h3>
-                        <ul class="p-2 bg-neutral-100 rounded-md">
-                            {% for recruit in liked_studies %}
-                                <a href="{% url 'recruits:recruit_detail' recruit.id %}">
-                                    <li class="border-b border-neutral-600 last:border-none">{{ recruit.title }}</li>
-                                </a>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
+        {% if user.is_authenticated %}
+            <div id="sidebar"
+                 class="flex-none w-64 border-l border-r border-neutral-300 overflow-y-auto">
+                <div class="pt-20 px-4">
+                    {% if in_studies %}
+                        <div class="pb-8">
+                            <h3 class="text-xl font-bold pb-2">참여 중인 스터디</h3>
+                            <ul class="p-2 bg-neutral-100 rounded-md">
+                                {% for study in in_studies %}
+                                    <a href="{% url 'manager:study_detail' study.id %}">
+                                        <li class="border-b border-neutral-600 last:border-none">{{ study.study.title }}</li>
+                                    </a>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    {% if liked_studies %}
+                        <div>
+                            <h3 class="text-xl font-bold pb-2">좋아요 누른 스터디</h3>
+                            <ul class="p-2 bg-neutral-100 rounded-md">
+                                {% for recruit in liked_studies %}
+                                    <a href="{% url 'recruits:recruit_detail' recruit.id %}">
+                                        <li class="border-b border-neutral-600 last:border-none">{{ recruit.title }}</li>
+                                    </a>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-        </div>
+        {% endif %}
     </div>
 {% endblock content %}
 {% block script %}
