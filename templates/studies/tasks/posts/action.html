@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 {% block style %}
-<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" />
-<link rel="stylesheet"
-    href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css" />
-{% endblock %}
+    <link rel="stylesheet"
+          href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" />
+    <link rel="stylesheet"
+          href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css" />
+{% endblock style %}
 {% block content %}
-<div class="flex flex-col items-center max-w-5xl mx-auto" id="content-wrap">
-    {% if request.resolver_match.url_name == "post_create" %}
-    <form method="post" action="{% url 'manager:post_create' pk %}" enctype="multipart/form-data"
-        class="lg:w-[768px] w-4/5" id="post-form">
-        {% else %}
-        <form method="post" action="{% url 'manager:post_modify' pk %}" enctype="multipart/form-data"
-            class="lg:w-[768px] w-4/5" id="post-form">
-            {% endif %}
+    <div class="flex flex-col items-center max-w-5xl mx-auto"
+         id="content-wrap">
+        <form method="post"
+              action="{% if request.resolver_match.url_name == "post_create" %}{% url 'manager:post_create' pk %}{% else %}{% url 'manager:post_modify' pk %}{% endif %}"
+              enctype="multipart/form-data"
+              class="lg:max-w-3xl w-4/5"
+              id="post-form">
             {% csrf_token %}
             <div class="flex flex-col mt-16 items-startmt-20 detail form-wrap">
                 <div class="w-full title-wrap">
@@ -22,29 +23,29 @@
                         <div class="text-lg font-bold">제목</div>
                         <div class="btn">
                             {% if request.resolver_match.url_name == 'post_create' %}
-                            <button class="list" data-url="{% url 'manager:post_list' pk %}" title="게시판으로 돌아가기">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                    class="w-6 h-6 hover:scale-125">
-                                    <path class="text-[#6288ef]" fill-rule="evenodd"
-                                        d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z"
-                                        clip-rule="evenodd" />
-                                    <path class="text-[#89dabf]" fill-rule="evenodd"
-                                        d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
+                                <button class="list"
+                                        data-url="{% url 'manager:post_list' pk %}"
+                                        title="게시판으로 돌아가기">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         viewBox="0 0 20 20"
+                                         fill="currentColor"
+                                         class="w-6 h-6 hover:scale-125 transition-all">
+                                        <path class="text-wanted-blue" fill-rule="evenodd" d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z" clip-rule="evenodd" />
+                                        <path class="text-wanted-green" fill-rule="evenodd" d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
                             {% else %}
-                            <button class="list" data-url="{% url 'manager:post_list' task_id %}" title="게시판으로 돌아가기">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                    class="w-6 h-6 hover:scale-125">
-                                    <path class="text-[#89dabf]" fill-rule="evenodd"
-                                        d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z"
-                                        clip-rule="evenodd" />
-                                    <path class="text-[#6288ef]" fill-rule="evenodd"
-                                        d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
+                                <button class="list"
+                                        data-url="{% url 'manager:post_list' task_id %}"
+                                        title="게시판으로 돌아가기">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         viewBox="0 0 20 20"
+                                         fill="currentColor"
+                                         class="w-6 h-6 hover:scale-125 transition-all">
+                                        <path class="text-wanted-green" fill-rule="evenodd" d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z" clip-rule="evenodd" />
+                                        <path class="text-wanted-blue" fill-rule="evenodd" d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
                             {% endif %}
                         </div>
                         <input type="submit" value="Action" hidden>
@@ -62,227 +63,236 @@
                     <div class="flex items-center justify-between mt-5 title">
                         <div class="text-lg font-bold">첨부파일</div>
                         <button id="add-form" type="button" title="파일 추가">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-5 h-5 hover:scale-125">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor"
+                                 class="w-5 h-5 hover:scale-125 transition-all">
                                 <path stroke-linecap=" round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
-
                         </button>
                     </div>
                     <hr class="my-2">
                     <div class="content" id="file-container">
                         {% if request.resolver_match.url_name != "post_create" %}
-                        {% for file in files %}
-                        <div class="flex justify-between exist-file" id="{{ file.id }}">
-                            <a href="{{ file.url }}" class="my-1 text-[#0000ff] underline hover:font-bold"
-                                title="파일 다운로드" download>
-                                {{file.get_file_name }}</a>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                class="w-4 h-4 cursor-pointer fill-slate-500 remove-file" data-id="{{ file.id }}"
-                                data-url="{% url 'manager:file_delete' file.id %}" title="파일 삭제">
-                                <path fill-rule="evenodd"
-                                    d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
-                                    clip-rule="evenodd" class="remove-file" data-id="{{ file.id }}"
-                                    data-url="{% url 'manager:file_delete' file.id %}" />
-                            </svg>
-                        </div>
-                        {% endfor %}
+                            {% for file in files %}
+                                <div class="flex justify-between exist-file" id="{{ file.id }}">
+                                    <a href="{{ file.url }}"
+                                       class="my-1 text-real-blue underline hover:font-bold"
+                                       title="파일 다운로드"
+                                       download>{{ file.get_file_name }}</a>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         viewBox="0 0 20 20"
+                                         fill="currentColor"
+                                         class="w-4 h-4 cursor-pointer fill-slate-500 remove-file"
+                                         data-id="{{ file.id }}"
+                                         data-url="{% url 'manager:file_delete' file.id %}"
+                                         title="파일 삭제">
+                                        <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" class="remove-file" data-id="{{ file.id }}" data-url="{% url 'manager:file_delete' file.id %}" />
+                                    </svg>
+                                </div>
+                            {% endfor %}
                         {% endif %}
                     </div>
                     <div class="content" id="upload-formset-container">
                         {{ file_upload_formset.management_form }}
                         {% for file_upload_form in file_upload_formset %}
-                        <div class="flex justify-between my-3 file-upload-form-wrap">{{ file_upload_form.as_p }}</div>
+                            <div class="flex justify-between my-3 file-upload-form-wrap">{{ file_upload_form.as_p }}</div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
         </form>
-</div>
-<div class="sticky bottom-0 h-16 bg-white border-t border-neutral-300" id="bottom">
-    <div class="max-w-5xl mx-auto">
-        <div class="flex h-16 mx-3 xl:mx-0">
-            <div class="flex items-center justify-between w-full h-full">
-                <div class="flex flex-row info">
-                    <p class="hidden font-bold sm:flex">
-                        {% now "Y년 m월 d일" %} : &nbsp;
-                    </p>
-                    <p class="font-bold">
-                        {{user}}님의 게시글
-                        {% if request.resolver_match.url_name == 'post_create' %}작성{% else %}수정{% endif %}
-                    </p>
+    </div>
+    <div class="sticky bottom-0 h-16 bg-white border-t border-neutral-300"
+         id="bottom">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex h-16 mx-3 xl:mx-0">
+                <div class="flex items-center justify-between w-full h-full">
+                    <div class="flex flex-row info">
+                        <p class="hidden font-bold sm:flex">{% now "Y년 m월 d일" %} : &nbsp;</p>
+                        <p class="font-bold">
+                            {{ user }}님의 게시글
+                            {% if request.resolver_match.url_name == 'post_create' %}
+                                작성
+                            {% else %}
+                                수정
+                            {% endif %}
+                        </p>
+                    </div>
+                    <button class="self-center px-5 py-3 text-white rounded-md bg-neutral-600 hover:bg-neutral-700"
+                            onclick="submit()">
+                        {% if request.resolver_match.url_name == 'post_create' %}
+                            작성
+                        {% else %}
+                            수정
+                        {% endif %}
+                        완료
+                    </button>
                 </div>
-                <button class="self-center px-5 py-3 text-white rounded-md bg-neutral-600 hover:bg-neutral-700"
-                    onclick="submit()">
-                    {% if request.resolver_match.url_name == 'post_create' %}작성{% else %}수정{% endif %}
-                    완료
-                </button>
             </div>
         </div>
     </div>
-</div>
 {% endblock content %}
 {% block script %}
-<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-<script
-    src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let formNum = document.querySelectorAll(".exist-file").length + document.querySelectorAll(".file-upload-form-wrap").length - 1;
-        let container = document.getElementById("upload-formset-container");
-        let addBtn = document.getElementById("add-form");
-        let totalForms = document.getElementById("id_form-TOTAL_FORMS");
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let formNum = document.querySelectorAll(".exist-file").length + document.querySelectorAll(".file-upload-form-wrap").length - 1;
+            let container = document.getElementById("upload-formset-container");
+            let addBtn = document.getElementById("add-form");
+            let totalForms = document.getElementById("id_form-TOTAL_FORMS");
 
-        addBtn.addEventListener('click', addForm);
-        container.addEventListener('click', function (e) {
-            if (e.target && e.target.classList.contains('remove-button')) {
-                deleteForm(e.target);
-            }
-        });
-
-        function addForm(e) {
-            e.preventDefault();
-
-            let uploadedForms = document.querySelectorAll(".file-upload-form-wrap").length - 1;
-            formNum = document.querySelectorAll(".exist-file").length + uploadedForms;
-
-            if (formNum < 4) {
-                let newForm = container.querySelector('.file-upload-form-wrap').cloneNode(true);
-                let formRegex = RegExp(`form-(\\d){1}-`, 'g');
-
-                formNum++;
-                newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`);
-
-                let textarea = newForm.querySelector('.content textarea');
-                if (textarea) {
-                    textarea.value = '';
+            addBtn.addEventListener('click', addForm);
+            container.addEventListener('click', function (e) {
+                if (e.target && e.target.classList.contains('remove-button')) {
+                    deleteForm(e.target);
                 }
-
-                let svgHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                            class="w-5 h-5 remove-button">
-                            <path
-                                d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                        </svg>
-                `;
-
-                let deleteBtn = document.createElement('button');
-                deleteBtn.type = 'button';
-                deleteBtn.innerHTML = svgHTML;
-                deleteBtn.classList.add('remove-button');
-                deleteBtn.setAttribute("title", "추가 업로드 취소");
-
-                newForm.appendChild(deleteBtn);
-                container.appendChild(newForm);
-
-                totalForms.value = formNum + 1;
-            } else {
-                alert("최대 5개의 파일을 첨부할 수 있습니다.");
-            }
-        }
-
-        function deleteForm(button) {
-            button.closest('.file-upload-form-wrap').remove();
-            formNum--;
-            totalForms.value = formNum + 1;
-
-            let forms = container.querySelectorAll('.file-upload-form-wrap');
-            forms.forEach((form, index) => {
-                let formRegex = RegExp(`form-(\\d){1}-`, 'g');
-                form.innerHTML = form.innerHTML.replace(formRegex, `form-${index}-`);
             });
-        }
 
-        let file_container = document.getElementById("file-container");
-
-        file_container.addEventListener('click', function (e) {
-            if (e.target && e.target.classList.contains('remove-file')) {
+            function addForm(e) {
                 e.preventDefault();
-                if (confirm("해당 파일을 삭제하시겠습니까?")) {
-                    removeFile(e.target);
+
+                let uploadedForms = document.querySelectorAll(".file-upload-form-wrap").length - 1;
+                formNum = document.querySelectorAll(".exist-file").length + uploadedForms;
+
+                if (formNum < 4) {
+                    let newForm = container.querySelector('.file-upload-form-wrap').cloneNode(true);
+                    let formRegex = RegExp(`form-(\\d){1}-`, 'g');
+
+                    formNum++;
+                    newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`);
+
+                    let textarea = newForm.querySelector('.content textarea');
+                    if (textarea) {
+                        textarea.value = '';
+                    }
+
+                    let svgHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 remove-button">
+                                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                            </svg>
+                    `;
+
+                    let deleteBtn = document.createElement('button');
+                    deleteBtn.type = 'button';
+                    deleteBtn.innerHTML = svgHTML;
+                    deleteBtn.classList.add('remove-button');
+                    deleteBtn.setAttribute("title", "추가 업로드 취소");
+
+                    newForm.appendChild(deleteBtn);
+                    container.appendChild(newForm);
+
+                    totalForms.value = formNum + 1;
                 } else {
+                    alert("최대 5개의 파일을 첨부할 수 있습니다.");
                 }
             }
-        });
 
-        function removeFile(e) {
+            function deleteForm(button) {
+                button.closest('.file-upload-form-wrap').remove();
+                formNum--;
+                totalForms.value = formNum + 1;
 
-            let removeUrl = e.getAttribute('data-url');
-            let file_id = e.getAttribute('data-id');
-
-            fetch(removeUrl, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(res => {
-                    if (res.ok) {
-                        let fileElement = document.getElementById(`${file_id}`);
-                        if (fileElement) {
-                            fileElement.parentNode.removeChild(fileElement);
-                        }
-                    } else {
-                        console.error('삭제 실패');
-                    }
-                })
-                .catch(error => {
-                    console.error('에러:', error);
+                let forms = container.querySelectorAll('.file-upload-form-wrap');
+                forms.forEach((form, index) => {
+                    let formRegex = RegExp(`form-(\\d){1}-`, 'g');
+                    form.innerHTML = form.innerHTML.replace(formRegex, `form-${index}-`);
                 });
-        }
-
-        let textArea = document.getElementById("id_content");
-        let textAreaContent = textArea.textContent
-
-        const { Editor } = toastui;
-        const { codeSyntaxHighlight } = Editor.plugin;
-
-        const editorDiv = document.getElementById('editor');
-
-        const editor = new toastui.Editor({
-            el: editorDiv,
-            height: '350px',
-            initialEditType: 'markdown',
-            previewStyle: 'tab',
-            initialValue: textArea.textContent,
-            plugins: [codeSyntaxHighlight],
-        })
-        const postForm = document.getElementById('post-form')
-        postForm.addEventListener('submit', (e) => {
-            e.preventDefault()
-            const postFormTextArea = document.querySelector('textarea')
-            postFormTextArea.textContent = editor.getMarkdown()
-            postForm.submit()
-        });
-
-        let listBtn = document.querySelector(".list");
-        let listUrl = listBtn.getAttribute('data-url');
-        listBtn.addEventListener('click', function (e) {
-            e.preventDefault()
-            window.location.href = listUrl;
-        });
-
-        window.addEventListener('resize', function () {
-            let pageContent = document.getElementById("content-wrap");
-            let pageContentHeight = pageContent.offsetHeight;
-
-            let windowHeight = window.innerHeight;
-            let margin = windowHeight - 64 - 60 - pageContentHeight;
-
-            let bottom = document.getElementById("bottom");
-
-            if (margin > 0) {
-                bottom.style.marginTop = `${margin}px`;
             }
+
+            let file_container = document.getElementById("file-container");
+
+            file_container.addEventListener('click', function (e) {
+                if (e.target && e.target.classList.contains('remove-file')) {
+                    e.preventDefault();
+                    if (confirm("해당 파일을 삭제하시겠습니까?")) {
+                        removeFile(e.target);
+                    } else {
+                    }
+                }
+            });
+
+            function removeFile(e) {
+
+                let removeUrl = e.getAttribute('data-url');
+                let file_id = e.getAttribute('data-id');
+
+                fetch(removeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            let fileElement = document.getElementById(`${file_id}`);
+                            if (fileElement) {
+                                fileElement.parentNode.removeChild(fileElement);
+                            }
+                        } else {
+                            console.error('삭제 실패');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('에러:', error);
+                    });
+            }
+
+            let textArea = document.getElementById("id_content");
+            let textAreaContent = textArea.textContent
+
+            const { Editor } = toastui;
+            const { codeSyntaxHighlight } = Editor.plugin;
+
+            const editorDiv = document.getElementById('editor');
+
+            const editor = new toastui.Editor({
+                el: editorDiv,
+                height: '350px',
+                initialEditType: 'markdown',
+                previewStyle: 'tab',
+                initialValue: textArea.textContent,
+                plugins: [codeSyntaxHighlight],
+            })
+            const postForm = document.getElementById('post-form')
+            postForm.addEventListener('submit', (e) => {
+                e.preventDefault()
+                const postFormTextArea = document.querySelector('textarea')
+                postFormTextArea.textContent = editor.getMarkdown()
+                postForm.submit()
+            });
+
+            let listBtn = document.querySelector(".list");
+            let listUrl = listBtn.getAttribute('data-url');
+            listBtn.addEventListener('click', function (e) {
+                e.preventDefault()
+                window.location.href = listUrl;
+            });
+
+            window.addEventListener('resize', function () {
+                let pageContent = document.getElementById("content-wrap");
+                let pageContentHeight = pageContent.offsetHeight;
+
+                let windowHeight = window.innerHeight;
+                let margin = windowHeight - 64 - 60 - pageContentHeight;
+
+                let bottom = document.getElementById("bottom");
+
+                if (margin > 0) {
+                    bottom.style.marginTop = `${margin}px`;
+                }
+            });
+
+            window.dispatchEvent(new Event('resize'));
+
         });
 
-        window.dispatchEvent(new Event('resize'));
-
-    });
-
-    function submit() {
-        document.querySelector('input[type="submit"]').click();
-    }
-</script>
+        function submit() {
+            document.querySelector('input[type="submit"]').click();
+        }
+    </script>
 {% endblock script %}
