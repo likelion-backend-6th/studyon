@@ -1,112 +1,131 @@
 {% extends "base.html" %}
 {% load static %}
 {% block style %}
-<link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
-<link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
-<link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}"
+          rel="stylesheet"
+          type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}"
+          rel="stylesheet"
+          type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}"
+          rel="stylesheet"
+          type="text/css">
 {% endblock style %}
 {% block content %}
-<div class="text-[#373737] flex flex-col items-center max-w-5xl mx-auto">
-    <div class="flex flex-col items-start xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 mt-14 task">
-        <div class="text-5xl font-bold title">{{ task.title }}</div>
-        <div class="mt-10 mb-10 text-3xl description">{{ task.description }}</div>
-    </div>
-    <div class="flex my-4 items-center justify-between xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 header">
-        <form method="get" class="mr-3 search">
-            <label class="px-4 py-2 border border-neutral-300 cursor-text">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" name="query" maxlength="30" id="id_query" placeholder="키워드 검색"
-                    class="pl-2 bg-transparent outline-none placeholder-black search xl:w-[300px] lg:w-[200px] sm:w-[150px] w-[100px]"
-                    value="{{ query }}">
-            </label>
-            <button type="submit" hidden>검색</button>
-        </form>
-        <div class="flex item-center btn">
-            <button class="px-3 mr-4 create" onclick=location.href="{% url 'manager:post_create' task.id %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-6 h-6 hover:scale-125 hover:text-[#89DADF]">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-            </button>
-            <button class="px-3 study" onclick=location.href="{% url 'manager:study_detail' task.study.id %}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-6 h-6 hover:scale-125 hover:text-[#6288EF]">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                </svg>
-            </button>
+    <div class="flex flex-col items-center max-w-5xl mx-auto">
+        <div class="flex flex-col items-start xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 mt-14 task">
+            <div class="text-5xl font-bold title">{{ task.title }}</div>
+            <div class="mt-10 mb-10 text-3xl description">{{ task.description }}</div>
         </div>
-    </div>
-    <div class="xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 border-y border-neutral-100 shadow-lg">
-        <div class="thead">
-            <div class="flex flex-row items-center h-10 text-lg border-y border-neutral-500 bg-neutral-100">
-                <div class="mx-2 font-semibold text-center basis-1/6 td">날짜</div>
-                <div class="mx-2 font-semibold text-center basis-3/6 td">제목</div>
-                <div class="mx-2 font-semibold text-center basis-1/6 td">작성자</div>
-                <div class="hidden mx-2 font-semibold text-center basis-1/6 sm:block td">첨부파일</div>
+        <div class="flex my-4 items-center justify-between xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 header">
+            <form method="get" class="mr-3 search">
+                <label class="px-4 py-2 border border-neutral-300 cursor-text">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text"
+                           name="query"
+                           maxlength="30"
+                           id="id_query"
+                           placeholder="키워드 검색"
+                           class="pl-2 bg-transparent outline-none placeholder-black search xl:w-[300px] lg:w-[200px] sm:w-[150px] w-[100px]"
+                           value="{{ query }}">
+                </label>
+                <button type="submit" hidden>검색</button>
+            </form>
+            <div class="flex item-center btn">
+                <button class="px-3 mr-4 create"
+                        onclick="location.href='{% url 'manager:post_create' task.id %}'">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="w-6 h-6 hover:scale-125 hover:text-wanted-cyan">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </button>
+                <button class="px-3 study"
+                        onclick="location.href='{% url 'manager:study_detail' task.study.id %}'">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="w-6 h-6 hover:scale-125 hover:text-wanted-blue">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                </button>
             </div>
         </div>
-        <div class="overflow-y-auto h-[500px] tbody" id="post-list">
-            {% for post in posts %}
-            <div
-                class="flex flex-row items-center h-8 border-y border-neutral-100 hover:bg-neutral-100/75 hover:shadow-[0_10px_10px_-10px_rgba(0,0,0,0.9)] text-sm">
-                <div class="mx-2 text-center basis-1/6 td">{{ post.created_at|date:"Y.m.d" }}</div>
-                <div class="mx-2 basis-3/6 td hover:text-[#4059E1] underline">
-                    <a href="{% url 'manager:post_detail' post.id %}">{{ post.title|truncatechars:30 }}</a>
-                </div>
-                <div class="mx-2 text-center basis-1/6 td">{{ post.author.username }}</div>
-                <div class="hidden mx-2 text-center basis-1/6 sm:block td">
-                    {% if post.files.exists %}
-                    <a href="{{ post.files.last.url }}" class="text-xs text-[#0000ff] underline"
-                        download>{{post.files.last.get_file_name|truncatechars:7 }}</a>
-                    {% endif %}
+        <div class="xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 border-y border-neutral-100 shadow-lg">
+            <div class="thead">
+                <div class="flex flex-row items-center h-10 text-lg border-y border-neutral-500 bg-neutral-100">
+                    <div class="mx-2 font-semibold text-center basis-1/6 td">날짜</div>
+                    <div class="mx-2 font-semibold text-center basis-3/6 td">제목</div>
+                    <div class="mx-2 font-semibold text-center basis-1/6 td">작성자</div>
+                    <div class="hidden mx-2 font-semibold text-center basis-1/6 sm:block td">첨부파일</div>
                 </div>
             </div>
-            {% endfor %}
+            <div class="overflow-y-auto h-[500px] tbody" id="post-list">
+                {% for post in posts %}
+                    <div class="flex flex-row items-center h-8 border-y border-neutral-100 hover:bg-neutral-100/75 hover:shadow-[0_10px_10px_-10px_rgba(0,0,0,0.9)] text-sm">
+                        <div class="mx-2 text-center basis-1/6 td">{{ post.created_at|date:"Y.m.d" }}</div>
+                        <div class="mx-2 basis-3/6 td hover:text-wanted-indigo underline">
+                            <a href="{% url 'manager:post_detail' post.id %}">{{ post.title|truncatechars:30 }}</a>
+                        </div>
+                        <div class="mx-2 text-center basis-1/6 td">{{ post.author.username }}</div>
+                        <div class="hidden mx-2 text-center basis-1/6 sm:block td">
+                            {% if post.files.exists %}
+                                <a href="{{ post.files.last.url }}"
+                                   class="text-xs text-real-blue underline"
+                                   download>{{ post.files.last.get_file_name|truncatechars:7 }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-</div>
 {% endblock content %}
 {% block script %}
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        let page = 1;
-        let emptyPage = false;
-        let blockRequest = false;
-        let lastScrollY = 0;
-        let inputQuery = document.getElementById("id_query");
-        let queryParameter = inputQuery.value;
-        let tbody = document.querySelector(".tbody");
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let page = 1;
+            let emptyPage = false;
+            let blockRequest = false;
+            let lastScrollY = 0;
+            let inputQuery = document.getElementById("id_query");
+            let queryParameter = inputQuery.value;
+            let tbody = document.querySelector(".tbody");
 
-        tbody.addEventListener('scroll', function (e) {
-            let currentScrollY = tbody.scrollTop;
-            let margin = tbody.scrollHeight - tbody.clientHeight - 300;
-            if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
-                blockRequest = true;
-                page += 1;
-                let requestUrl = `?page=${page}`;
-                if (queryParameter) {
-                    requestUrl += `&query=${queryParameter}`
+            tbody.addEventListener('scroll', function (e) {
+                let currentScrollY = tbody.scrollTop;
+                let margin = tbody.scrollHeight - tbody.clientHeight - 300;
+                if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
+                    blockRequest = true;
+                    page += 1;
+                    let requestUrl = `?page=${page}`;
+                    if (queryParameter) {
+                        requestUrl += `&query=${queryParameter}`
+                    }
+                    fetch(requestUrl)
+                        .then(response => response.text())
+                        .then(html => {
+                            let parser = new DOMParser();
+                            let doc = parser.parseFromString(html, 'text/html');
+                            let tbodyContent = doc.querySelector(".tbody").innerHTML;
+                            if (tbodyContent === '') {
+                                emptyPage = true;
+                            } else {
+                                tbody.insertAdjacentHTML('beforeend', tbodyContent);
+                                blockRequest = false;
+                            }
+                        });
                 }
-                fetch(requestUrl)
-                    .then(response => response.text())
-                    .then(html => {
-                        let parser = new DOMParser();
-                        let doc = parser.parseFromString(html, 'text/html');
-                        let tbodyContent = doc.querySelector(".tbody").innerHTML;
-                        if (tbodyContent === '') {
-                            emptyPage = true;
-                        } else {
-                            tbody.insertAdjacentHTML('beforeend', tbodyContent);
-                            blockRequest = false;
-                        }
-                    });
-            }
-            lastScrollY = currentScrollY;
-        });
-    })
+                lastScrollY = currentScrollY;
+            });
+        })
 
-    let scrollEvent = new Event('scroll');
-    document.querySelector(".tbody").dispatchEvent(scrollEvent); 
-</script>
+        let scrollEvent = new Event('scroll');
+        document.querySelector(".tbody").dispatchEvent(scrollEvent); 
+    </script>
 {% endblock script %}
