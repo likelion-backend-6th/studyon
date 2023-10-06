@@ -25,6 +25,7 @@
                                        name="query"
                                        maxlength="100"
                                        id="id_query"
+                                       value="{{ query|default:''|safe }}"
                                        placeholder="키워드를 입력해주세요."
                                        class="pl-2 bg-transparent outline-none placeholder-black">
                             </label>
@@ -37,7 +38,7 @@
                                        name="tag"
                                        maxlength="100"
                                        id="id_tag"
-                                       {% if tag %}value="{{ tag }}"{% endif %}
+                                       value="{{ tag|default:''|safe }}"
                                        placeholder="테그를 입력해주세요."
                                        class="pl-2 bg-transparent outline-none placeholder-black">
                             </label>
