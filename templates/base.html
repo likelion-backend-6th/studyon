@@ -1,64 +1,50 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="description" content="study on">
-    <meta name="keywords" content="study, recruit, plan, todo">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study On</title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    {% block style %}
-    {% endblock style %}
-  </head>
-  <body>
-    <div class="h-full">
-      <div class="fixed w-full h-[60px] border-b border-neutral-300 bg-[rgba(255,255,255,.88)] backdrop-blur-xl backdrop-saturate-150 z-50">
-        <div class="mx-auto max-w-5xl flex items-center h-full">
-          <a href="{% url 'recruits:index' %}"class="flex">
-            <h1 class="self-center text-lg text-cyan-700 font-bold">StudyOn</h1>
-          </a>
-          {% if user.is_authenticated %}
-            <div class="flex items-center text-xl font-bold pl-20">
-              {% if user.profile.nickname %}
-                <p>
-                  Welcome,
-                  {{ user.profile.nickname }}.
-                  Thanks for logging in.
-                </p>
-              {% endif %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="study on">
+        <meta name="keywords" content="study, recruit, plan, todo">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Study On</title>
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        {% block style %}
+        {% endblock style %}
+    </head>
+    <body>
+        <div class="h-full">
+            <div class="fixed w-full h-[60px] border-b border-neutral-300 bg-[rgba(255,255,255,.88)] backdrop-blur-xl backdrop-saturate-150 z-50">
+                <div class="mx-auto max-w-5xl flex items-center h-full">
+                    <a href="{% url 'recruits:index' %}"class="flex">
+                        <h1 class="self-center text-lg text-cyan-700 font-bold">StudyOn</h1>
+                    </a>
+                    <div class="ml-auto flex h-full text-base">
+                        {% if user.is_authenticated %}
+                            <div class="flex items-center font-bold">
+                                <a href={% url 'users:info' %}>내 정보</a>
+                            </div>
+                            <div class="flex items-center font-bold pl-6">
+                                <a href={% url 'manager:studies_list' %}>스터디 관리</a>
+                            </div>
+                            <div class="flex items-center font-bold pl-6">
+                                <a href={% url 'users:logout' %}>로그아웃</a>
+                            </div>
+                        {% else %}
+                            <div class="flex items-center font-bold pl-6">
+                                <a href={% url 'users:login' %}>로그인</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-          {% endif %}
-          <div class="ml-auto flex h-full text-base">
-            {% if user.is_authenticated %}
-              <div class="flex items-center font-bold">
-                <a href={% url 'users:info' %}>내 정보</a>
-              </div>
-              <div class="flex items-center font-bold pl-6">
-                <a href={% url 'manager:studies_list' %}>스터디 관리</a>
-              </div>
-              <div class="flex items-center font-bold pl-6">
-                <a href={% url 'users:logout' %}>로그아웃</a>
-              </div>
-            {% else %}
-              <div class="flex items-center font-bold pl-6">
-                <a href={% url 'users:login' %}>로그인</a>
-              </div>
-              <div class="flex items-center font-bold pl-6">
-                <a href={% url 'users:signup' %}>회원가입</a>
-              </div>
-            {% endif %}
-          </div>
+            <div class="h-[60px]"></div>
+            <div class="h-[calc(100%-60px)]">
+                {% block content %}
+                {% endblock content %}
+            </div>
         </div>
-      </div>
-      <div class="h-[60px]"></div>
-      <div class="h-[calc(100%-60px)]">
-        {% block content %}
-        {% endblock content %}
-      </div>
-    </div>
-  </body>
-  {% block script %}
-  {% endblock script %}
+    </body>
+    {% block script %}
+    {% endblock script %}
 </html>

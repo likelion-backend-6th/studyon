@@ -13,7 +13,7 @@
 {% endblock style %}
 {% block content %}
     <div class="mx-auto max-w-5xl flex h-full">
-        <div class="flex-auto pr-8">
+        <div class="flex-auto">
             <div class="pt-16">
                 <div class="flex justify-between">
                     <form method="get" class="flex flex-auto justify-between pr-10">
@@ -93,12 +93,12 @@
         </div>
         {% if user.is_authenticated %}
             <div id="sidebar"
-                 class="flex-none w-64 border-l border-r border-neutral-300 overflow-y-auto">
+                 class="flex-none w-64 border-l border-r border-neutral-300 overflow-y-auto ml-8">
                 <div class="pt-20 px-4">
-                    {% if in_studies %}
-                        <div class="pb-8">
-                            <h3 class="text-xl font-bold mb-2">참여 중인 스터디</h3>
-                            <hr class="border-neutral-300" />
+                    <div class="pb-8">
+                        <h3 class="text-xl font-bold mb-2">참여 중인 스터디</h3>
+                        <hr class="border-neutral-300" />
+                        {% if in_studies %}
                             <ul class="mt-2">
                                 {% for study in in_studies %}
                                     <li class="pl-2 border-b border-neutral-200 pb-1 mb-1 last:border-none last:pb-0 last:mb-0">
@@ -106,12 +106,12 @@
                                     </li>
                                 {% endfor %}
                             </ul>
-                        </div>
-                    {% endif %}
-                    {% if liked_studies %}
-                        <div>
-                            <h3 class="text-xl font-bold pb-2">좋아요 누른 스터디</h3>
-                            <hr class="border-neutral-300" />
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold pb-2">좋아요 누른 스터디</h3>
+                        <hr class="border-neutral-300" />
+                        {% if liked_studies %}
                             <ul class="mt-2">
                                 {% for recruit in liked_studies %}
                                     <li class="pl-2 border-b border-neutral-200 pb-1 mb-1 last:border-none last:pb-0 last:mb-0">
@@ -119,8 +119,8 @@
                                     </li>
                                 {% endfor %}
                             </ul>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         {% endif %}
