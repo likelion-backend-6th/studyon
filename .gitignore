@@ -175,3 +175,4 @@ cython_debug/
 
 # Nodejs
 node_modules/
+/static/css/base.css
