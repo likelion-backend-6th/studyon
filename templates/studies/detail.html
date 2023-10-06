@@ -82,7 +82,7 @@
                         <div class="ml-3"><a href="{% url "manager:post_list" task.id %}">{{ task.title }}</a></div>
                         <span class="text-xs block self-end ml-3">{{ task.start|date:'Y.m.d' }}~{{ task.end|date:'Y.m.d' }}</span>
                         <div class='ml-auto flex flex-row'>
-                            {% if task.author == user %}
+                            {% if task.author == user or study.creator == user%}
                                 <a class='block bg-sky-300 rounded-lg px-1' href="{% url "manager:task_modify" task.id %}">Modify</a>
                                 <form action="{% url "manager:task_delete" task.id %}" method="post" class='mx-3 bg-red-400 rounded-lg px-1'>
                                     {% csrf_token %}
