@@ -6,14 +6,14 @@
 <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
 {% endblock style %}
 {% block content %}
-<div class="flex flex-col items-center max-w-5xl mx-auto">
-    <div class="flex flex-col items-start xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 mt-20 task">
+<div class="text-[#373737] flex flex-col items-center max-w-5xl mx-auto">
+    <div class="flex flex-col items-start xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 mt-14 task">
         <div class="text-5xl font-bold title">{{ task.title }}</div>
         <div class="mt-10 mb-10 text-3xl description">{{ task.description }}</div>
     </div>
     <div class="flex my-4 items-center justify-between xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 header">
         <form method="get" class="mr-3 search">
-            <label class="px-4 py-2 border rounded-full border-neutral-600 cursor-text">
+            <label class="px-4 py-2 border border-neutral-300 cursor-text">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" name="query" maxlength="30" id="id_query" placeholder="키워드 검색"
                     class="pl-2 bg-transparent outline-none placeholder-black search xl:w-[300px] lg:w-[200px] sm:w-[150px] w-[100px]"
@@ -37,23 +37,22 @@
             </button>
         </div>
     </div>
-    <div class="xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 border-y border-neutral-200 shadow-lg">
+    <div class="xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 border-y border-neutral-100 shadow-lg">
         <div class="thead">
-            <div
-                class="flex flex-row items-center h-10 text-lg border-y border-neutral-500 rounded-t-lg bg-[#4059E1] text-white">
-                <div class="mx-2 text-center basis-1/6 td">날짜</div>
-                <div class="mx-2 text-center basis-3/6 td">제목</div>
-                <div class="mx-2 text-center basis-1/6 td">작성자</div>
-                <div class="hidden mx-2 text-center basis-1/6 sm:block td">첨부파일</div>
+            <div class="flex flex-row items-center h-10 text-lg border-y border-neutral-500 bg-neutral-100">
+                <div class="mx-2 font-semibold text-center basis-1/6 td">날짜</div>
+                <div class="mx-2 font-semibold text-center basis-3/6 td">제목</div>
+                <div class="mx-2 font-semibold text-center basis-1/6 td">작성자</div>
+                <div class="hidden mx-2 font-semibold text-center basis-1/6 sm:block td">첨부파일</div>
             </div>
         </div>
-        <div class="tbody" id="post-list">
+        <div class="overflow-y-auto h-[500px] tbody" id="post-list">
             {% for post in posts %}
             <div
-                class="flex flex-row items-center h-8 border-y border-neutral-200 hover:scale-105 hover:border-y hover:bg-[#c9f5e6]/75 hover:shadow-[0_10px_10px_-10px_rgba(0,0,0,0.9)] text-sm">
+                class="flex flex-row items-center h-8 border-y border-neutral-100 hover:bg-neutral-100/75 hover:shadow-[0_10px_10px_-10px_rgba(0,0,0,0.9)] text-sm">
                 <div class="mx-2 text-center basis-1/6 td">{{ post.created_at|date:"Y.m.d" }}</div>
-                <div class="mx-2 basis-3/6 td hover:text-[#4059E1] hover:underline">
-                    <a href="{% url 'manager:post_detail' post.id %}">{{ post.title }}</a>
+                <div class="mx-2 basis-3/6 td hover:text-[#4059E1] underline">
+                    <a href="{% url 'manager:post_detail' post.id %}">{{ post.title|truncatechars:30 }}</a>
                 </div>
                 <div class="mx-2 text-center basis-1/6 td">{{ post.author.username }}</div>
                 <div class="hidden mx-2 text-center basis-1/6 sm:block td">
@@ -77,10 +76,11 @@
         let lastScrollY = 0;
         let inputQuery = document.getElementById("id_query");
         let queryParameter = inputQuery.value;
+        let tbody = document.querySelector(".tbody");
 
-        window.addEventListener('scroll', function (e) {
-            let currentScrollY = window.scrollY;
-            let margin = document.body.clientHeight - window.innerHeight - 300;
+        tbody.addEventListener('scroll', function (e) {
+            let currentScrollY = tbody.scrollTop;
+            let margin = tbody.scrollHeight - tbody.clientHeight - 300;
             if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
                 blockRequest = true;
                 page += 1;
@@ -93,20 +93,20 @@
                     .then(html => {
                         let parser = new DOMParser();
                         let doc = parser.parseFromString(html, 'text/html');
-                        let tbodyContent = doc.getElementById("post-list").innerHTML;
+                        let tbodyContent = doc.querySelector(".tbody").innerHTML;
                         if (tbodyContent === '') {
                             emptyPage = true;
                         } else {
-                            let postList = document.getElementById("post-list");
-                            postList.insertAdjacentHTML('beforeend', tbodyContent);
+                            tbody.insertAdjacentHTML('beforeend', tbodyContent);
                             blockRequest = false;
                         }
                     });
             }
             lastScrollY = currentScrollY;
         });
-        let scrollEvent = new Event('scroll');
-        window.dispatchEvent(scrollEvent);
     })
+
+    let scrollEvent = new Event('scroll');
+    document.querySelector(".tbody").dispatchEvent(scrollEvent); 
 </script>
 {% endblock script %}
