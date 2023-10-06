@@ -1,31 +1,53 @@
 {% extends "base.html" %}
 {% load static %}
 {% block style %}
-<link href="{% static 'css/codehilite_styles.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" />
+<link rel="stylesheet"
+    href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css" />
 {% endblock %}
 {% block content %}
-<div class="flex flex-col items-center max-w-5xl mx-auto">
+<div class="flex flex-col items-center max-w-5xl mx-auto" id="content-wrap">
     {% if request.resolver_match.url_name == "post_create" %}
     <form method="post" action="{% url 'manager:post_create' pk %}" enctype="multipart/form-data"
-        class="sm:w-[768px] w-4/5">
+        class="lg:w-[768px] w-4/5" id="post-form">
         {% else %}
         <form method="post" action="{% url 'manager:post_modify' pk %}" enctype="multipart/form-data"
-            class="sm:w-[768px] w-4/5">
+            class="lg:w-[768px] w-4/5" id="post-form">
             {% endif %}
             {% csrf_token %}
-            <div class="flex flex-col mt-20 items-startmt-20 detail form-wrap">
+            <div class="flex flex-col mt-16 items-startmt-20 detail form-wrap">
                 <div class="w-full title-wrap">
                     <div class="flex items-center justify-between title">
                         <div class="text-lg font-bold">제목</div>
-                        <button class="create" type="submit" title="등록">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                class="w-5 h-5 hover:scale-125">
-                                <path fill-rule="evenodd"
-                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                                    clip-rule="evenodd" />
-                            </svg>
-
-                        </button>
+                        <div class="btn">
+                            {% if request.resolver_match.url_name == 'post_create' %}
+                            <button class="list" data-url="{% url 'manager:post_list' pk %}" title="게시판으로 돌아가기">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="w-6 h-6 hover:scale-125">
+                                    <path class="text-[#6288ef]" fill-rule="evenodd"
+                                        d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z"
+                                        clip-rule="evenodd" />
+                                    <path class="text-[#89dabf]" fill-rule="evenodd"
+                                        d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            {% else %}
+                            <button class="list" data-url="{% url 'manager:post_list' task_id %}" title="게시판으로 돌아가기">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="w-6 h-6 hover:scale-125">
+                                    <path class="text-[#89dabf]" fill-rule="evenodd"
+                                        d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z"
+                                        clip-rule="evenodd" />
+                                    <path class="text-[#6288ef]" fill-rule="evenodd"
+                                        d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            {% endif %}
+                        </div>
+                        <input type="submit" value="Action" hidden>
                     </div>
                     <hr class="my-2">
                     <div class="content">{{ post_form.title }}</div>
@@ -34,6 +56,7 @@
                     <div class="mt-5 text-lg font-bold title">내용</div>
                     <hr class="my-2">
                     <div class="content">{{ post_form.content }}</div>
+                    <div id="editor"></div>
                 </div>
                 <div class="w-full file-wrap">
                     <div class="flex items-center justify-between mt-5 title">
@@ -75,37 +98,34 @@
                 </div>
             </div>
         </form>
-        <div class="mt-5 btn">
-            {% if request.resolver_match.url_name == 'post_create' %}
-            <button class="mb-20 list" onclick=location.href="{% url 'manager:post_list' pk %}" title="게시판으로 돌아가기">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                    class="w-6 h-6 hover:scale-125">
-                    <path class="text-[#6288ef]" fill-rule="evenodd"
-                        d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z"
-                        clip-rule="evenodd" />
-                    <path class="text-[#89dabf]" fill-rule="evenodd"
-                        d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z"
-                        clip-rule="evenodd" />
-                </svg>
-            </button>
-            {% else %}
-            <button class="mb-20 list" onclick=location.href="{% url 'manager:post_list' task_id %}" title="게시판으로 돌아가기">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                    class="w-6 h-6 hover:scale-125">
-                    <path class="text-[#89dabf]" fill-rule="evenodd"
-                        d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z"
-                        clip-rule="evenodd" />
-                    <path class="text-[#6288ef]" fill-rule="evenodd"
-                        d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z"
-                        clip-rule="evenodd" />
-                </svg>
-            </button>
-            {% endif %}
+</div>
+<div class="sticky bottom-0 h-16 bg-white border-t border-neutral-300" id="bottom">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex h-16 mx-3 xl:mx-0">
+            <div class="flex items-center justify-between w-full h-full">
+                <div class="flex flex-row info">
+                    <p class="hidden font-bold sm:flex">
+                        {% now "Y년 m월 d일" %} : &nbsp;
+                    </p>
+                    <p class="font-bold">
+                        {{user}}님의 게시글
+                        {% if request.resolver_match.url_name == 'post_create' %}작성{% else %}수정{% endif %}
+                    </p>
+                </div>
+                <button class="self-center px-5 py-3 text-white rounded-md bg-neutral-600 hover:bg-neutral-700"
+                    onclick="submit()">
+                    {% if request.resolver_match.url_name == 'post_create' %}작성{% else %}수정{% endif %}
+                    완료
+                </button>
+            </div>
         </div>
+    </div>
 </div>
 {% endblock content %}
 {% block script %}
-{{ post_form.media }}
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script
+    src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let formNum = document.querySelectorAll(".exist-file").length + document.querySelectorAll(".file-upload-form-wrap").length - 1;
@@ -212,18 +232,57 @@
                 });
         }
 
-        function changeContentFormWidth() {
-            let titleForm = document.getElementById("id_title");
-            let titleFormWidth = window.getComputedStyle(titleForm).getPropertyValue('width');
+        let textArea = document.getElementById("id_content");
+        let textAreaContent = textArea.textContent
 
-            let contentForm = document.getElementById('id_content');
-            let contentFormWidth = window.getComputedStyle(contentForm).getPropertyValue('width');
-            contentForm.style.width = titleFormWidth;
-        }
+        const { Editor } = toastui;
+        const { codeSyntaxHighlight } = Editor.plugin;
 
-        window.addEventListener('load', changeContentFormWidth);
-        window.addEventListener('resize', changeContentFormWidth);
+        const editorDiv = document.getElementById('editor');
+
+        const editor = new toastui.Editor({
+            el: editorDiv,
+            height: '350px',
+            initialEditType: 'markdown',
+            previewStyle: 'tab',
+            initialValue: textArea.textContent,
+            plugins: [codeSyntaxHighlight],
+        })
+        const postForm = document.getElementById('post-form')
+        postForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+            const postFormTextArea = document.querySelector('textarea')
+            postFormTextArea.textContent = editor.getMarkdown()
+            postForm.submit()
+        });
+
+        let listBtn = document.querySelector(".list");
+        let listUrl = listBtn.getAttribute('data-url');
+        listBtn.addEventListener('click', function (e) {
+            e.preventDefault()
+            window.location.href = listUrl;
+        });
+
+        window.addEventListener('resize', function () {
+            let pageContent = document.getElementById("content-wrap");
+            let pageContentHeight = pageContent.offsetHeight;
+
+            let windowHeight = window.innerHeight;
+            let margin = windowHeight - 64 - 60 - pageContentHeight;
+
+            let bottom = document.getElementById("bottom");
+
+            if (margin > 0) {
+                bottom.style.marginTop = `${margin}px`;
+            }
+        });
+
+        window.dispatchEvent(new Event('resize'));
 
     });
+
+    function submit() {
+        document.querySelector('input[type="submit"]').click();
+    }
 </script>
 {% endblock script %}
