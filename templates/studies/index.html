@@ -10,12 +10,21 @@
     <link href="{% static 'fontawesomefree/css/solid.css' %}"
           rel="stylesheet"
           type="text/css">
+    <style>
+        .scroll_invisible {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .scroll_invisible::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+    </style>
 {% endblock style %}
 {% block content %}
-    <div class="relative max-w-5xl mx-auto">
-        <div class="box-border absolute right-0 w-[224px] h-full bg-white bg-scroll">
+    <div class="relative max-w-5xl mx-auto border-solid border-2 border-t-0">
+        <div class="box-border absolute right-0 w-[224px] bg-white border-solid border-l-2 h-full">
             <p class='text-xl p-2'>나의 모집글</p>
-            <div class='h-[270px] overflow-y-scroll'>
+            <div class='scroll_invisible h-[270px] overflow-y-scroll'>
                 {% for my_recruit in my_recruits %}
                     <div class='shadow-md rounded-xl w-[90%] p-1 mb-1 ml-auto mr-auto'>
                         <div class='flex items-end'>
@@ -42,7 +51,7 @@
                 {% endfor %}
             </div>
             <p class='text-xl p-2'>찜한 모집글</p>
-            <div class='h-[270px] overflow-y-scroll'>
+            <div class='scroll_invisible h-[270px] overflow-y-scroll'>
                 {% for like_recruit in like_recruits %}
                     {% if like_recruit.creator != user %}
                         <div class='shadow-md rounded-xl w-4/5 p-1 mb-1 ml-auto mr-auto'>
@@ -64,10 +73,10 @@
             </div>
         </div>
         <div class='box-border w-[calc(100%-224px)]'>
-            <p class='text-4xl m-2'>나의 스터디</p>
+            <p class='text-4xl p-2'>나의 스터디</p>
             <div class='flex flex-row overflow-hidden w-full min-w-[250px] h-[300px] overflow-x-scroll pb-4'>
                 {% for my_study in my_studies %}
-                    <div class='shadow-md rounded-xl ml-3 mr-3 p-1 min-w-[250px] h-[250px]'>
+                    <div class='shadow-md rounded-xl mx-3 my-auto p-1 min-w-[250px] h-[250px]'>
                         <div class='relative pt-2 flex items-end'>
                             <a class='text-2xl' href="{% url "manager:study_detail" my_study.id %}">{{ my_study.title }}</a>
                             <span class='text-xs ml-auto'>{{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</span>
@@ -107,10 +116,10 @@
                     </div>
                 {% endfor %}
             </div>
-            <p class='text-4xl m-2'>참여 스터디</p>
+            <p class='text-4xl p-2'>참여 스터디</p>
             <div class='flex flex-row overflow-hidden w-full min-w-[250px] h-[250px] overflow-x-scroll pb-4'>
                 {% for in_study in in_studies %}
-                    <div class='shadow-md rounded-xl ml-3 mr-3 p-1 min-w-[250px] h-[150px]'>
+                    <div class='shadow-md rounded-xl mx-3 my-auto p-1 min-w-[250px] h-[150px]'>
                         <div class='relative pt-2 flex items-end'>
                             <a class='text-2xl' href="{% url "manager:study_detail" in_study.id %}">{{ in_study.title }}</a>
                             <span class='text-xs ml-auto'>{{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</span>
