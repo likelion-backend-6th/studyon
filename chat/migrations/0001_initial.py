@@ -7,57 +7,112 @@ import taggit.managers
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('taggit', '0005_auto_20220424_2025'),
-        ('manager', '0004_alter_post_options_file_name_and_more'),
+        ("taggit", "0005_auto_20220424_2025"),
+        ("manager", "0004_alter_post_options_file_name_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Room',
+            name="Room",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('closed_at', models.DateTimeField(null=True)),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to=settings.AUTH_USER_MODEL)),
-                ('study', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to='manager.study')),
-                ('tags', taggit.managers.TaggableManager(help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("closed_at", models.DateTimeField(null=True)),
+                (
+                    "creator",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rooms",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "study",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rooms",
+                        to="manager.study",
+                    ),
+                ),
+                (
+                    "tags",
+                    taggit.managers.TaggableManager(
+                        help_text="A comma-separated list of tags.",
+                        through="taggit.TaggedItem",
+                        to="taggit.Tag",
+                        verbose_name="Tags",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Chat',
+            name="Chat",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='chats', to=settings.AUTH_USER_MODEL)),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='chats', to='chat.room')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "creator",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="chats",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="chats",
+                        to="chat.room",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.AddIndex(
-            model_name='room',
-            index=models.Index(fields=['-created_at'], name='chat_room_created_cc8caf_idx'),
+            model_name="room",
+            index=models.Index(
+                fields=["-created_at"], name="chat_room_created_cc8caf_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='room',
-            index=models.Index(fields=['study'], name='chat_room_study_i_9f2062_idx'),
+            model_name="room",
+            index=models.Index(fields=["study"], name="chat_room_study_i_9f2062_idx"),
         ),
         migrations.AddIndex(
-            model_name='chat',
-            index=models.Index(fields=['-created_at'], name='chat_chat_created_fa771b_idx'),
+            model_name="chat",
+            index=models.Index(
+                fields=["-created_at"], name="chat_chat_created_fa771b_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='chat',
-            index=models.Index(fields=['room'], name='chat_chat_room_id_493a7a_idx'),
+            model_name="chat",
+            index=models.Index(fields=["room"], name="chat_chat_room_id_493a7a_idx"),
         ),
     ]
