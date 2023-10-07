@@ -7,7 +7,7 @@ class Message(models.Model):
     reciever = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="recievers"
     )
-    title = models.TextField()
+    title = models.CharField(max_length=50)
     content = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     read_at = models.DateTimeField(null=True)
