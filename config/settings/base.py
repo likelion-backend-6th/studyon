@@ -52,7 +52,7 @@ INSTALLED_APPS += [
     "manager.apps.ManagerConfig",
     "recruit.apps.RecruitConfig",
     "user.apps.UserConfig",
-    "message.apps.MessageCofig",
+    "message.apps.MessageConfig",
     "chat.apps.ChatConfig",
 ]
 
