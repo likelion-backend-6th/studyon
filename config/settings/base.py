@@ -52,6 +52,8 @@ INSTALLED_APPS += [
     "manager.apps.ManagerConfig",
     "recruit.apps.RecruitConfig",
     "user.apps.UserConfig",
+    "message.apps.MessageCofig",
+    "chat.apps.ChatConfig",
 ]
 
 # Third Party Apps
