@@ -29,19 +29,21 @@
                                         <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                             <div class="sm:flex sm:items-start">
                                                 <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                                    <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24"
-                                                         stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"></path>
+                                                    <svg class="h-6 w-6 text-red-600"
+                                                         fill="none"
+                                                         viewBox="0 0 24 24"
+                                                         stroke-width="1.5"
+                                                         stroke="currentColor"
+                                                         aria-hidden="true">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z">
+                                                        </path>
                                                     </svg>
                                                 </div>
                                                 <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                                     <h3 class="text-base font-semibold leading-6 text-gray-900"
                                                         id="modal-title">Form error</h3>
                                                     <div class="mt-2">
-                                                        <p class="text-sm text-gray-500">
-                                                            {{ field.label }}: {{ error }}
-                                                        </p>
+                                                        <p class="text-sm text-gray-500">{{ field.label }}: {{ error }}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -50,10 +52,10 @@
                                 </div>
                             </li>
                         {% endfor %}
+                        {
                     {% endfor %}
                 </ul>
             {% endif %}
-
             {% csrf_token %}
             <input id="id_title"
                    type="text"
@@ -65,7 +67,7 @@
                    class="w-full text-3xl font-bold outline-none placeholder-slate-400">
             <div class="mt-10">
                 <p class="text-lg font-bold">태그</p>
-                <hr class="my-2"/>
+                <hr class="my-2" />
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input id="tag"
                        type="text"
@@ -78,7 +80,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">마감일</p>
-                <hr class="my-2"/>
+                <hr class="my-2" />
                 <label for="id_deadline">
                     <input id="id_deadline"
                            type="date"
@@ -91,7 +93,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">기간</p>
-                <hr class="my-2"/>
+                <hr class="my-2" />
                 <input id="id_start"
                        type="date"
                        name="start"
@@ -110,7 +112,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">모집 인원</p>
-                <hr class="my-2"/>
+                <hr class="my-2" />
                 <input type="number"
                        min="0"
                        max="99"
@@ -122,7 +124,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">모집 대상</p>
-                <hr class="my-2"/>
+                <hr class="my-2" />
                 <div class="w-full">
                     <textarea id="id_target"
                               name="target"
@@ -134,7 +136,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">진행 방식</p>
-                <hr class="my-2"/>
+                <hr class="my-2" />
                 <textarea id="id_process"
                           name="process"
                           required
@@ -144,7 +146,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">추가 정보</p>
-                <hr class="my-2"/>
+                <hr class="my-2" />
                 <textarea id="id_info"
                           name="info"
                           required
@@ -154,7 +156,7 @@
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">파일 등록</p>
-                <hr class="my-2"/>
+                <hr class="my-2" />
                 <input id="id_file"
                        type="file"
                        name="file"
@@ -179,8 +181,7 @@
                 <div class="flex justify-between h-full">
                     <p class="self-center font-bold">뭔가 뭔가 뭔가 뭔가 글 뭔가 뭔가 한 글</p>
                     <button class="self-center px-5 py-3 text-white rounded-md bg-neutral-600 hover:bg-neutral-700"
-                            onClick="submit()">작성 완료
-                    </button>
+                            onClick="submit()">작성 완료</button>
                 </div>
             </div>
         </div>
