@@ -9,7 +9,10 @@ var localStream = new MediaStream();
 
 // websocket address
 var loc = window.location;
-var wsStart = "ws://";
+var wsStart = 'ws://';
+if (loc.protocol == 'https:') {
+    wsStart = 'wss://';
+}
 var endPoint = wsStart + loc.host + "/video";
 
 var username = document.getElementById("data").getAttribute("data-username");
