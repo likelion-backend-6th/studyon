@@ -18,3 +18,30 @@ DATABASES = {
         "OPTIONS": {"options": "-c search_path=studyon,public"},
     }
 }
+
+
+# Debug Toolbar Setting
+INTERNAL_IPS = [
+    "staging.limeskin.kr",
+]
+
+# Redis Cache Setting
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis-studyon-staging:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+# Channel Layer Settings
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis-studyon-staging", 6379)],
+        },
+    },
+}
