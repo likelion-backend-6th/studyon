@@ -2,18 +2,15 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import (
-    ListView,
-    DetailView,
-    DeleteView,
-    FormView,
-)
+from django.views.generic import DeleteView, DetailView, FormView, ListView
+from django.views.generic.edit import UpdateView
 
-from common.utils import Tags, s3_file_upload, InfiniteListView
-from manager.models import Study, File
-from recruit.forms import SearchForm, ApplicationForm, RecruitForm
+from common.utils import InfiniteListView, Tags, s3_file_upload
+from manager.models import File, Study
+from recruit.forms import ApplicationForm, RecruitForm, SearchForm
 from recruit.models import Recruit, Register
 
 
@@ -214,10 +211,6 @@ class RecruitCreateView(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context["tags"] = list(Tags())
         return context
-
-
-from django.urls import reverse_lazy
-from django.views.generic.edit import UpdateView
 
 
 class RecruitModifyView(LoginRequiredMixin, UpdateView):

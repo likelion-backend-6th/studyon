@@ -250,6 +250,8 @@
 
         const tags = {{tags|safe}};
         let selected_tags = [{% for tag in form.tags.value %}"{{tag.name}}",{% endfor %}]
+        selected_tags = selected_tags.filter(tag => tags.includes(tag));
+        console.log(selected_tags)
 
         function draw(tag_list) {
             const tag_box = document.getElementById('tagbox');
@@ -261,7 +263,8 @@
                     tag_element.classList.add('bg-neutral-300');
                 }
                 tag_element.innerText = tag;
-                tag_element.onclick = () => toggle_tag(tag_element);
+                console.log('asdfasdf')
+                tag_element.onclick = () => {toggle_tag(tag_element)};
                 tag_box.appendChild(tag_element);
             });
         }
@@ -293,19 +296,21 @@
             id_tags.value = selected_tags.join(',', "");
         }
 
+    document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('id_tags').value = selected_tags.join(',', "");
         draw(tags)
+    })
 
-        flatpickr('#id_deadline', {
-            dateFormat: "Y-m-d",
-        });
+    flatpickr('#id_deadline', {
+        dateFormat: "Y-m-d",
+    });
 
-        flatpickr('#id_start', {
-            dateFormat: "Y-m-d",
-        });
+    flatpickr('#id_start', {
+        dateFormat: "Y-m-d",
+    });
 
-        flatpickr('#id_end', {
-            dateFormat: "Y-m-d",
-        });
+    flatpickr('#id_end', {
+        dateFormat: "Y-m-d",
+    });
     </script>
 {% endblock script %}
