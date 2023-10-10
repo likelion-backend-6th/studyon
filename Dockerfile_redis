@@ -1,0 +1,11 @@
+FROM redis:alpine
+
+WORKDIR /redis
+
+COPY redis.conf /usr/local/etc/redis/redis.conf
+
+COPY ./scripts/redis_init.sh ./init
+RUN sed -i 's/\r$//g' ./init
+RUN chmod +x ./init
+
+CMD ["./init"]
