@@ -11,9 +11,20 @@ services:
     volumes:
       - postgres_studyon:/var/lib/postgresql/data
 
+  redis:
+    container_name: studyon_redis
+    build:
+      context: .
+      dockerfile: Dockerfile_redis
+    image: studyon_redis
+    privileged: true
+    ports:
+      - 6379:6379
+
   studyon:
     depends_on:
       - postgres
+      - redis
     container_name: studyon_dj
     build:
       context: .
