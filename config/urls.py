@@ -19,7 +19,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -28,6 +28,7 @@ urlpatterns = [
     path("", include("recruit.urls")),
     path("markdownx/", include("markdownx.urls")),
     path("accounts/", include("allauth.urls")),
+    path("video/", include("video.urls")),
 ]
 
 if settings.DEBUG:
