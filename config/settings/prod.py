@@ -4,6 +4,12 @@ from .base import *
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://limeskin.kr",
+    "https://www.limeskin.kr",
+    "http://limeskin.kr",
+    "http://www.limeskin.kr",
+]
 
 DEBUG = False
 
