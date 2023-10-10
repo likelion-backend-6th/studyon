@@ -39,6 +39,7 @@ ALLOWED_HOSTS = ["*"]
 
 # Base Apps
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -67,9 +68,13 @@ INSTALLED_APPS += [
     "allauth.socialaccount.providers.google",  # 구글 로그인
     "allauth.socialaccount.providers.github",  # 깃헙 로그인
     "allauth.socialaccount.providers.naver",  # 네이버 로그인
+    "debug_toolbar",
+    "redisboard",
+    "channels",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -101,6 +106,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+
+
+# ASGI Setting
+ASGI_APPLICATION = "config.asgi.application"
 
 
 # Database
@@ -219,5 +228,36 @@ SOCIALACCOUNT_PROVIDERS = {
         "SCOPE": [
             "email",
         ],
+    },
+}
+
+
+# Debug Toolbar Setting
+if DEBUG:
+    import socket
+
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
+        "127.0.0.1",
+    ]
+
+# Redis Cache Setting
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+# Channel Layer Settings
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
     },
 }
