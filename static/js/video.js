@@ -9,9 +9,9 @@ var localStream = new MediaStream();
 
 // websocket address
 var loc = window.location;
-var wsStart = 'ws://';
-if (loc.protocol == 'https:') {
-    wsStart = 'wss://';
+var wsStart = "ws://";
+if (loc.protocol == "https:") {
+    wsStart = "wss://";
 }
 var endPoint = wsStart + loc.host + "/video";
 
@@ -19,8 +19,8 @@ var username = document.getElementById("data").getAttribute("data-username");
 
 // media stream constraints
 const constraints = {
-    'video': true,
-    'audio': true
+    "video": true,
+    "audio": true
 }
 
 // ice server configuration
@@ -28,7 +28,7 @@ const constraints = {
 const iceConfiguration = {
     iceServers: [
         {
-            urls: ['stun:stun.l.google.com:19302'],
+            urls: ["stun:stun4.l.google.com:19302"],
         }
     ]
 };
@@ -61,11 +61,11 @@ webSocket.onmessage = (e) => {
 
     // 수신자를 특정하기 위해 channel_name 활용
     // new-offer를 모든 유저가 서로 수신 할 필요는 없기 때문에
-    var receiver_channel_name = parsedData['message']['receiver_channel_name'];
+    var receiver_channel_name = parsedData["message"]["receiver_channel_name"];
 
     // in case of new peer
     // 새로운 유저가 접속하면 다른 모든 유저가 수신
-    if (action == 'new-peer') {
+    if (action == "new-peer") {
         // create new RTCPeerConnection
         createOfferer(peerUsername, receiver_channel_name);
         return;
@@ -73,61 +73,61 @@ webSocket.onmessage = (e) => {
 
     // in case of new offer
     // 처음 접속한 유저만 수신
-    if (action == 'new-offer') {
+    if (action == "new-offer") {
         // create new RTCPeerConnection
         // set offer as remote description
-        var offer = parsedData['message']['sdp'];
-        var ice = parsedData['message']['ice'];
+        var offer = parsedData["message"]["sdp"];
+        var ice = parsedData["message"]["ice"];
         createAnswerer(offer, ice, peerUsername, receiver_channel_name);
         return;
     }
 
     // in case of new answer
     // 이미 접속해 있던 유저만 수신
-    if (action == 'new-answer') {
+    if (action == "new-answer") {
         // createOfferer에서 생성한 peer 가져오기
         var peer = mapPeers[peerUsername];
         // get the answer
-        var answer = parsedData['message']['sdp'];
-        var ice = parsedData['message']['ice'];
+        var answer = parsedData["message"]["sdp"];
+        var ice = parsedData["message"]["ice"];
 
         // 전송받은 ice candidate 추가
         peer.addIceCandidate(ice)
             .then(() => {
-                console.log('Ice candidate added.');
+                console.log("Ice candidate added.");
             })
             .catch(error => {
-                console.error('Error adding ice candidate:', error);
+                console.error("Error adding ice candidate:", error);
             });
 
         // 생성했던 peer에 remote description연결
         peer.setRemoteDescription(answer)
             .then(() => {
-                console.log('Set remote description for %s.', peerUsername);
-                console.debug('localDescription: ', peer.localDescription);
-                console.debug('remoteDescription: ', peer.remoteDescription);
+                console.log("Set remote description for %s.", peerUsername);
+                console.debug("localDescription: ", peer.localDescription);
+                console.debug("remoteDescription: ", peer.remoteDescription);
             })
             .catch(error => {
-                console.error('Error creating answer for %s.', peerUsername, error);
+                console.error("Error creating answer for %s.", peerUsername, error);
             });
         return;
     }
 }
 
 webSocket.onclose = function (e) {
-    console.log('WS Connection closed! ', e);
+    console.log("WS Connection closed! ", e);
 }
 
 webSocket.onerror = function (e) {
-    console.error('WS Error occured! ', e);
+    console.error("WS Error occured! ", e);
 }
 
 function sendSignal(action, message) {
     webSocket.send(
         JSON.stringify(
             {
-                'action': action,
-                'message': message,
+                "action": action,
+                "message": message,
             }
         )
     )
@@ -137,7 +137,7 @@ function sendSignal(action, message) {
 userMedia = navigator.mediaDevices.getUserMedia(constraints)
     .then(stream => {
         localStream = stream;
-        console.log('Got MediaStream:', stream);
+        console.log("Got MediaStream:", stream);
         var mediaTracks = stream.getTracks();
 
         console.debug("Got MediaStreamTrack: ")
@@ -158,7 +158,7 @@ userMedia = navigator.mediaDevices.getUserMedia(constraints)
         videoTracks[0].enabled = true;
     })
     .catch(error => {
-        console.error('Error accessing media devices.', error);
+        console.error("Error accessing media devices.", error);
     });
 
 
@@ -175,7 +175,7 @@ function createOfferer(peerUsername, receiver_channel_name) {
     // remote video element 생성
     var remoteVideo = createVideo(peerUsername);
     setOnTrack(peer, remoteVideo);
-    console.debug('Create video source: ', remoteVideo.srcObject);
+    console.debug("Create video source: ", remoteVideo.srcObject);
 
     // store the RTCPeerConnection
     mapPeers[peerUsername] = peer;
@@ -184,9 +184,9 @@ function createOfferer(peerUsername, receiver_channel_name) {
     peer.oniceconnectionstatechange = () => {
         var iceConnectionState = peer.iceConnectionState;
         if (iceConnectionState === "failed" || iceConnectionState === "disconnected" || iceConnectionState === "closed") {
-            console.warn('peer.iceConnectionState: ', iceConnectionState)
+            console.warn("peer.iceConnectionState: ", iceConnectionState)
             delete mapPeers[peerUsername];
-            if (iceConnectionState != 'closed') {
+            if (iceConnectionState != "closed") {
                 peer.close();
             }
             removeVideo(remoteVideo);
@@ -202,15 +202,15 @@ function createOfferer(peerUsername, receiver_channel_name) {
             return;
         }
 
-        console.log('Gathering finished! Sending offer SDP to ', peerUsername, '.');
-        console.debug('receiverChannelName: ', receiver_channel_name);
+        console.log("Gathering finished! Sending offer SDP to ", peerUsername, ".");
+        console.debug("receiverChannelName: ", receiver_channel_name);
         console.debug("New Ice Candidate! Reprinting SDP" + JSON.stringify(peer.localDescription));
 
         // send offer to new peer
-        sendSignal('new-offer', {
-            'sdp': peer.localDescription,
-            'ice': ICECandidate,
-            'receiver_channel_name': receiver_channel_name,
+        sendSignal("new-offer", {
+            "sdp": peer.localDescription,
+            "ice": ICECandidate,
+            "receiver_channel_name": receiver_channel_name,
         });
     }
 
@@ -223,7 +223,7 @@ function createOfferer(peerUsername, receiver_channel_name) {
             console.log("Local Description Set successfully.");
         })
         .catch(error => {
-            console.error('Error creating offer:', error);
+            console.error("Error creating offer:", error);
         });
 
     return peer;
@@ -243,7 +243,7 @@ function createAnswerer(offer, ice, peerUsername, receiver_channel_name) {
     var remoteVideo = createVideo(peerUsername);
     setOnTrack(peer, remoteVideo);
 
-    console.debug('Create video source: ', remoteVideo.srcObject);
+    console.debug("Create video source: ", remoteVideo.srcObject);
 
     // store the RTCPeerConnection
     mapPeers[peerUsername] = peer;
@@ -252,9 +252,9 @@ function createAnswerer(offer, ice, peerUsername, receiver_channel_name) {
     peer.oniceconnectionstatechange = () => {
         var iceConnectionState = peer.iceConnectionState;
         if (iceConnectionState === "failed" || iceConnectionState === "disconnected" || iceConnectionState === "closed") {
-            console.warn('peer.iceConnectionState: ', iceConnectionState)
+            console.warn("peer.iceConnectionState: ", iceConnectionState)
             delete mapPeers[peerUsername];
-            if (iceConnectionState != 'closed') {
+            if (iceConnectionState != "closed") {
                 peer.close();
             }
             removeVideo(remoteVideo);
@@ -270,44 +270,44 @@ function createAnswerer(offer, ice, peerUsername, receiver_channel_name) {
             return;
         }
 
-        console.log('Gathering finished! Sending offer SDP to ', peerUsername, '.');
-        console.debug('receiverChannelName: ', receiver_channel_name);
+        console.log("Gathering finished! Sending offer SDP to ", peerUsername, ".");
+        console.debug("receiverChannelName: ", receiver_channel_name);
         console.debug("New Ice Candidate! Reprinting SDP" + JSON.stringify(peer.localDescription));
 
         // send answer to offering peer
-        sendSignal('new-answer', {
-            'sdp': peer.localDescription,
-            'ice': ICECandidate,
-            'receiver_channel_name': receiver_channel_name
+        sendSignal("new-answer", {
+            "sdp": peer.localDescription,
+            "ice": ICECandidate,
+            "receiver_channel_name": receiver_channel_name
         });
     }
 
     // 전송받은 ice candidate 추가
     peer.addIceCandidate(ice)
         .then(() => {
-            console.log('Ice candidate added.');
+            console.log("Ice candidate added.");
         })
         .catch(error => {
-            console.error('Error adding ice candidate:', error);
+            console.error("Error adding ice candidate:", error);
         });
 
     // 전송받은 offer를 remote description으로 설정
     peer.setRemoteDescription(offer)
         .then(() => {
-            console.log('Set offer from %s.', peerUsername);
+            console.log("Set offer from %s.", peerUsername);
             return peer.createAnswer();
         })
         .then(a => {
-            console.debug('Setting local answer for %s.', peerUsername);
+            console.debug("Setting local answer for %s.", peerUsername);
             return peer.setLocalDescription(a);
         })
         .then(() => {
-            console.log('Answer created for %s.', peerUsername);
-            console.debug('localDescription: ', peer.localDescription);
-            console.debug('remoteDescription: ', peer.remoteDescription);
+            console.log("Answer created for %s.", peerUsername);
+            console.debug("localDescription: ", peer.localDescription);
+            console.debug("remoteDescription: ", peer.remoteDescription);
         })
         .catch(error => {
-            console.error('Error creating answer for %s.', peerUsername, error);
+            console.error("Error creating answer for %s.", peerUsername, error);
         });
 
     return peer
@@ -315,10 +315,10 @@ function createAnswerer(offer, ice, peerUsername, receiver_channel_name) {
 
 // 새로운 유저가 연결되면 video element 생성
 function createVideo(peerUsername) {
-    var videoContainer = document.querySelector('#video-container');
+    var videoContainer = document.querySelector("#video-container");
     // create the new video element
-    var remoteVideo = document.createElement('video');
-    remoteVideo.id = peerUsername + '-video';
+    var remoteVideo = document.createElement("video");
+    remoteVideo.id = peerUsername + "-video";
     remoteVideo.autoplay = true;
     remoteVideo.playsinline = true;
 
@@ -330,14 +330,14 @@ function createVideo(peerUsername) {
 // remoteStream에 remote tracks를 추가하고
 // 해당 remote video element에 연결
 function setOnTrack(peer, remoteVideo) {
-    console.log('Setting ontrack:');
+    console.log("Setting ontrack:");
     // create new MediaStream for remote tracks
     var remoteStream = new MediaStream();
 
     remoteVideo.srcObject = remoteStream;
 
-    peer.addEventListener('track', async (event) => {
-        console.log('Adding track: ', event.track);
+    peer.addEventListener("track", async (event) => {
+        console.log("Adding track: ", event.track);
         remoteStream.addTrack(event.track, remoteStream);
     });
 }
@@ -345,7 +345,7 @@ function setOnTrack(peer, remoteVideo) {
 // peer에 localStream tracks를 추가
 function addLocalTracks(peer) {
     localStream.getTracks().forEach(track => {
-        console.debug('Adding localStream tracks.', track);
+        console.debug("Adding localStream tracks.", track);
         peer.addTrack(track, localStream);
     });
     return;
