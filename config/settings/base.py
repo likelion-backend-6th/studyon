@@ -55,6 +55,7 @@ INSTALLED_APPS += [
     "user.apps.UserConfig",
     "message.apps.MessageConfig",
     "chat.apps.ChatConfig",
+    "video.apps.VideoConfig",
 ]
 
 # Third Party Apps
