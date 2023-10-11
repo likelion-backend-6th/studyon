@@ -22,3 +22,19 @@ class Message(models.Model):
             models.Index(fields=["reciever"]),
         ]
         ordering = ["-created_at"]
+
+
+class Notice(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notices")
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.content
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["-created_at"]),
+            models.Index(fields=["user"]),
+        ]
+        ordering = ["-created_at"]
