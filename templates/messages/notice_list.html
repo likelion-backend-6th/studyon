@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for notice in notices %}
+        <p>{{ notice }}</p>
+        <form action="{% url "message:notice_delete" notice.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Delete">
+        </form>
+    {% endfor %}
+{% endblock content %}
