@@ -37,6 +37,7 @@
         <hr class="my-10">
         <p class="text-2xl mb-6">
             스터디 멤버 <span class="text-sm">{{ study.members.count }}명 / {{ study.recruits.total_seats }}명</span>
+            <a href="{% url 'chat:study_chat_room' study.id %}">chatting</a>
         </p>
         <div class="flex flex-wrap flex-row">
             {% for member in study.members.all %}
