@@ -25,8 +25,10 @@ application = ProtocolTypeRouter(
         "http": get_asgi_application(),
         # Just HTTP for now. (We can add other protocols later.)
         "websocket": AuthMiddlewareStack(
-            URLRouter(video.routing.websocket_urlpatterns),
-            URLRouter(message.routing.websocket_urlpatterns),
+            URLRouter(video.routing.websocket_urlpatterns)
+        ),
+        "websocket": AuthMiddlewareStack(
+            URLRouter(message.routing.websocket_urlpatterns)
         ),
     }
 )
