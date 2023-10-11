@@ -121,20 +121,27 @@
                                 {% csrf_token %}
                                 <input class="cursor-pointer pl-1 pr-1" type="submit" value="Recruting">
                             </form>
-                            <form action="{% url 'manager:study_inprogress' my_study.id %}"
+                            <form onsubmit="in_progress('{{ my_study.title }}',{{ my_study.id }});"
+                                  action="{% url 'manager:study_inprogress' my_study.id %}"
                                   method="post">
                                 {% csrf_token %}
                                 <input class="cursor-pointer pl-1 pr-1" type="submit" value="In Progress">
                             </form>
-                            <form action="{% url 'manager:study_done' my_study.id %}" method="post">
+                            <form onsubmit="complete('{{ my_study.title }}',{{ my_study.id }});"
+                                  action="{% url 'manager:study_done' my_study.id %}"
+                                  method="post">
                                 {% csrf_token %}
                                 <input class="cursor-pointer pl-1 pr-1" type="submit" value="Complete">
                             </form>
-                            <form action="{% url 'manager:study_finished' my_study.id %}" method="post">
+                            <form onsubmit="finished('{{ my_study.title }}',{{ my_study.id }});"
+                                  action="{% url 'manager:study_finished' my_study.id %}"
+                                  method="post">
                                 {% csrf_token %}
                                 <input class="cursor-pointer pl-1 pr-1" type="submit" value="Finished">
                             </form>
-                            <form action="{% url 'manager:study_delete' my_study.id %}" method="post">
+                            <form onsubmit="study_delete('{{ my_study.title }}',{{ my_study.id }});"
+                                  action="{% url 'manager:study_delete' my_study.id %}"
+                                  method="post">
                                 {% csrf_token %}
                                 <input class="cursor-pointer text-red-400 pl-1 pr-1"
                                        type="submit"
@@ -182,6 +189,34 @@
     function recruting(study_title,study_id) {
     var notice = {
     "content" :  study_title+"의 상태가 Recruting 으로 변경되었습니다.",
+    "study_id" : study_id
+    };
+    notice_socket.send(JSON.stringify(notice));
+    };
+    function in_progress(study_title,study_id) {
+    var notice = {
+    "content" :  study_title+"의 상태가 In progress 으로 변경되었습니다.",
+    "study_id" : study_id
+    };
+    notice_socket.send(JSON.stringify(notice));
+    };
+    function complete(study_title,study_id) {
+    var notice = {
+    "content" :  study_title+"의 상태가 Complete 으로 변경되었습니다.",
+    "study_id" : study_id
+    };
+    notice_socket.send(JSON.stringify(notice));
+    };
+    function finished(study_title,study_id) {
+    var notice = {
+    "content" :  study_title+"의 상태가 Finished 으로 변경되었습니다.",
+    "study_id" : study_id
+    };
+    notice_socket.send(JSON.stringify(notice));
+    };
+    function study_delete(study_title,study_id) {
+    var notice = {
+    "content" :  study_title+"(이)가 삭제 되었습니다.",
     "study_id" : study_id
     };
     notice_socket.send(JSON.stringify(notice));
