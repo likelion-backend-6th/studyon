@@ -13,8 +13,7 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 
-import video.routing
-import message.routing
+from config.routing import websocket_urlpatterns
 
 ENV = os.getenv("RUN_MODE", "base")
 
@@ -23,12 +22,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"config.settings.{ENV}")
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        # Just HTTP for now. (We can add other protocols later.)
-        "websocket": AuthMiddlewareStack(
-            URLRouter(video.routing.websocket_urlpatterns)
-        ),
-        "websocket": AuthMiddlewareStack(
-            URLRouter(message.routing.websocket_urlpatterns)
-        ),
+        "websocket": AuthMiddlewareStack(URLRouter(websocket_urlpatterns)),
     }
 )
