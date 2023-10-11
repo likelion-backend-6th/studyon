@@ -61,10 +61,6 @@
         var link = href.replace(protocol+"//","").replace(host,"");
         var notice_socket = new WebSocket("ws://" + host + "/ws/notice/");
 
-        {% block websocket %}
-        
-        {% endblock websocket %}
-
         notice_socket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             const notice = document.getElementById("notice");
@@ -78,5 +74,9 @@
                 notice.innerHTML = '' ;
             }, 3000);
         };
+
+        {% block websocket %}
+        
+        {% endblock websocket %}
     </script>
 </html>
