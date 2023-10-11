@@ -14,6 +14,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 
 import video.routing
+import message.routing
 
 ENV = os.getenv("RUN_MODE", "base")
 
@@ -24,7 +25,8 @@ application = ProtocolTypeRouter(
         "http": get_asgi_application(),
         # Just HTTP for now. (We can add other protocols later.)
         "websocket": AuthMiddlewareStack(
-            URLRouter(video.routing.websocket_urlpatterns)
+            URLRouter(video.routing.websocket_urlpatterns),
+            URLRouter(message.routing.websocket_urlpatterns),
         ),
     }
 )
