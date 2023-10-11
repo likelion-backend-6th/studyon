@@ -29,6 +29,7 @@ urlpatterns = [
     path("markdownx/", include("markdownx.urls")),
     path("accounts/", include("allauth.urls")),
     path("video/", include("video.urls")),
+    path("messages/", include("message.urls", namespace="message")),
 ]
 
 if settings.DEBUG:
