@@ -21,14 +21,29 @@ class NoticeConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         content = text_data_json["content"]
-        print(text_data_json.keys())
 
         # 스터디 관련 알림
-        if "study_id" in text_data_json.keys():
+        if (
+            "study_id" in text_data_json.keys()
+            and "username" not in text_data_json.keys()
+        ):
             study_id = text_data_json["study_id"]
-            user_ids = await self.get_members(study_id)
+            user_ids = await self.get_members_not_creator(study_id)
 
-            await self.set_notice_to_db(study_id=study_id, content=content)
+            await self.set_notice_to_db_not_creator(study_id=study_id, content=content)
+
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "send_notice", "user_ids": user_ids, "content": content},
+            )
+        if "study_id" in text_data_json.keys() and "username" in text_data_json.keys():
+            study_id = text_data_json["study_id"]
+            username = text_data_json["username"]
+            user_ids = await self.get_members_not_request_user(study_id, username)
+
+            await self.set_notice_to_db_not_request_user(
+                study_id=study_id, content=content, username=username
+            )
 
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -48,18 +63,37 @@ class NoticeConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event))
 
     # 알림 보낼 스터디원 분류
+    # 스터디 장을 제외한 스터디원
     @database_sync_to_async
-    def get_members(self, study_id):
+    def get_members_not_creator(self, study_id):
         study = get_object_or_404(Study, id=study_id)
         user_ids = [
             member.id for member in study.members.all() if member != study.creator
         ]
         return user_ids
 
-    # 알림 정보 db 저장
+    # 요청자를 제외한 스터디원
     @database_sync_to_async
-    def set_notice_to_db(self, study_id, content):
+    def get_members_not_request_user(self, study_id, username):
+        study = get_object_or_404(Study, id=study_id)
+        user_ids = [
+            member.id for member in study.members.all() if member.username != username
+        ]
+        return user_ids
+
+    # 알림 정보 db 저장
+    # 스터디 장을 제외한 스터디원
+    @database_sync_to_async
+    def set_notice_to_db_not_creator(self, study_id, content):
         study = get_object_or_404(Study, id=study_id)
         for user in study.members.all():
             if user != study.creator:
+                Notice.objects.create(user=user, content=content)
+
+    # 요청자를 제외한 스터디원
+    @database_sync_to_async
+    def set_notice_to_db_not_request_user(self, study_id, content, username):
+        study = get_object_or_404(Study, id=study_id)
+        for user in study.members.all():
+            if user.username != username:
                 Notice.objects.create(user=user, content=content)
