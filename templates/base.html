@@ -59,10 +59,10 @@
     <script>
         var href = document.location.href; // 전체 url
         var protocol = window.location.protocol; // http: or https:
-        const webProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
         var host = window.location.host; // 호스트 네임 ex) 127.0.0.1 , localhost
         var link = href.replace(protocol+"//","").replace(host,"");
-        var notice_socket = new WebSocket(webProtocol + host + "/ws/notice/");
+        var notice_socket = new WebSocket(wsProtocol + host + "/ws/notice/");
 
         notice_socket.onmessage = function(e) {
             const data = JSON.parse(e.data);
