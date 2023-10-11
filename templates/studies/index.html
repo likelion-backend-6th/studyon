@@ -172,7 +172,9 @@
                             {% endif %}
                         </p>
                         <div>
-                            <form action="{% url 'manager:study_leave' in_study.id %}" method="post">
+                            <form onsubmit="study_leave('{{ user.username }}','{{ in_study.title }}',{{ in_study.id }});"
+                                  action="{% url 'manager:study_leave' in_study.id %}"
+                                  method="post">
                                 {% csrf_token %}
                                 <input class="cursor-pointer text-red-400 pl-1 pr-1 mt-4"
                                        type="submit"
@@ -218,6 +220,14 @@
     var notice = {
     "content" :  study_title+"(이)가 삭제 되었습니다.",
     "study_id" : study_id
+    };
+    notice_socket.send(JSON.stringify(notice));
+    };
+    function study_leave(username,study_title,study_id) {
+    var notice = {
+    "content" :  username + "(이)가" + study_title + "(을)를 떠났습니다.",
+    "study_id" : study_id,
+    "username" : username
     };
     notice_socket.send(JSON.stringify(notice));
     };
