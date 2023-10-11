@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-       <form onsubmit="send_message('{{ user.username }}','{{ reciever.id }}')"
-             action="{% url "message:send_message" reciever.id %}"
-             method="post"
-             class="pt-4 max-w-md mx-auto mt-7">
+       <form onsubmit="send_message('{{ user.username }}','{{ reciever.id }}')" action="{% url "message:send_message" reciever.id %}" method="post" class="pt-4 max-w-md mx-auto mt-7">
               <p>메세지 보내기</p>
               {% csrf_token %}
               <input type="text" name="title" placeholder="Title" required>
