@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
-
-{% block title %}Chat room for "{{ study.title }}"{% endblock title %}
-
+{% extends "base.html" %}
+{% block title %}
+    Chat room for "{{ study.title }}"
+{% endblock title %}
 {% block content %}
     <div id="chat">
         {% for chat in chats %}
@@ -12,7 +12,8 @@
                     {% else %}
                         {{ chat.creator }}
                     {% endif %}
-                </strong><br>
+                </strong>
+                <br>
                 {{ chat.content }}
             </div>
         {% endfor %}
@@ -22,13 +23,10 @@
         <input id="chat-message-submit" type="submit" value="Send">
     </div>
 {% endblock content %}
-
 {% block include_js %}
     {{ study.id|json_script:"study-id" }}
     {{ request.user.username|json_script:"request-user" }}
 {% endblock include_js %}
-
-
 {% block script %}
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
