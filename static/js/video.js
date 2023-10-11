@@ -79,8 +79,9 @@ webSocket.onmessage = (e) => {
         // create new RTCPeerConnection
         // set offer as remote description
         var offer = parsedData["message"]["sdp"];
-        var ice = parsedData["message"]["ice"];
-        createAnswerer(offer, ice, peerUsername, receiver_channel_name);
+        var ices = parsedData["message"]["ice"];
+        console.log("ICE, ", ices)
+        createAnswerer(offer, ices, peerUsername, receiver_channel_name);
         return;
     }
 
@@ -91,27 +92,25 @@ webSocket.onmessage = (e) => {
         var peer = mapPeers[peerUsername];
         // get the answer
         var answer = parsedData["message"]["sdp"];
-        var ice = parsedData["message"]["ice"];
-
-        // 전송받은 ice candidate 추가
-        peer.addIceCandidate(ice)
-            .then(() => {
-                console.log("Ice candidate added.");
-            })
-            .catch(error => {
-                console.error("Error adding ice candidate:", error);
-            });
+        var ices = parsedData["message"]["ice"];
 
         // 생성했던 peer에 remote description연결
         peer.setRemoteDescription(answer)
             .then(() => {
                 console.log("Set remote description for %s.", peerUsername);
-                console.debug("localDescription: ", peer.localDescription);
-                console.debug("remoteDescription: ", peer.remoteDescription);
             })
             .catch(error => {
                 console.error("Error creating answer for %s.", peerUsername, error);
             });
+
+        // 전송받은 ice candidate 추가
+        console.log("Ice candidate added.");
+        ices.forEach(ice => {
+            peer.addIceCandidate(ice)
+                .catch(error => {
+                    console.error("Error adding ice candidate:", error);
+                });
+        })
         return;
     }
 }
@@ -233,7 +232,7 @@ function createOfferer(peerUsername, receiver_channel_name) {
 
 // create RTCPeerConnection as answerer and store it
 // send sdp to remote peer after gathering is complete
-function createAnswerer(offer, ice, peerUsername, receiver_channel_name) {
+function createAnswerer(offer, ices, peerUsername, receiver_channel_name) {
     console.log("createAnswerer called.")
     var peer = new RTCPeerConnection(iceConfiguration);
     var ICECandidate = [];
@@ -284,15 +283,6 @@ function createAnswerer(offer, ice, peerUsername, receiver_channel_name) {
         });
     }
 
-    // 전송받은 ice candidate 추가
-    peer.addIceCandidate(ice)
-        .then(() => {
-            console.log("Ice candidate added.");
-        })
-        .catch(error => {
-            console.error("Error adding ice candidate:", error);
-        });
-
     // 전송받은 offer를 remote description으로 설정
     peer.setRemoteDescription(offer)
         .then(() => {
@@ -305,12 +295,19 @@ function createAnswerer(offer, ice, peerUsername, receiver_channel_name) {
         })
         .then(() => {
             console.log("Answer created for %s.", peerUsername);
-            console.debug("localDescription: ", peer.localDescription);
-            console.debug("remoteDescription: ", peer.remoteDescription);
         })
         .catch(error => {
             console.error("Error creating answer for %s.", peerUsername, error);
         });
+
+    console.log("Ice candidate added.");
+    ices.forEach(ice => {
+        // 전송받은 ice candidate 추가
+        peer.addIceCandidate(ice)
+            .catch(error => {
+                console.error("Error adding ice candidate:", error);
+            });
+    })
 
     return peer
 }
