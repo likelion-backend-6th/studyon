@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-       <form onsubmit="send_message('{{ user.username }}','{{ reciever.id }}')" action="{% url "message:send_message" reciever.id %}" method="post" class="pt-4 max-w-md mx-auto mt-7">
-              <p>메세지 보내기</p>
-              {% csrf_token %}
-              <input type="text" name="title" placeholder="Title" required>
-              <input type="text" name="content" placeholder="Content">
-              <input type="submit" value="Send">
-       </form>
+    <form onsubmit="send_message('{{ user.username }}','{{ reciever.id }}')" action="{% url "message:send_message" reciever.id %}" method="post" class="pt-4 max-w-md mx-auto mt-7">
+        <p>메세지 보내기</p>
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Title" required>
+        <input type="text" name="content" placeholder="Content">
+        <input type="submit" value="Send">
+    </form>
 {% endblock content %}
 {% block websocket %}
-       function send_message(user, reciever_id) {
-       var notice = {
-       "content" :  user+"(이)가 메시지를 보냈습니다.",
-       "reciever_id" : reciever_id
-       };
-       notice_socket.send(JSON.stringify(notice));
-       };
+    function send_message(user, reciever_id) {
+        var notice = {
+        "content" :  user+"(이)가 메시지를 보냈습니다.",
+        "reciever_id" : reciever_id
+        };
+        notice_socket.send(JSON.stringify(notice));
+    };
 {% endblock websocket %}
