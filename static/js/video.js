@@ -28,7 +28,9 @@ const constraints = {
 const iceConfiguration = {
     iceServers: [
         {
-            urls: ["stun:stun4.l.google.com:19302"],
+            urls: ["turn:175.45.202.123:3478"],
+            username: "terry",
+            credential: "terry"
         }
     ]
 };
