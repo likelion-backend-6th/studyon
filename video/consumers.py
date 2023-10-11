@@ -3,7 +3,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
-class ChatConsumer(AsyncWebsocketConsumer):
+class VideoConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_group_name = "Test-Room"
         self.user = self.scope["user"]
