@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for message in messages %}
+        <p>
+            <a href="{% url "message:read_message" message.id %}">{{ message }}</a>
+        </p>
+    {% endfor %}
+{% endblock content %}

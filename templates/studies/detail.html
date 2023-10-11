@@ -48,8 +48,14 @@
                             {% csrf_token %}
                             <button type="submit">• {{ member.username }}</button>
                         </form>
+                        {% if member.username != user.username %}
+                            <a href="{% url "message:send_message" member.id %}">-Message</a>
+                        {% endif %}
                     {% else %}
                         <span class="mx-2">• {{ member.username }}<i class="fa-solid fa-crown"></i></span>
+                        {% if member.username != user.username %}
+                            <a href="{% url "message:send_message" member.id %}">Message</a>
+                        {% endif %}
                     {% endif %}
                 </div>
             {% endfor %}

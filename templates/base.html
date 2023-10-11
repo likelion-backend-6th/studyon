@@ -21,7 +21,14 @@
                     </a>
                     <div class="ml-auto flex h-full text-base">
                         {% if user.is_authenticated %}
+                            <div id="notice"></div>
                             <div class="flex items-center font-bold">
+                                <a href="{% url 'message:list_notices' %}">알림</a>
+                            </div>
+                            <div class="flex items-center font-bold pl-6">
+                                <a href="{% url 'message:list_messages' %}">메세지</a>
+                            </div>
+                            <div class="flex items-center font-bold pl-6">
                                 <a href={% url 'users:info' %}>내 정보</a>
                             </div>
                             <div class="flex items-center font-bold pl-6">
@@ -47,4 +54,29 @@
     </body>
     {% block script %}
     {% endblock script %}
+    <script>
+        var href = document.location.href; // 전체 url
+        var protocol = window.location.protocol; // http: or https:
+        var host = window.location.host; // 호스트 네임 ex) 127.0.0.1 , localhost
+        var link = href.replace(protocol+"//","").replace(host,"");
+        var notice_socket = new WebSocket("ws://" + host + "/ws/notice/");
+
+        {% block websocket %}
+        
+        {% endblock websocket %}
+
+        notice_socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const notice = document.getElementById("notice");
+            if ( data.user_ids.includes({{ user.id }})){
+                notice.innerHTML = "<p>" + data.content + "</p>";
+            } 
+            if (data.reciever_id == {{ user.id }}) {
+                notice.innerHTML = "<p>" + data.content + "</p>";
+            }
+            setTimeout(function () {
+                notice.innerHTML = '' ;
+            }, 3000);
+        };
+    </script>
 </html>

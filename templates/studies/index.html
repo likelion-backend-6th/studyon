@@ -115,9 +115,11 @@
                             {% endif %}
                         </p>
                         <div class="grid grid-cols-2 gap-4 place-content-center mt-4">
-                            <form action="{% url "manager:study_recuting" my_study.id %}" method="post">
+                            <form onsubmit="recruting('{{ my_study.title }}',{{ my_study.id }});"
+                                  action="{% url "manager:study_recuting" my_study.id %}"
+                                  method="post">
                                 {% csrf_token %}
-                                <input class="cursor-pointer pl-1 pr-1" type="submit" value="Recuting">
+                                <input class="cursor-pointer pl-1 pr-1" type="submit" value="Recruting">
                             </form>
                             <form action="{% url 'manager:study_inprogress' my_study.id %}"
                                   method="post">
@@ -176,3 +178,12 @@
         </div>
     </div>
 {% endblock content %}
+{% block websocket %}
+    function recruting(study_title,study_id) {
+    var notice = {
+    "content" :  study_title+"의 상태가 Recruting 으로 변경되었습니다.",
+    "study_id" : study_id
+    };
+    notice_socket.send(JSON.stringify(notice));
+    };
+{% endblock websocket %}
