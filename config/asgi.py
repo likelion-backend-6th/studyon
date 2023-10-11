@@ -26,10 +26,10 @@ application = ProtocolTypeRouter(
         "http": get_asgi_application(),
         "websocket": AuthMiddlewareStack(
             URLRouter(
-                video.routing.websocket_urlpatterns +
-                message.routing.websocket_urlpatterns +
-                chat.routing.websocket_urlpatterns
+                video.routing.websocket_urlpatterns
+                + message.routing.websocket_urlpatterns
+                + chat.routing.websocket_urlpatterns
             )
-        )
+        ),
     }
 )
