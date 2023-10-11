@@ -10,10 +10,10 @@
 {% endblock content %}
 {% block websocket %}
     function send_message(user, reciever_id) {
-        var notice = {
-        "content" :  user+"(이)가 메시지를 보냈습니다.",
-        "reciever_id" : reciever_id
-        };
-        notice_socket.send(JSON.stringify(notice));
+    var notice = {
+    "content" :  user+"(이)가 메시지를 보냈습니다.",
+    "reciever_id" : reciever_id
+    };
+    notice_socket.send(JSON.stringify(notice));
     };
 {% endblock websocket %}
