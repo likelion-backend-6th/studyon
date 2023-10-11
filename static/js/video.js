@@ -184,7 +184,8 @@ function createOfferer(peerUsername, receiver_channel_name) {
     // ice connection state가 변경될 때마다 호출
     peer.oniceconnectionstatechange = () => {
         var iceConnectionState = peer.iceConnectionState;
-        if (iceConnectionState === "failed" || iceConnectionState === "disconnected" || iceConnectionState === "closed") {
+        console.log("peer.iceConnectionState: ", iceConnectionState)
+        if (iceConnectionState === "failed" || iceConnectionState === "closed") {
             console.warn("peer.iceConnectionState: ", iceConnectionState)
             delete mapPeers[peerUsername];
             if (iceConnectionState != "closed") {
@@ -252,7 +253,8 @@ function createAnswerer(offer, ices, peerUsername, receiver_channel_name) {
     // ice connection state가 변경될 때마다 호출
     peer.oniceconnectionstatechange = () => {
         var iceConnectionState = peer.iceConnectionState;
-        if (iceConnectionState === "failed" || iceConnectionState === "disconnected" || iceConnectionState === "closed") {
+        console.log("peer.iceConnectionState: ", iceConnectionState)
+        if (iceConnectionState === "failed" || iceConnectionState === "closed") {
             console.warn("peer.iceConnectionState: ", iceConnectionState)
             delete mapPeers[peerUsername];
             if (iceConnectionState != "closed") {
