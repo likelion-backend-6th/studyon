@@ -6,9 +6,11 @@ from taggit.models import Tag
 
 class TagsForm(forms.Form):
     tag_name = forms.CharField(
+        label="",
+        required=True,
         widget=forms.TextInput(
             attrs={"class": "my-custom-class", "placeholder": "Enter tags..."}
-        )
+        ),
     )
 
     def clean_tag_name(self):
@@ -17,6 +19,3 @@ class TagsForm(forms.Form):
             tag = Tag.objects.get(name=tag_name)
         except Tag.DoesNotExist:
             raise ValidationError("Tag does not exist")
-
-        tag_id = tag.id
-        return tag_id
