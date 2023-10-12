@@ -15,10 +15,10 @@
           type="text/css">
 {% endblock style %}
 {% block content %}
-    <div class="container md:max-w-3xl mx-auto pt-6">
+    <div class="container pt-6 mx-auto md:max-w-3xl">
         <div class="flex flex-row">
             <div class="text-4xl font-bold">{{ study.title }}</div>
-            <div class="ml-6 self-end">{{ study.start|date:'Y.m.d' }}~{{ study.end|date:'Y.m.d' }}</div>
+            <div class="self-end ml-6">{{ study.start|date:'Y.m.d' }}~{{ study.end|date:'Y.m.d' }}</div>
             <div class="ml-auto">
                 {% if study.creator == user %}
                     <button class="inline-block modify"
@@ -26,27 +26,34 @@
                         <svg xmlns="http://www.w3.org/2000/svg"
                              viewBox="0 0 20 20"
                              fill="currentColor"
-                             class="w-5 h-5 fill-wanted-cyan hover:scale-125 transition-all">
-                            <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z"/>
-                            <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z"/>
+                             class="w-5 h-5 transition-all fill-wanted-cyan hover:scale-125">
+                            <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                            <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
                         </svg>
                     </button>
                 {% endif %}
             </div>
         </div>
         <hr class="my-10">
-        <p class="text-2xl mb-6">
+        <p class="mb-6 text-2xl">
             스터디 멤버 <span class="text-sm">{{ study.members.count }}명 / {{ study.recruits.total_seats }}명</span>
         </p>
-        <form action="" method="post" id="tagsForm">
-            Chatting
-            {{ tags_form }}
-            {% csrf_token %}
-            <input type="submit" value="tags">
-        </form>
-        <div class="flex flex-wrap flex-row">
+        {% if tag_list|length < 3 %}
+            <form action="{% url 'chat:make_chat_room' study.id %}"
+                  method="post"
+                  id="tagsForm">
+                Chatting
+                {{ tags_form }}
+                {% csrf_token %}
+                <input type="submit" value="tags">
+            </form>
+        {% endif %}
+        {% for tag in tag_list %}
+            <a href="{% url 'chat:chat_room' study.id tag.0 %}">{{ tag.1 }}</a>
+        {% endfor %}
+        <div class="flex flex-row flex-wrap">
             {% for member in study.members.all %}
-                <div class="flex flex-wrap flex-row">
+                <div class="flex flex-row flex-wrap">
                     {% if member != study.creator %}
                         {% if user == study.creator %}
                             <form action="{% url 'manager:study_kickout' study.id member.id %}"
@@ -73,18 +80,18 @@
         </div>
         <hr class="my-10">
         <div class="flex flex-row flex-between">
-            <div class="p-2 rounded-lg flex-1 mx-auto">
+            <div class="flex-1 p-2 mx-auto rounded-lg">
                 <h2 class="text-xl">진행방식</h2>
                 <p class="pt-2">{{ study.process }}</p>
             </div>
-            <div class="p-2 rounded-lg flex-1 mx-auto">
+            <div class="flex-1 p-2 mx-auto rounded-lg">
                 <h2 class="text-xl">추가정보</h2>
                 <p class="pt-2">{{ study.info }}</p>
             </div>
         </div>
         <hr class="my-10">
         <div class="flex flex-col">
-            <p class="text-2xl mb-6">Task</p>
+            <p class="mb-6 text-2xl">Task</p>
             <div class="overflow-y-scroll h-[150px]">
                 {% for task in tasks %}
                     <div class="flex flex-row">
@@ -106,17 +113,17 @@
                         <div class="ml-3">
                             <a href="{% url "manager:post_list" task.id %}">{{ task.title }}</a>
                         </div>
-                        <span class="text-xs block self-end ml-3">{{ task.start|date:'Y.m.d' }}~{{ task.end|date:'Y.m.d' }}</span>
-                        <div class="ml-auto flex flex-row">
+                        <span class="self-end block ml-3 text-xs">{{ task.start|date:'Y.m.d' }}~{{ task.end|date:'Y.m.d' }}</span>
+                        <div class="flex flex-row ml-auto">
                             {% if task.author == user or study.creator == user %}
                                 <button class="inline-block modify"
                                         onclick="location.href='{% url 'manager:task_modify' task.id %}'">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          viewBox="0 0 20 20"
                                          fill="currentColor"
-                                         class="w-5 h-5 fill-wanted-cyan hover:scale-125 transition-all">
-                                        <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z"/>
-                                        <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z"/>
+                                         class="w-5 h-5 transition-all fill-wanted-cyan hover:scale-125">
+                                        <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                                        <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
                                     </svg>
                                 </button>
                                 <form class="flex items-center"
@@ -127,10 +134,8 @@
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              viewBox="0 0 20 20"
                                              fill="currentColor"
-                                             class="w-5 h-5 text-red-500 hover:scale-125 transition-all">
-                                            <path fill-rule="evenodd"
-                                                  d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
-                                                  clip-rule="evenodd"/>
+                                             class="w-5 h-5 text-red-500 transition-all hover:scale-125">
+                                            <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
                                         </svg>
                                     </button>
                                 </form>
@@ -143,7 +148,7 @@
         </div>
         <form action="{% url 'manager:task_create' study.id %}"
               method="post"
-              class="border-solid border-2 mt-5 p-1">
+              class="p-1 mt-5 border-2 border-solid">
             <div class="flex flex-row">
                 <input class="outline-none"
                        type="{{ task_form.title.widget.input_type }}"
@@ -155,31 +160,48 @@
                 {% endif %}
                 {% csrf_token %}
                 <button type="submit"
-                        class="w-5 h-5 hover:scale-125 text-emerald-500 ml-auto self-start transition-all">
+                        class="self-start w-5 h-5 ml-auto transition-all hover:scale-125 text-emerald-500">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
-            <input class="outline-none w-full h-8"
+            <input class="w-full h-8 outline-none"
                    type="{{ task_form.description.widget.input_type }}"
                    placeholder="{{ task_form.description.label }}"
                    name="{{ task_form.description.name }}">
         </form>
     </div>
 {% endblock content %}
-
 {% block script %}
     <script>
-        document.getElementById("tagsForm").addEventListener("submit", function (event) {
-            event.preventDefault();  // 기본 form 제출 동작 방지
+        tagsForm = document.getElementById("tagsForm")
 
-            let form = event.target;
-            let tags = form.elements["tags"].value;  // 입력 필드의 값 가져오기
-
-            // 태그 값을 포함한 URL 생성
-            let url = "{% url 'chat:study_chat_room' study.id %}" + "?tags=" + encodeURIComponent(tags);
-
-            // 페이지 이동
-            window.location.href = url;
-        });
+        if (tagsForm) {
+            tagsForm.addEventListener("submit", function (event) {
+                event.preventDefault();  // 기본 form 제출 동작 방지
+    
+                let form = event.target;
+                let tag_cnt = "{{ tag_list|length|escapejs }}";
+                if (tag_cnt == 3) {
+                    alert("최대 3개의 채팅방을 생성할 수 있습니다.");
+                } 
+                let tag_name = form.elements["tag_name"].value;  // 입력 필드의 값 가져오기
+    
+                let tag_list_url="{% url 'chat:room_tag_list' study.id %}";
+    
+                fetch(tag_list_url)
+                .then((res) => res.json())
+                .then((data) => {
+                    let tag_list = data.tag_list;
+                    let room_tag_list = data.room_tag_list;
+                    if (room_tag_list.includes(tag_name)) {
+                        alert("이미 존재하는 채팅방입니다.");
+                    } else if (!tag_list.includes(tag_name)) {
+                        alert("해당 태그는 존재하지 않습니다.");
+                    } else {
+                        form.submit();
+                    }
+                });
+            });
+        }
     </script>
 {% endblock script %}
