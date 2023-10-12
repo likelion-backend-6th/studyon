@@ -1,36 +1,70 @@
 {% extends "base.html" %}
+{% load custom_tags %}
 {% block title %}
     Chat room for "{{ study.title }}"
 {% endblock title %}
 {% block content %}
-    <div id="chat">
-        {% for chat in chats %}
-            <div>
-                <strong>
-                    {% if chat.creator == request.user %}
-                        Me
-                    {% else %}
-                        {{ chat.creator }}
-                    {% endif %}
-                </strong>
-                <br>
-                {{ chat.content }}
-            </div>
-        {% endfor %}
-    </div>
-    <div id="chat-input">
-        <input id="chat-message-input" type="text">
-        <input id="chat-message-submit" type="submit" value="Send">
+    <div class="flex flex-col items-center max-w-5xl mx-auto overflow-hidden chat-room-wrap">
+        <div class="w-4/5 mt-16 text-3xl font-bold lg:max-w-3xl title">
+            {{ room.study.title|truncatechars:20 }} - {{ room.tags.all.0 }}
+        </div>
+        <div class="w-4/5 py-3 mt-8 overflow-y-auto lg:max-w-3xl h-96" id="chat">
+            {% for chat in chats|reverse %}
+                {% if chat.creator == request.user %}
+                    <div class="m-2 bg-[#eaf8f3] grid float-right w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me">
+                        <div class="self-center col-span-4 text-xs text-right text-neutral-400 chat-time">{{ chat.created_at|date:"P" }}</div>
+                        <div class="self-center my-1 font-bold text-center chat-sender">Me</div>
+                        <div class="col-span-5 row-start-2 my-1 chat-message">{{ chat.content }}</div>
+                    </div>
+                {% else %}
+                    <div class="m-2 bg-[#f0ecec] grid w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper other">
+                        <div class="self-center my-1 font-bold text-center chat-sender">{{ chat.creator }}</div>
+                        <div class="self-center col-span-4 text-xs text-neutral-400 chat-time">{{ chat.created_at|date:"P" }}</div>
+                        <div class="col-span-5 row-start-2 my-1 chat-message">{{ chat.content }}</div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="flex flex-row justify-between w-4/5 my-5 lg:max-w-3xl"
+             id="chat-input">
+            <input class="w-full mx-2 border border-neutral-400"
+                   id="chat-message-input"
+                   type="text">
+            <input class="p-2 mx-2 text-white bg-black"
+                   id="chat-message-submit"
+                   type="submit"
+                   value="Send">
+        </div>
     </div>
 {% endblock content %}
 {% block include_js %}
-    {{ study.id|json_script:"study-id" }}
+    {{ room.id|json_script:"room-id" }}
+    {{ room.study.id|json_script:"study-id" }}
     {{ request.user.username|json_script:"request-user" }}
-    {{ request.POST|json_script:"tags" }}
 {% endblock include_js %}
 {% block script %}
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
+            
+            const changeDateFormat = (datetime) => {
+                const date = new Date(datetime);
+                
+                const hours = date.getHours();
+                const minutes = date.getMinutes();
+                
+                const ampm = hours >= 12 ? "오후" : "오전";
+                
+                const formattedHours = hours % 12 || 12;
+                const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+                
+                const formattedTime = `${formattedHours}:${formattedMinutes} ${ampm}`;
+                
+                return formattedTime;
+            };
+
+            const roomId = JSON.parse(
+                document.getElementById('room-id').textContent
+            );
             const studyId = JSON.parse(
                 document.getElementById('study-id').textContent
             );
@@ -38,82 +72,148 @@
                 document.getElementById('request-user').textContent
             );
             const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-            const url = protocol + window.location.host + '/chat/ws/chat/room/' + studyId + '/';
+            const url = protocol + window.location.host + '/ws/chat/room/' + roomId + '/';
 
             const handlers = {
+                chat_box: null,
                 ws: null,
                 retry: 0,
 
-                connect(ws_url) {
-                    this.ws = new WebSocket(ws_url || this.ws?.url);
+                init() {
+                    this.chat_box = document.getElementById("chat");
+                    const submitButton = document.getElementById('chat-message-submit');
+                    const input = document.getElementById('chat-message-input');
 
+                    submitButton.addEventListener("click", this.onsubmit.bind(this));
+
+                    input.addEventListener('keypress', function (event) {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                            submitButton.click();
+                        }
+                    });
+                },
+
+                connect(ws_url) {
+                    if(this.ws) { this.ws.close(); }
+    
+                    this.ws = new WebSocket(ws_url || this.ws?.url);
+    
                     this.ws.onopen = this.onopen.bind(this);
                     this.ws.onclose = this.onclose.bind(this);
                     this.ws.onerror = this.onerror.bind(this);
                     this.ws.onmessage = this.onmessage.bind(this);
                 },
-
+            
                 reconnect() {
                     this.connect();
                 },
-
-                onopen() { 
+            
+                onopen() {
                     console.log("Chat socket opened");
                     this.retry = 0;
                 },
 
                 onclose(event) {
-                    if(!event.wasClean) {
+                    if (!event.wasClean) {
                         console.error("Chat socket closed unexpectedly");
-
+            
                         if (this.retry < 3) {
+                            this.retry += 1;
                             setTimeout(() => {
-                                this.retry += 1;
                                 this.reconnect();
                                 console.log(`[${this.retry}] retry to connect ...`);
-                            }, 1000 * this.retry);
+                            }, 100 * this.retry);
                         } else {
                             alert("Can't connect to Server. Move to Study Manage Page.");
-                            window.location.href = `/studies/${studyId}`;
+                            window.location.href = `/studies/${studyId}/`;
                         }
                     }
                 },
 
-                onerror() { console.error("Error occurred"); },
+                onerror() {
+                    console.error("Websocket Error occurred");
+                    window.location.href = `/studies/${studyId}/`;
+                },
 
                 onmessage(event) {
-                    console.log(event)
-                    const data = JSON.parse(event.data);
-                    const chat = document.getElementById('chat');
-                    const isMe = data.user === requestUser;
+                    const message_dict = JSON.parse(event.data);
+                    console.log("recieved websocket message :", message_dict);
+                    const { type, message, sender, datetime } = message_dict;
+                    const time = changeDateFormat(datetime);
+                    
+                    switch(type) {
+                        case "chat.message":
+                            this.append_message(message, sender, time);
+                            break;
+                        default:
+                            console.error(`Invalid message type : ${type}`);
+                    }
+                },
+
+                append_message(message, sender, time) {
+                    const isMe = sender === requestUser;
                     const source = isMe ? 'me' : 'other';
-                    const name = isMe ? 'Me' : data.user;
-                    chat.innerHTML += '<div class="message ' + source + '">'
-                        + '<strong>' + name + '</strong><br>'
-                        + data.message + '</div>';
-                    chat.scrollTop = chat.scrollHeight;
+                    const name = isMe ? 'Me' : sender;
+
+                    const name_box = document.createElement("div");
+                    name_box.textContent = name;
+
+                    const time_box = document.createElement("div");
+                    time_box.textContent = time;
+
+                    const message_box = document.createElement("div");
+                    message_box.className = "col-span-5 row-start-2 my-1 chat-message";
+                    message_box.textContent = message;
+
+                    const message_wrapper = document.createElement("div");
+                    
+                    if (isMe) {
+                        message_wrapper.className = "m-2 bg-[#eaf8f3] grid float-right w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me"
+                        time_box.className = "self-center col-span-4 text-xs text-right text-neutral-400 chat-time";
+                        name_box_className = "self-center my-1 font-bold text-center chat-sender"
+                        message_wrapper.appendChild(time_box);
+                        message_wrapper.appendChild(name_box);
+                    } else {
+                        message_wrapper.className = "m-2 bg-[#f0ecec] grid w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper other"
+                        name_box_className = "self-center my-1 font-bold text-center chat-sender"
+                        time_box.className = "self-center col-span-4 text-xs text-neutral-400 chat-time";
+                        message_wrapper.appendChild(name_box);
+                        message_wrapper.appendChild(time_box);
+                    }
+                    
+                    message_wrapper.classList.add(source);
+                    message_wrapper.appendChild(message_box);
+
+                    this.chat_box.appendChild(message_wrapper);
+                    this.chat_box.scrollTop = this.chat_box.scrollHeight;                    
+                },
+
+                onsubmit(event) {
+                    event.preventDefault();
+
+                    const input = document.getElementById('chat-message-input');
+                    const message = input.value;
+                    if (message) {
+                        const sending_websocket_message = {
+                            type: "chat.message",
+                            message: message,
+                        };
+                        console.log("sending websocket message :", sending_websocket_message);
+                        this.ws.send(JSON.stringify(sending_websocket_message))
+                        input.value = '';
+                        input.focus();
+                    }
                 },
 
             };
-
+            
+            handlers.init();
+            
             handlers.connect(url);
 
-            const input = document.getElementById('chat-message-input');
-            const submitButton = document.getElementById('chat-message-submit');
-            submitButton.addEventListener('click', function (event) {
-                const message = input.value;
-                if (message) {
-                    chatSocket.send(JSON.stringify({'message': message}));
-                    input.value = '';
-                    input.focus();
-                }
-            });
-            input.addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    submitButton.click();
-                }
-            });
+            const chat_box = document.getElementById("chat");
+            chat_box.scrollTop = chat_box.scrollHeight;      
         })
     </script>
 {% endblock script %}
