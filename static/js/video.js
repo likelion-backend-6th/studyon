@@ -366,7 +366,35 @@ function removeVideo(video) {
     videoWrapper.parentNode.removeChild(videoWrapper);
 }
 
-var newVideo = document.querySelector("#new-video");
-newVideo.addEventListener("click", () => {
+document.querySelector("#new-video").onclick = () => {
     createVideo("asdf", "testUser")
-})
+}
+
+document.querySelector("#btn_microphone").onclick = () => {
+    const audioTracks = localStream.getAudioTracks();
+    const on = document.querySelector("#microphone_on")
+    const off = document.querySelector("#microphone_off")
+    audioTracks[0].enabled = !audioTracks[0].enabled
+    if (audioTracks[0].enabled) {
+        on.hidden = false
+        off.hidden = true
+    } else {
+        on.hidden = true
+        off.hidden = false
+    }
+}
+
+document.querySelector("#btn_camera").onclick = () => {
+    const videoTracks = localStream.getVideoTracks();
+    const on = document.querySelector("#camera_on")
+    const off = document.querySelector("#camera_off")
+    videoTracks[0].enabled = !videoTracks[0].enabled
+    if (videoTracks[0].enabled) {
+        on.hidden = false
+        off.hidden = true
+    } else {
+        on.hidden = true
+        off.hidden = false
+    }
+}
+
