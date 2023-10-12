@@ -12,7 +12,7 @@ import os
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
-from django.urls import path, re_path
+from django.urls import path
 
 import chat.consumers
 import message.consumers
@@ -33,8 +33,8 @@ application = ProtocolTypeRouter(
                         "ws/video/<int:study_id>/",
                         video.consumers.VideoConsumer.as_asgi(),
                     ),
-                    re_path(
-                        r"ws/chat/room/(?P<study_id>\w+)/(?P<tags>.+)/$",
+                    path(
+                        "ws/chat/room/<str:room_id>/",
                         chat.consumers.ChatConsumer.as_asgi(),
                     ),
                 ]
