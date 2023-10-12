@@ -37,27 +37,67 @@
             const requestUser = JSON.parse(
                 document.getElementById('request-user').textContent
             );
-            const tags = JSON.parse(
-                document.getElementById('tags').textContent
-            );
             const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-            const url = protocol + window.location.host + '/ws/chat/room/' + studyId + '/' + tags.tags + '/';
-            const chatSocket = new WebSocket(url);
-            chatSocket.onmessage = function (event) {
-                console.log(event)
-                const data = JSON.parse(event.data);
-                const chat = document.getElementById('chat');
-                const isMe = data.user === requestUser;
-                const source = isMe ? 'me' : 'other';
-                const name = isMe ? 'Me' : data.user;
-                chat.innerHTML += '<div class="message ' + source + '">'
-                    + '<strong>' + name + '</strong><br>'
-                    + data.message + '</div>';
-                chat.scrollTop = chat.scrollHeight;
+            const url = protocol + window.location.host + '/chat/ws/chat/room/' + studyId + '/';
+
+            const handlers = {
+                ws: null,
+                retry: 0,
+
+                connect(ws_url) {
+                    this.ws = new WebSocket(ws_url || this.ws?.url);
+
+                    this.ws.onopen = this.onopen.bind(this);
+                    this.ws.onclose = this.onclose.bind(this);
+                    this.ws.onerror = this.onerror.bind(this);
+                    this.ws.onmessage = this.onmessage.bind(this);
+                },
+
+                reconnect() {
+                    this.connect();
+                },
+
+                onopen() { 
+                    console.log("Chat socket opened");
+                    this.retry = 0;
+                },
+
+                onclose(event) {
+                    if(!event.wasClean) {
+                        console.error("Chat socket closed unexpectedly");
+
+                        if (this.retry < 3) {
+                            setTimeout(() => {
+                                this.retry += 1;
+                                this.reconnect();
+                                console.log(`[${this.retry}] retry to connect ...`);
+                            }, 1000 * this.retry);
+                        } else {
+                            alert("Can't connect to Server. Move to Study Manage Page.");
+                            window.location.href = `/studies/${studyId}`;
+                        }
+                    }
+                },
+
+                onerror() { console.error("Error occurred"); },
+
+                onmessage(event) {
+                    console.log(event)
+                    const data = JSON.parse(event.data);
+                    const chat = document.getElementById('chat');
+                    const isMe = data.user === requestUser;
+                    const source = isMe ? 'me' : 'other';
+                    const name = isMe ? 'Me' : data.user;
+                    chat.innerHTML += '<div class="message ' + source + '">'
+                        + '<strong>' + name + '</strong><br>'
+                        + data.message + '</div>';
+                    chat.scrollTop = chat.scrollHeight;
+                },
+
             };
-            chatSocket.onclose = function (event) {
-                console.error('Chat socket closed unexpectedly');
-            };
+
+            handlers.connect(url);
+
             const input = document.getElementById('chat-message-input');
             const submitButton = document.getElementById('chat-message-submit');
             submitButton.addEventListener('click', function (event) {
