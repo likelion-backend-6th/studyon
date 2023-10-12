@@ -1,17 +1,28 @@
 import json
 
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from manager.models import Study
 
 
 class VideoConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
-        self.room_group_name = "Test-Room"
-        self.user = self.scope["user"]
-
+    @database_sync_to_async
+    def _check_authenticated(self, study_id, user):
         # 로그인 확인
-        if not self.user.is_authenticated:
+        if not user.is_authenticated:
             self.close()
             return
+
+        # 스터디 멤버 확인
+        if not Study.objects.filter(id=study_id, members=user).exists():
+            self.close()
+
+    async def connect(self):
+        study_id = self.scope["url_route"]["kwargs"]["study_id"]
+        self.room_group_name = f"study_room_{study_id}"
+        self.user = self.scope["user"]
+
+        await self._check_authenticated(study_id, self.user)
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
