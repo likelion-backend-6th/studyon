@@ -79,16 +79,11 @@
             {% endfor %}
         </div>
         <hr class="my-10">
-        <div class="flex flex-row flex-between">
-            <div class="flex-1 p-2 mx-auto rounded-lg">
-                <h2 class="text-xl">진행방식</h2>
-                <p class="pt-2">{{ study.process }}</p>
-            </div>
-            <div class="flex-1 p-2 mx-auto rounded-lg">
-                <h2 class="text-xl">추가정보</h2>
-                <p class="pt-2">{{ study.info }}</p>
-            </div>
-        </div>
+        <h2 class="text-xl mb-6">진행방식</h2>
+        <p class="pt-1">{{ study.process }}</p>
+        <hr class="my-4">
+        <h2 class="text-xl mb-6">추가정보</h2>
+        <p class="pt-1">{{ study.info }}</p>
         <hr class="my-10">
         <div class="flex flex-col">
             <p class="mb-6 text-2xl">Task</p>
