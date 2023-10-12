@@ -29,7 +29,10 @@ application = ProtocolTypeRouter(
             URLRouter(
                 [
                     path("ws/notice/", message.consumers.NoticeConsumer.as_asgi()),
-                    path("ws/video/", video.consumers.VideoConsumer.as_asgi()),
+                    path(
+                        "ws/video/<int:study_id>/",
+                        video.consumers.VideoConsumer.as_asgi(),
+                    ),
                     re_path(
                         r"ws/chat/room/(?P<study_id>\w+)/(?P<tags>.+)/$",
                         chat.consumers.ChatConsumer.as_asgi(),
