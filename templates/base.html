@@ -23,10 +23,10 @@
                     <div class="ml-auto flex h-full text-base ">
                         {% if user.is_authenticated %}
                             <div class="flex items-center font-bold">
-                                <a href="{% url 'message:list_notices' %}"><i class="fa-regular fa-bell"></i></a>
+                                <a href="{% url 'message:list_notices' %}">알림</a>
                             </div>
                             <div class="flex items-center font-bold pl-6">
-                                <a href="{% url 'message:list_messages' %}"><i class="fa-solid fa-envelope"></i></a>
+                                <a href="{% url 'message:list_messages' %}">메세지</a>
                             </div>
                             <div class="flex items-center font-bold pl-6">
                                 <a href={% url 'users:info' %}>내 정보</a>
