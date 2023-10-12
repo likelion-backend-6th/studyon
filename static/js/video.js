@@ -315,17 +315,33 @@ function createAnswerer(offer, ices, peerUsername, receiver_channel_name) {
 }
 
 // 새로운 유저가 연결되면 video element 생성
-function createVideo(peerUsername) {
-    var videoContainer = document.querySelector("#video-container");
-    // create the new video element
-    var remoteVideo = document.createElement("video");
-    remoteVideo.id = peerUsername + "-video";
+function createVideo(videoID) {
+    const videoContainer = document.querySelector("#video-container");
+    const videoWrapper = document.createElement("div");
+    const remoteVideo = document.createElement("video");
+
+    // 설정
+    videoWrapper.className = "aspect-video video-box max-w-xl bg-neutral-900 flex justify-center items-center w-full";
+    remoteVideo.id = videoID + "-video";
+    remoteVideo.className = "w-full h-full object-cover";
     remoteVideo.autoplay = true;
     remoteVideo.playsinline = true;
 
     // add the video to the container
-    videoContainer.appendChild(remoteVideo);
+    videoWrapper.appendChild(remoteVideo);
+    videoContainer.appendChild(videoWrapper);
+
+    // grid layout 설정
+    gridResize();
+
     return remoteVideo;
+}
+
+function gridResize() {
+    const videoContainer = document.querySelector("#video-container");
+    const numVideoBoxes = videoContainer.querySelectorAll('.video-box').length;
+    const gridColumns = Math.ceil(Math.sqrt(numVideoBoxes));
+    videoContainer.style.gridTemplateColumns = `repeat(${gridColumns}, 1fr)`;
 }
 
 // remoteStream에 remote tracks를 추가하고
@@ -356,3 +372,8 @@ function addLocalTracks(peer) {
 function removeVideo(video) {
     video.parentNode.removeChild(video);
 }
+
+var newVideo = document.querySelector("#new-video");
+newVideo.addEventListener("click", () => {
+    createVideo("asdf")
+})
