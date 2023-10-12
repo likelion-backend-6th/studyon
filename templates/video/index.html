@@ -20,7 +20,6 @@
               type="text/css">
     </head>
     <body>
-        <div id="data" data-username="{{ user }}"></div>
         <div class="h-full flex flex-col">
             <div id="header" class="w-full h-[60px] border-b border-neutral-300">
                 <div class="mx-auto max-w-5xl flex items-center h-full">
@@ -31,9 +30,10 @@
             </div>
             <div class="flex flex-auto justify-center items-center overflow-hidden">
                 <div id="video-container" class="grid p-4">
-                    <div class="aspect-video video-box max-w-xl bg-neutral-900 flex justify-center items-center">
+                    <div class="relative aspect-video video-box max-w-xl bg-neutral-900 flex justify-center items-center">
                         <video id="local-video" autoplay playsinline>
                         </video>
+                        <p class="absolute px-2 bg-[rgba(25,25,25,.60)] left-0 bottom-0 text-sm text-white">{{ user }}</p>
                     </div>
                 </div>
             </div>
