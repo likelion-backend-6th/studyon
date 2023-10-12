@@ -82,9 +82,9 @@ class StudyDetailView(StudyAccessMixin, DetailView):
         if self.request.user in self.object.members.all():
             context["task_form"] = TaskForm()
             context["tags_form"] = TagsForm()
-            context["tag_list"] = list(
+            context["room_list"] = list(
                 Room.objects.filter(study=self.get_object()).values_list(
-                    "tags__id", "tags__name"
+                    "id", "tags__name"
                 )
             )
         return context
