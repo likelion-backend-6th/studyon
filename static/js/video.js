@@ -1,21 +1,19 @@
-// 다른 유저와 연결된 RTCPeerConnection 객체를 username으로 저장하는 객체
-var mapPeers = {};
+// 다른 유저와 연결된 RTCPeerConnection 객체를 channel_name으로 저장하는 객체
+const mapPeers = {};
 
 // local video element
 const localVideo = document.querySelector("#local-video");
 
+// websocket address
+const loc = window.location;
+console.log("loc: ", loc.pathname);
+const wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
+const endPoint = wsStart + loc.host + "/ws" + loc.pathname;
+
+const username = document.getElementById("data").getAttribute("data-username");
+
 // local video stream
 var localStream = new MediaStream();
-
-// websocket address
-var loc = window.location;
-var wsStart = "ws://";
-if (loc.protocol == "https:") {
-    wsStart = "wss://";
-}
-var endPoint = wsStart + loc.host + "/ws/video/";
-
-var username = document.getElementById("data").getAttribute("data-username");
 
 // media stream constraints
 const constraints = {
@@ -35,11 +33,7 @@ const iceConfiguration = {
     ]
 };
 
-var webSocket;
-
-console.log(username)
-
-webSocket = new WebSocket(endPoint);
+const webSocket = new WebSocket(endPoint);
 
 webSocket.onopen = (e) => {
     console.log("WS Connection opened!");
@@ -48,46 +42,34 @@ webSocket.onopen = (e) => {
 }
 
 webSocket.onmessage = (e) => {
-    var parsedData = JSON.parse(e.data);
-    var action = parsedData["action"];
-    var peerUsername = parsedData["peer"];
-
-    console.debug("New message from " + peerUsername + ": " + action)
-
-    if (peerUsername == username) {
-        // 본인이 전송한 메시지는 무시
-        return;
-    }
+    const parsedData = JSON.parse(e.data);
+    const action = parsedData["action"];
+    const peerUsername = parsedData["peer"];
 
     console.log("New message from " + peerUsername + ": " + action)
 
     // 수신자를 특정하기 위해 channel_name 활용
     // new-offer를 모든 유저가 서로 수신 할 필요는 없기 때문에
-    var receiver_channel_name = parsedData["message"]["receiver_channel_name"];
+    const receiver_channel_name = parsedData["message"]["receiver_channel_name"];
 
-    // in case of new peer
     // 새로운 유저가 접속하면 다른 모든 유저가 수신
     if (action == "new-peer") {
         // create new RTCPeerConnection
         createOfferer(peerUsername, receiver_channel_name);
         return;
     }
-
-    // in case of new offer
     // 처음 접속한 유저만 수신
-    if (action == "new-offer") {
+    else if (action == "new-offer") {
         // create new RTCPeerConnection
         // set offer as remote description
-        var offer = parsedData["message"]["sdp"];
-        var ices = parsedData["message"]["ice"];
+        const offer = parsedData["message"]["sdp"];
+        const ices = parsedData["message"]["ice"];
         console.log("ICE, ", ices)
         createAnswerer(offer, ices, peerUsername, receiver_channel_name);
         return;
     }
-
-    // in case of new answer
     // 이미 접속해 있던 유저만 수신
-    if (action == "new-answer") {
+    else if (action == "new-answer") {
         // createOfferer에서 생성한 peer 가져오기
         var peer = mapPeers[peerUsername];
         // get the answer
@@ -112,6 +94,13 @@ webSocket.onmessage = (e) => {
                 });
         })
         return;
+    }
+    // 다른 유저의 연결 해제
+    else if (action == "disconnect") {
+        const peer = mapPeers[receiver_channel_name];
+        peer.close()
+        delete mapPeers[receiver_channel_name];
+        return
     }
 }
 
@@ -167,19 +156,19 @@ userMedia = navigator.mediaDevices.getUserMedia(constraints)
 // send sdp to remote peer after gathering is complete
 function createOfferer(peerUsername, receiver_channel_name) {
     console.log("createOfferer called.")
-    var peer = new RTCPeerConnection(iceConfiguration);
-    var ICECandidate = [];
+    const peer = new RTCPeerConnection(iceConfiguration);
+    const ICECandidate = [];
 
     // local user media stream tracks 추가
     addLocalTracks(peer)
 
     // remote video element 생성
-    var remoteVideo = createVideo(peerUsername);
+    const remoteVideo = createVideo(peerUsername);
     setOnTrack(peer, remoteVideo);
     console.debug("Create video source: ", remoteVideo.srcObject);
 
     // store the RTCPeerConnection
-    mapPeers[peerUsername] = peer;
+    mapPeers[receiver_channel_name] = peer;
 
     // ice connection state가 변경될 때마다 호출
     peer.oniceconnectionstatechange = () => {
@@ -187,7 +176,6 @@ function createOfferer(peerUsername, receiver_channel_name) {
         console.log("peer.iceConnectionState: ", iceConnectionState)
         if (iceConnectionState === "failed" || iceConnectionState === "closed") {
             console.warn("peer.iceConnectionState: ", iceConnectionState)
-            delete mapPeers[peerUsername];
             if (iceConnectionState != "closed") {
                 peer.close();
             }

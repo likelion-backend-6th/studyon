@@ -28,18 +28,30 @@ class VideoConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        receive_dict = {
+            "peer": self.user.username,
+            "action": "disconnect",
+            "message": {
+                "receiver_channel_name": self.channel_name,
+            },
+        }
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "send.sdp",
+                "receive_dict": receive_dict,
+            },
+        )
+
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     # Receive message from WebSocket
     async def receive(self, text_data):
         receive_dict = json.loads(text_data)
-        user = self.scope["user"]
-        receive_dict["peer"] = user.username
+
         action = receive_dict["action"]
 
-        print("peer_username: ", user.username)
-        print("action: ", action)
-        print("self.channel_name: ", self.channel_name)
+        receive_dict["peer"] = self.user.username
 
         if (action == "new-offer") or (action == "new-answer"):
             # new offer or answer일 경우
@@ -47,9 +59,7 @@ class VideoConsumer(AsyncWebsocketConsumer):
 
             receiver_channel_name = receive_dict["message"]["receiver_channel_name"]
 
-            print("Sending to ", receiver_channel_name)
-
-            # set new receiver as the current sender
+            # 수신자 정보 변경
             receive_dict["message"]["receiver_channel_name"] = self.channel_name
 
             await self.channel_layer.send(
@@ -59,7 +69,6 @@ class VideoConsumer(AsyncWebsocketConsumer):
                     "receive_dict": receive_dict,
                 },
             )
-
             return
 
         # 수신자 데이터를 추가하여 전송
@@ -81,12 +90,13 @@ class VideoConsumer(AsyncWebsocketConsumer):
         action = receive_dict["action"]
         message = receive_dict["message"]
 
-        await self.send(
-            text_data=json.dumps(
-                {
-                    "peer": this_peer,
-                    "action": action,
-                    "message": message,
-                }
+        if this_peer != self.user.username:
+            await self.send(
+                text_data=json.dumps(
+                    {
+                        "peer": this_peer,
+                        "action": action,
+                        "message": message,
+                    }
+                )
             )
-        )
