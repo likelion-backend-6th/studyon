@@ -40,7 +40,7 @@
         <p class="mb-6 text-2xl">
             스터디 멤버 <span class="text-sm">{{ study.members.count }}명 / {{ study.recruits.total_seats }}명</span>
         </p>
-        {% if tag_list|length < 3 %}
+        {% if room_list|length < 3 %}
             <form action="{% url 'chat:make_chat_room' study.id %}"
                   method="post"
                   id="tagsForm">
@@ -50,8 +50,8 @@
                 <input type="submit" value="tags">
             </form>
         {% endif %}
-        {% for tag in tag_list %}
-            <a href="{% url 'chat:chat_room' study.id tag.0 %}">{{ tag.1 }}</a>
+        {% for room in room_list %}
+            <a href="{% url 'chat:chat_room' room.0 %}">{{ room.1 }}</a>
         {% endfor %}
         <div class="flex flex-row flex-wrap justify-between">
             {% for member in study.members.all %}
@@ -155,8 +155,8 @@
                 event.preventDefault();  // 기본 form 제출 동작 방지
     
                 let form = event.target;
-                let tag_cnt = "{{ tag_list|length|escapejs }}";
-                if (tag_cnt == 3) {
+                let room_cnt = "{{ room_list|length|escapejs }}";
+                if (room_cnt >= 3) {
                     alert("최대 3개의 채팅방을 생성할 수 있습니다.");
                 } 
                 let tag_name = form.elements["tag_name"].value;  // 입력 필드의 값 가져오기
