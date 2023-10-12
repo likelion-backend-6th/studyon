@@ -13,11 +13,21 @@
     <body>
         <div id="data" data-username="{{ user }}"></div>
         <div class="h-full flex flex-col">
-            <h1>{{ user }}</h1>
+            <h2>{{ study.title }}</h2>
             <div class="flex-auto">
                 <div id="video-container" class="grid grid-cols-4">
                     <video id="local-video" autoplay playsinline>
                     </video>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <ul>
+                        <li>
+                            <button>마이크</button>
+                            <button>카메라</button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
