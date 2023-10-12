@@ -20,8 +20,10 @@
             <div class="text-4xl font-bold">{{ study.title }}</div>
             <div class="self-end ml-6">{{ study.start|date:'Y.m.d' }}~{{ study.end|date:'Y.m.d' }}</div>
             <div class="ml-auto">
+                <button class="text-wanted-blue hover:text-wanted-indigo text-xl"
+                        onclick="location.href='{% url 'video:video_room' study.id %}'">화상채팅</button>
                 {% if study.creator == user %}
-                    <button class="inline-block modify"
+                    <button class="inline-block modify ml-4"
                             onclick="location.href='{% url 'manager:study_modify' study.id %}'">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              viewBox="0 0 20 20"
