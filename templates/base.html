@@ -19,14 +19,14 @@
                     <a href="{% url 'recruits:index' %}"class="flex">
                         <h1 class="self-center text-lg text-cyan-700 font-bold">StudyOn</h1>
                     </a>
-                    <div class="ml-auto flex h-full text-base">
+                    <div id="notice" class="fixed inset-x-0 top-[10px] flex justify-center"></div>
+                    <div class="ml-auto flex h-full text-base ">
                         {% if user.is_authenticated %}
-                            <div id="notice"></div>
                             <div class="flex items-center font-bold">
-                                <a href="{% url 'message:list_notices' %}">알림</a>
+                                <a href="{% url 'message:list_notices' %}"><i class="fa-regular fa-bell"></i></a>
                             </div>
                             <div class="flex items-center font-bold pl-6">
-                                <a href="{% url 'message:list_messages' %}">메세지</a>
+                                <a href="{% url 'message:list_messages' %}"><i class="fa-solid fa-envelope"></i></a>
                             </div>
                             <div class="flex items-center font-bold pl-6">
                                 <a href={% url 'users:info' %}>내 정보</a>
@@ -65,14 +65,14 @@
             const data = JSON.parse(e.data);
             const notice = document.getElementById("notice");
             if ( data.user_ids.includes({{ user.id }})){
-                notice.innerHTML = "<p>" + data.content + "</p>";
+                notice.innerHTML = "<p class=\"leading-10 bg-neutral-100 px-2\">" + data.content + "</p>";
             } 
             if (data.reciever_id == {{ user.id }}) {
                 notice.innerHTML = "<p>" + data.content + "</p>";
             }
             setTimeout(function () {
                 notice.innerHTML = '' ;
-            }, 3000);
+            }, 1000);
         };
 
         {% block websocket %}
