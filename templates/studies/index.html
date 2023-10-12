@@ -21,8 +21,8 @@
     </style>
 {% endblock style %}
 {% block content %}
-    <div class="relative max-w-5xl mx-auto">
-        <div class="box-border absolute right-0 w-64 bg-white border-solid border-l-2 h-full">
+    <div class="flex flex-row-reverse max-w-5xl mx-auto">
+        <div class="z-40 box-border right-0 w-64 bg-white border-solid border-l-2 h-full">
             <p class="text-xl p-2">나의 모집글</p>
             <div class="scroll_invisible h-[275px] overflow-y-scroll">
                 {% for my_recruit in my_recruits %}
@@ -93,7 +93,7 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="box-border w-[calc(100%-256px)]">
+        <div class="box-border w-[calc(100%-256px)] min-w-[270px]">
             <p class="text-4xl p-2">나의 스터디</p>
             <div class="flex flex-row overflow-hidden w-full min-w-[250px] h-[300px] overflow-x-scroll pb-4">
                 {% for my_study in my_studies %}
