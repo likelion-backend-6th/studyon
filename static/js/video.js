@@ -10,8 +10,6 @@ console.log("loc: ", loc.pathname);
 const wsStart = loc.protocol == "https:" ? "wss://" : "ws://";
 const endPoint = wsStart + loc.host + "/ws" + loc.pathname;
 
-const username = document.getElementById("data").getAttribute("data-username");
-
 // local video stream
 var localStream = new MediaStream();
 
@@ -168,7 +166,7 @@ function createOfferer(peerUsername, receiver_channel_name) {
     addLocalTracks(peer)
 
     // remote video element 생성
-    const remoteVideo = createVideo(peerUsername);
+    const remoteVideo = createVideo(receiver_channel_name, peerUsername);
     setOnTrack(peer, remoteVideo);
     console.debug("Create video source: ", remoteVideo.srcObject);
 
@@ -234,7 +232,7 @@ function createAnswerer(offer, ices, peerUsername, receiver_channel_name) {
     addLocalTracks(peer);
 
     // remote video element 생성
-    const remoteVideo = createVideo(peerUsername);
+    const remoteVideo = createVideo(receiver_channel_name, peerUsername);
     setOnTrack(peer, remoteVideo);
 
     console.debug("Create video source: ", remoteVideo.srcObject);
@@ -305,20 +303,24 @@ function createAnswerer(offer, ices, peerUsername, receiver_channel_name) {
 }
 
 // 새로운 유저가 연결되면 video element 생성
-function createVideo(videoID) {
+function createVideo(videoID, username) {
     const videoContainer = document.querySelector("#video-container");
     const videoWrapper = document.createElement("div");
     const remoteVideo = document.createElement("video");
+    const videoLabel = document.createElement("p");
 
     // 설정
-    videoWrapper.className = "aspect-video video-box max-w-xl bg-neutral-900 flex justify-center items-center w-full";
+    videoWrapper.className = "relative aspect-video video-box max-w-xl bg-neutral-900 flex justify-center items-center";
     remoteVideo.id = videoID + "-video";
     remoteVideo.className = "w-full h-full object-cover";
     remoteVideo.autoplay = true;
     remoteVideo.playsinline = true;
+    videoLabel.className = "absolute px-2 bg-[rgba(25,25,25,.60)] left-0 bottom-0 text-sm text-white";
+    videoLabel.innerText = username;
 
     // add the video to the container
     videoWrapper.appendChild(remoteVideo);
+    videoWrapper.appendChild(videoLabel);
     videoContainer.appendChild(videoWrapper);
 
     // grid layout 설정
@@ -366,5 +368,5 @@ function removeVideo(video) {
 
 var newVideo = document.querySelector("#new-video");
 newVideo.addEventListener("click", () => {
-    createVideo("asdf")
+    createVideo("asdf", "testUser")
 })
