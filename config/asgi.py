@@ -12,10 +12,11 @@ import os
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
+from django.urls import path, re_path
 
-import chat.routing
-import message.routing
-import video.routing
+import chat.consumers
+import message.consumers
+import video.consumers
 
 ENV = os.getenv("RUN_MODE", "base")
 
@@ -26,9 +27,14 @@ application = ProtocolTypeRouter(
         "http": get_asgi_application(),
         "websocket": AuthMiddlewareStack(
             URLRouter(
-                video.routing.websocket_urlpatterns
-                + message.routing.websocket_urlpatterns
-                + chat.routing.websocket_urlpatterns
+                [
+                    path("ws/notice/", message.consumers.NoticeConsumer.as_asgi()),
+                    path("ws/video/", video.consumers.VideoConsumer.as_asgi()),
+                    re_path(
+                        r"ws/chat/room/(?P<study_id>\w+)/(?P<tags>.+)/$",
+                        chat.consumers.ChatConsumer.as_asgi(),
+                    ),
+                ]
             )
         ),
     }

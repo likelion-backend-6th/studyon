@@ -13,7 +13,7 @@ var wsStart = "ws://";
 if (loc.protocol == "https:") {
     wsStart = "wss://";
 }
-var endPoint = wsStart + loc.host + "/video/";
+var endPoint = wsStart + loc.host + "/ws/video/";
 
 var username = document.getElementById("data").getAttribute("data-username");
 
