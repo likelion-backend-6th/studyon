@@ -1,7 +1,28 @@
-<form method="post">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <p>
-        <input type="submit" value="Modity">
-    </p>
-</form>
+{% extends "base.html" %}
+{% block content %}
+    <div class="mx-auto max-w-5xl pt-10 min-h-[calc(100%-68px)]">
+        <form method="post">
+            <div class="flex flex-col">
+                <input class="w-full text-3xl font-bold outline-none placeholder-slate-400"
+                       type="{{ form.title.widget.input_type }}"
+                       placeholder="{{ form.title.label }}"
+                       name="{{ form.title.name }}"
+                       value="{{ form.title.value }}">
+                <p class="text-lg font-bold mt-10">기간</p>
+                <hr class="my-2" />
+                <div>{{ form.start }} ~ {{ form.end }}</div>
+                <p class="text-lg font-bold mt-10">설명</p>
+                <hr class="my-2" />
+                <input class="w-full outline-none"
+                       type="{{ form.description.widget.input_type }}"
+                       placeholder="{{ form.description.label }}"
+                       name="{{ form.description.name }}"
+                       value="{{ form.description.value }}">
+                {% csrf_token %}
+                <div class="flex flex-row-reverse mt-4">
+                    <input type="submit" value="Modity">
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
