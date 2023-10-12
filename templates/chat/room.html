@@ -26,6 +26,7 @@
 {% block include_js %}
     {{ study.id|json_script:"study-id" }}
     {{ request.user.username|json_script:"request-user" }}
+    {{ request.POST|json_script:"tags" }}
 {% endblock include_js %}
 {% block script %}
     <script>
@@ -36,8 +37,11 @@
             const requestUser = JSON.parse(
                 document.getElementById('request-user').textContent
             );
+            const tags = JSON.parse(
+                document.getElementById('tags').textContent
+            );
             const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-            const url = protocol + window.location.host + '/ws/chat/room/' + studyId + '/';
+            const url = protocol + window.location.host + '/ws/chat/room/' + studyId + '/' + tags.tags + '/';
             const chatSocket = new WebSocket(url);
             chatSocket.onmessage = function (event) {
                 console.log(event)

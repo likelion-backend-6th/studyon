@@ -1,6 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseServerError, HttpResponseNotFound, HttpResponse
+from django.http import (
+    HttpResponseServerError,
+    HttpResponseNotFound,
+    HttpResponse,
+    HttpResponseRedirect,
+)
 from django.shortcuts import render
+from django.urls import reverse
 from taggit.utils import parse_tags
 
 from chat.models import Room, Chat
@@ -16,14 +22,16 @@ def study_chat(request, study_id):
         if study_rooms >= 3:
             return HttpResponse("You cannot create more than 3 rooms.")
 
-        room, created = Room.objects.get_or_create(
-            study=study, defaults={"creator": request.user}
-        )
-
-        if created and "tags" in request.POST:
+        if "tags" in request.POST:
             tags = parse_tags(request.POST["tags"])
-            room.tags.add(*tags)
-            print(tags)
+
+            room, created = Room.objects.get_or_create(
+                study=study, defaults={"creator": request.user}
+            )
+            if created:
+                room.tags.add(*tags)
+        else:
+            return HttpResponse("Tags are required to create or join a room.")
 
         chats = Chat.objects.filter(room=room).order_by("created_at")[:50]
     except ObjectDoesNotExist:

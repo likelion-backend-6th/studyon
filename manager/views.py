@@ -14,6 +14,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+from chat.forms import TagsForm
 from common.utils import InfiniteListView, s3_file_upload
 from recruit.models import Recruit
 from .models import File, Post, Study, Task
@@ -79,6 +80,7 @@ class StudyDetailView(StudyAccessMixin, DetailView):
         context["tasks"] = Task.objects.filter(study=self.object, is_active=True)
         if self.request.user in self.object.members.all():
             context["task_form"] = TaskForm()
+            context["tags_form"] = TagsForm()
         return context
 
 
