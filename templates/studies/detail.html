@@ -53,7 +53,7 @@
         {% for tag in tag_list %}
             <a href="{% url 'chat:chat_room' study.id tag.0 %}">{{ tag.1 }}</a>
         {% endfor %}
-        <div class="flex flex-row flex-wrap">
+        <div class="flex flex-row flex-wrap justify-between">
             {% for member in study.members.all %}
                 <div class="flex flex-row flex-wrap">
                     {% if member != study.creator %}
