@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for message in messages %}
-        <p>
-            <a href="{% url "message:read_message" message.id %}">{{ message }}</a>
-        </p>
-    {% endfor %}
+    <div class="mx-auto max-w-5xl h-full">
+        {% for message in messages %}
+            <div class="flex my-4 max-w-[80%] mx-auto justify-center">
+                <p class="text-lg bg-neutral-100 px-2 rounded-md">
+                    <a class="mr-6" href="{% url "message:read_message" message.id %}">{{ message }}</a> <span class="text-xs">{{ message.created_at|date:"n/j G:i" }}</span>
+                </p>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock content %}

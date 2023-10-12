@@ -42,20 +42,25 @@
             {% for member in study.members.all %}
                 <div class="flex flex-wrap flex-row">
                     {% if member != study.creator %}
-                        <form action="{% url 'manager:study_kickout' study.id member.id %}"
-                              method="post"
-                              class="hover:text-red-500">
-                            {% csrf_token %}
-                            <button type="submit">• {{ member.username }}</button>
-                        </form>
+                        {% if user == study.creator %}
+                            <form action="{% url 'manager:study_kickout' study.id member.id %}"
+                                  method="post"
+                                  class="hover:text-red-500">
+                                {% csrf_token %}
+                                <button type="submit">• {{ member.username }}</button>
+                            </form>
+                        {% else %}
+                            <span>• {{ member.username }}</span>
+                        {% endif %}
                         {% if member.username != user.username %}
-                            <a href="{% url "message:send_message" member.id %}">-Message</a>
+                            <a href="{% url "message:send_message" member.id %}"><i class="fa-regular fa-envelope ml-0.5"></i></a>
                         {% endif %}
                     {% else %}
-                        <span class="mx-2">• {{ member.username }}<i class="fa-solid fa-crown"></i></span>
-                        {% if member.username != user.username %}
-                            <a href="{% url "message:send_message" member.id %}">Message</a>
-                        {% endif %}
+                        <span class="mx-2">• <i class="fa-solid fa-crown"></i>{{ member.username }}
+                            {% if member.username != user.username %}
+                                <a href="{% url "message:send_message" member.id %}"><i class="fa-regular fa-envelope ml-0.5"></i></a>
+                            {% endif %}
+                        </span>
                     {% endif %}
                 </div>
             {% endfor %}

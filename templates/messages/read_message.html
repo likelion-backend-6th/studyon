@@ -1,6 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
-    sender : {{ message.sender }}
-    title : {{ message.title }}
-    content : {{ message.content }}
+    <div class="mx-auto max-w-5xl w-full h-full">
+        <div class="flex flex-col">
+            <div class="mt-10">
+                <p class="text-2xl">보낸이</p>
+                <hr class="my-2">
+                <p class="indent-4">{{ message.sender }}</p>
+            </div>
+            <div class="mt-16">
+                <p class="text-2xl">제목</p>
+                <hr class="my-2">
+                <p class="indent-4">{{ message.title }}</p>
+            </div>
+            {% if message.content %}
+                <div class="mt-16">
+                    <p class="text-2xl">내용</p>
+                    <hr class="my-2">
+                    <p class="indent-4">{{ message.content }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock content %}
