@@ -22,6 +22,14 @@ class Room(models.Model):
         ]
         ordering = ["-created_at"]
 
+    @property
+    def chat_group_name(self):
+        return self.make_chat_group_name(room=self)
+
+    @staticmethod
+    def make_chat_group_name(room=None, room_pk=None):
+        return f"chat-{room_pk or room.pk}"
+
 
 class Chat(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="chats")
