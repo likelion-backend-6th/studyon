@@ -71,10 +71,10 @@ webSocket.onmessage = (e) => {
     // 이미 접속해 있던 유저만 수신
     else if (action == "new-answer") {
         // createOfferer에서 생성한 peer 가져오기
-        var peer = mapPeers[peerUsername];
+        const peer = mapPeers[receiver_channel_name][0];
         // get the answer
-        var answer = parsedData["message"]["sdp"];
-        var ices = parsedData["message"]["ice"];
+        const answer = parsedData["message"]["sdp"];
+        const ices = parsedData["message"]["ice"];
 
         // 생성했던 peer에 remote description연결
         peer.setRemoteDescription(answer)
@@ -97,11 +97,16 @@ webSocket.onmessage = (e) => {
     }
     // 다른 유저의 연결 해제
     else if (action == "disconnect") {
-        const peer = mapPeers[receiver_channel_name];
-        peer.close()
-        delete mapPeers[receiver_channel_name];
-        return
+        if (mapPeers[receiver_channel_name]) {
+            const [peer, remoteVideo] = mapPeers[receiver_channel_name]
+            console.log(peer, remoteVideo)
+            console.warn("Disconnecting from ", peerUsername)
+            peer.close()
+            removeVideo(remoteVideo)
+            delete mapPeers[receiver_channel_name]
+        }
     }
+    return
 }
 
 webSocket.onclose = function (e) {
@@ -128,7 +133,7 @@ userMedia = navigator.mediaDevices.getUserMedia(constraints)
     .then(stream => {
         localStream = stream;
         console.log("Got MediaStream:", stream);
-        var mediaTracks = stream.getTracks();
+        const mediaTracks = stream.getTracks();
 
         console.debug("Got MediaStreamTrack: ")
         for (i = 0; i < mediaTracks.length; i++) {
@@ -168,18 +173,17 @@ function createOfferer(peerUsername, receiver_channel_name) {
     console.debug("Create video source: ", remoteVideo.srcObject);
 
     // store the RTCPeerConnection
-    mapPeers[receiver_channel_name] = peer;
+    mapPeers[receiver_channel_name] = [peer, remoteVideo];
 
     // ice connection state가 변경될 때마다 호출
     peer.oniceconnectionstatechange = () => {
-        var iceConnectionState = peer.iceConnectionState;
+        const iceConnectionState = peer.iceConnectionState;
         console.log("peer.iceConnectionState: ", iceConnectionState)
         if (iceConnectionState === "failed" || iceConnectionState === "closed") {
             console.warn("peer.iceConnectionState: ", iceConnectionState)
             if (iceConnectionState != "closed") {
                 peer.close();
             }
-            removeVideo(remoteVideo);
         }
     };
 
@@ -223,32 +227,30 @@ function createOfferer(peerUsername, receiver_channel_name) {
 // send sdp to remote peer after gathering is complete
 function createAnswerer(offer, ices, peerUsername, receiver_channel_name) {
     console.log("createAnswerer called.")
-    var peer = new RTCPeerConnection(iceConfiguration);
-    var ICECandidate = [];
+    const peer = new RTCPeerConnection(iceConfiguration);
+    const ICECandidate = [];
 
     // local user media stream tracks 추가
     addLocalTracks(peer);
 
     // remote video element 생성
-    var remoteVideo = createVideo(peerUsername);
+    const remoteVideo = createVideo(peerUsername);
     setOnTrack(peer, remoteVideo);
 
     console.debug("Create video source: ", remoteVideo.srcObject);
 
     // store the RTCPeerConnection
-    mapPeers[peerUsername] = peer;
+    mapPeers[receiver_channel_name] = [peer, remoteVideo];
 
     // ice connection state가 변경될 때마다 호출
     peer.oniceconnectionstatechange = () => {
-        var iceConnectionState = peer.iceConnectionState;
+        const iceConnectionState = peer.iceConnectionState;
         console.log("peer.iceConnectionState: ", iceConnectionState)
         if (iceConnectionState === "failed" || iceConnectionState === "closed") {
             console.warn("peer.iceConnectionState: ", iceConnectionState)
-            delete mapPeers[peerUsername];
             if (iceConnectionState != "closed") {
                 peer.close();
             }
-            removeVideo(remoteVideo);
         }
     };
 
@@ -337,7 +339,7 @@ function gridResize() {
 function setOnTrack(peer, remoteVideo) {
     console.log("Setting ontrack:");
     // create new MediaStream for remote tracks
-    var remoteStream = new MediaStream();
+    const remoteStream = new MediaStream();
 
     remoteVideo.srcObject = remoteStream;
 
@@ -358,7 +360,8 @@ function addLocalTracks(peer) {
 
 // video element 삭제
 function removeVideo(video) {
-    video.parentNode.removeChild(video);
+    const videoWrapper = video.parentNode;
+    videoWrapper.parentNode.removeChild(videoWrapper);
 }
 
 var newVideo = document.querySelector("#new-video");
