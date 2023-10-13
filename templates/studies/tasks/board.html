@@ -56,9 +56,9 @@
                 </button>
             </div>
         </div>
-        <div class="xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 border-y border-neutral-100 shadow-lg">
+        <div class="xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 border-y-2 border-neutral-500">
             <div class="thead">
-                <div class="flex flex-row items-center h-10 text-lg border-y border-neutral-500 bg-neutral-100">
+                <div class="flex flex-row items-center h-12 text-lg border-b border-neutral-500 bg-neutral-100">
                     <div class="mx-2 font-semibold text-center basis-1/6 td">날짜</div>
                     <div class="mx-2 font-semibold text-center basis-3/6 td">제목</div>
                     <div class="mx-2 font-semibold text-center basis-1/6 td">작성자</div>
@@ -67,16 +67,16 @@
             </div>
             <div class="overflow-y-auto h-[500px] tbody" id="post-list">
                 {% for post in posts %}
-                    <div class="flex flex-row items-center h-8 border-y border-neutral-100 hover:bg-neutral-100/75 hover:shadow-[0_10px_10px_-10px_rgba(0,0,0,0.9)] text-sm">
+                    <div class="flex flex-row items-center h-10 text-sm border-y border-neutral-100 hover:bg-neutral-100/75">
                         <div class="mx-2 text-center basis-1/6 td">{{ post.created_at|date:"Y.m.d" }}</div>
-                        <div class="mx-2 basis-3/6 td hover:text-wanted-indigo underline">
+                        <div class="mx-2 underline basis-3/6 td hover:text-wanted-indigo">
                             <a href="{% url 'manager:post_detail' post.id %}">{{ post.title|truncatechars:30 }}</a>
                         </div>
                         <div class="mx-2 text-center basis-1/6 td">{{ post.author.username }}</div>
                         <div class="hidden mx-2 text-center basis-1/6 sm:block td">
                             {% if post.files.exists %}
                                 <a href="{{ post.files.last.url }}"
-                                   class="text-xs text-real-blue underline"
+                                   class="text-xs underline text-real-blue"
                                    download>{{ post.files.last.get_file_name|truncatechars:7 }}</a>
                             {% endif %}
                         </div>
