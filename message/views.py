@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.models import User
+from manager.models import Study
 from .models import Message, Notice
 
 
@@ -23,8 +24,8 @@ class NoticeDeleteView(LoginRequiredMixin, View):
         return redirect("message:list_notices")
 
     def post(self, reuqest, pk):
-        study = get_object_or_404(Notice, id=pk, user=reuqest.user)
-        study.delete()
+        notice = get_object_or_404(Notice, id=pk, user=reuqest.user)
+        notice.delete()
         return redirect("message:list_notices")
 
 
@@ -39,12 +40,17 @@ class MessageListView(LoginRequiredMixin, ListView):
 
 
 class MessageSendView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        reciever = get_object_or_404(User, id=pk)
-        return render(request, "messages/send_message.html", {"reciever": reciever})
+    def get(self, request, study_id, user_id):
+        reciever = get_object_or_404(User, id=user_id)
+        study = get_object_or_404(Study, id=study_id)
+        return render(
+            request,
+            "messages/send_message.html",
+            {"reciever": reciever, "study": study},
+        )
 
-    def post(self, request, pk):
-        reciever = get_object_or_404(User, id=pk)
+    def post(self, request, study_id, user_id):
+        reciever = get_object_or_404(User, id=user_id)
         sender = request.user
         title = request.POST["title"]
         content = request.POST["content"]
@@ -53,7 +59,7 @@ class MessageSendView(LoginRequiredMixin, View):
             sender=sender, reciever=reciever, title=title, content=content
         )
 
-        return redirect("manager:studies_list")
+        return redirect("manager:study_detail", study_id)
 
 
 class MessageReadView(LoginRequiredMixin, DetailView):

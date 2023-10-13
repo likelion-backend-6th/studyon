@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <form onsubmit="send_message('{{ user.username }}','{{ reciever.id }}')"
-          action="{% url "message:send_message" reciever.id %}"
+          action="{% url "message:send_message" study.id reciever.id %}"
           method="post"
           class="pt-4 max-w-md mx-auto mt-7">
         <p class="text-2xl">
