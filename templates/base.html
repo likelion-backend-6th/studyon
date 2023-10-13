@@ -24,9 +24,15 @@
                         {% if user.is_authenticated %}
                             <div class="flex items-center font-bold">
                                 <a href="{% url 'message:list_notices' %}">알림</a>
+                                <span id="recent_notice" class="place-self-start pt-1 text-red-400">
+                                    {% if recent_notice.user == user %}•{% endif %}
+                                </span>
                             </div>
                             <div class="flex items-center font-bold pl-6">
                                 <a href="{% url 'message:list_messages' %}">메세지</a>
+                                <span class="place-self-start pt-1 text-red-400">
+                                    {% if not recent_message.read_at and recent_message.reciever == user %}•{% endif %}
+                                </span>
                             </div>
                             <div class="flex items-center font-bold pl-6">
                                 <a href={% url 'users:info' %}>내 정보</a>
@@ -67,8 +73,10 @@
         notice_socket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             const notice = document.getElementById("notice");
+            const recent_notice = document.getElementById("recent_notice");
             if ( data.user_ids.includes({{ user.id }})){
                 notice.innerHTML = "<p class=\"leading-10 bg-neutral-100 px-2\">" + data.content + "</p>";
+                recent_notice.innerHTML = "•";
             } 
             if (data.reciever_id == {{ user.id }}) {
                 notice.innerHTML = "<p>" + data.content + "</p>";

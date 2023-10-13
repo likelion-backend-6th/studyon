@@ -101,6 +101,8 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.request",
+                "message.context_processors.get_recent_message",
+                "message.context_processors.get_recent_notice",
             ],
         },
     },
