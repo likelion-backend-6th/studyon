@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 from manager.models import Study
 from .models import Notice
 
@@ -59,6 +60,17 @@ class NoticeConsumer(AsyncWebsocketConsumer):
                 {"type": "send_notice", "reciever_id": reciever_id, "content": content},
             )
 
+        # 일반 알림만
+        if "user_id" in text_data_json.keys():
+            user_id = text_data_json["user_id"]
+
+            await self.set_notice_to_db(content=content, user_id=user_id)
+
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {"type": "send_notice", "user_id": user_id, "content": content},
+            )
+
     async def send_notice(self, event):
         await self.send(text_data=json.dumps(event))
 
@@ -97,3 +109,9 @@ class NoticeConsumer(AsyncWebsocketConsumer):
         for user in study.members.all():
             if user.username != username:
                 Notice.objects.create(user=user, content=content)
+
+    # 일반 알림 저장
+    @database_sync_to_async
+    def set_notice_to_db(self, content, user_id):
+        user = get_object_or_404(User, id=user_id)
+        Notice.objects.create(user=user, content=content)
