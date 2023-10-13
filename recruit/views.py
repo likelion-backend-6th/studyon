@@ -162,9 +162,7 @@ class RecruitCreateView(LoginRequiredMixin, FormView):
             return self.form_invalid(form)
 
         if deadline and start_date and deadline > start_date:
-            form.add_error(
-                "deadline", "마감일은 시작일 이전이어야 합니다."
-            )
+            form.add_error("deadline", "마감일은 시작일 이전이어야 합니다.")
             return self.form_invalid(form)
 
         if len(tags) > 3:
