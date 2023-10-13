@@ -1,21 +1,21 @@
 from django import forms
-from django.core.exceptions import ValidationError
 
-from taggit.models import Tag
+from chat.models import Room
 
 
-class TagsForm(forms.Form):
-    tag_name = forms.CharField(
+class CategoryForm(forms.Form):
+    category = forms.ChoiceField(
         label="",
         required=True,
-        widget=forms.TextInput(
-            attrs={"class": "my-custom-class", "placeholder": "Enter tags..."}
+        widget=forms.Select(
+            attrs={"class": "text-center mx-2 my-custom-class"},
         ),
+        choices=[(0, "카테고리 선택")] + Room.CategoryChoices.choices,
     )
 
-    def clean_tag_name(self):
-        tag_name = self.cleaned_data.get("tag_name")
-        try:
-            tag = Tag.objects.get(name=tag_name)
-        except Tag.DoesNotExist:
-            raise ValidationError("Tag does not exist")
+    def clean_category(self):
+        category = int(self.cleaned_data.get("category"))
+        if not category:
+            raise forms.ValidationError("Category does not exist")
+
+        return category
