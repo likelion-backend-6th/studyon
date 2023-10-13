@@ -16,11 +16,11 @@ class ApplicationForm(forms.ModelForm):
 
 
 class RecruitForm(forms.ModelForm):
-    start = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
-    end = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
-    deadline = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
-    total_seats = forms.IntegerField(initial=2)
-    file = forms.FileField(required=False)
+    start = forms.DateField(label="시작일", widget=forms.DateInput(attrs={"type": "date"}))
+    end = forms.DateField(label="종료일", widget=forms.DateInput(attrs={"type": "date"}))
+    deadline = forms.DateField(label="마감일", widget=forms.DateInput(attrs={"type": "date"}))
+    total_seats = forms.IntegerField(initial=2, min_value=2, label="모집 인원")
+    file = forms.FileField(required=False, label="파일")
 
     class Meta:
         model = Recruit
