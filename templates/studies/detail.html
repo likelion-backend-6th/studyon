@@ -187,9 +187,15 @@
                 } else {
                     form.submit();
                 }
-                
-                
             });
         }
+
+        flatpickr('#id_start', {
+            dateFormat: "Y-m-d",
+        });
+        
+        flatpickr('#id_end', {
+            dateFormat: "Y-m-d",
+        });
     </script>
 {% endblock script %}
