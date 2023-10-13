@@ -13,17 +13,17 @@
     <link href="{% static 'fontawesomefree/css/regular.css' %}"
           rel="stylesheet"
           type="text/css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock style %}
 {% block content %}
-    <div class="container pt-6 mx-auto md:max-w-3xl">
+    <div class="container py-6 mx-auto md:max-w-3xl">
         <div class="flex flex-row">
             <div class="text-4xl font-bold">{{ study.title }}</div>
             <div class="self-end ml-6">{{ study.start|date:'Y.m.d' }}~{{ study.end|date:'Y.m.d' }}</div>
             <div class="ml-auto">
-                <button class="text-wanted-blue hover:text-wanted-indigo text-xl"
-                        onclick="location.href='{% url 'video:video_room' study.id %}'">화상채팅</button>
                 {% if study.creator == user %}
-                    <button class="inline-block modify ml-4"
+                    <button class="inline-block ml-4 modify"
                             onclick="location.href='{% url 'manager:study_modify' study.id %}'">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              viewBox="0 0 20 20"
@@ -37,58 +37,73 @@
             </div>
         </div>
         <hr class="my-10">
-        <p class="mb-6 text-2xl">
-            스터디 멤버 <span class="text-sm">{{ study.members.count }}명 / {{ study.recruits.total_seats }}명</span>
-        </p>
-        {% if room_list|length < 3 %}
-            <form action="{% url 'chat:make_chat_room' study.id %}"
-                  method="post"
-                  id="tagsForm">
-                Chatting
-                {{ tags_form }}
-                {% csrf_token %}
-                <input type="submit" value="tags">
-            </form>
-        {% endif %}
-        {% for room in room_list %}
-            <a href="{% url 'chat:chat_room' room.0 %}">{{ room.1 }}</a>
-        {% endfor %}
-        <div class="flex flex-row flex-wrap justify-between">
-            {% for member in study.members.all %}
-                <div class="flex flex-row flex-wrap">
-                    {% if member != study.creator %}
-                        <span>•
-                            {% if member.username != user.username %}
-                                <a href="{% url "message:send_message" study.id member.id %}"><i class="fa-regular fa-envelope mx-0.5"></i></a>
+        <div class="grid grid-cols-2 mb-6 title-wrap">
+            <div class="mr-5 text-2xl">
+                스터디 멤버 <span class="text-sm">{{ study.members.count }}명 / {{ study.recruits.total_seats }}명</span>
+                <div class="flex flex-row flex-wrap justify-between mt-3 text-base">
+                    {% for member in study.members.all %}
+                        <div class="flex flex-row flex-wrap mx-4">
+                            {% if member != study.creator %}
+                                <span>•
+                                    {% if member.username != user.username %}
+                                        <a href="{% url "message:send_message" study.id member.id %}"><i class="fa-regular fa-envelope mx-0.5"></i></a>
+                                    {% endif %}
+                                    {{ member.username }}
+                                </span>
+                                {% if user == study.creator %}
+                                    <form action="{% url 'manager:study_kickout' study.id member.id %}"
+                                          method="post"
+                                          class="ml-1 text-red-500">
+                                        {% csrf_token %}
+                                        <button type="submit">
+                                            <i class="fa-solid fa-delete-left"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <span>•
+                                    {% if member.username != user.username %}
+                                        <a href="{% url "message:send_message" study.id member.id %}"><i class="fa-regular fa-envelope ml-0.5"></i></a>
+                                    {% endif %}
+                                    {{ member.username }} <i class="ml-1 fa-solid fa-crown"></i>
+                                </span>
                             {% endif %}
-                            {{ member.username }}
-                        </span>
-                        {% if user == study.creator %}
-                            <form action="{% url 'manager:study_kickout' study.id member.id %}"
-                                  method="post"
-                                  class="text-red-500 ml-1">
-                                {% csrf_token %}
-                                <button type="submit">
-                                    <i class="fa-solid fa-delete-left"></i>
-                                </button>
-                            </form>
-                        {% endif %}
-                    {% else %}
-                        <span>•
-                            {% if member.username != user.username %}
-                                <a href="{% url "message:send_message" study.id member.id %}"><i class="fa-regular fa-envelope ml-0.5"></i></a>
-                            {% endif %}
-                            {{ member.username }} <i class="fa-solid fa-crown ml-1"></i>
-                        </span>
-                    {% endif %}
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </div>
+            <div class="ml-5 chat-room">
+                <div class="flex justify-between chat-title">
+                    <div class="text-2xl room-title">채팅방 생성</div>
+                    <div class="flex items-end mr-4 chat-video">
+                        <button class="text-lg text-wanted-blue hover:text-wanted-indigo"
+                                onclick="location.href='{% url 'video:video_room' study.id %}'">화상채팅</button>
+                    </div>
+                </div>
+                {% if rooms|length < 3 %}
+                    <form action="{% url 'chat:make_chat_room' study.id %}"
+                          method="post"
+                          id="categoryForm"
+                          class="my-3">
+                        {{ category_form }}
+                        {% csrf_token %}
+                        <input class="px-1 font-bold hover:text-neutral-500 hover:underline hover:cursor-pointer"
+                               type="submit"
+                               value="생성">
+                    </form>
+                {% endif %}
+                {% for room in rooms %}
+                    <a href="{% url 'chat:chat_room' room.id %}"
+                       class="mx-4 mt-3 room hover:font-extrabold hover:text-neutral-500 hover:underline"
+                       data-category="{{ room.category }}">{{ room.get_category_display }}</a>
+                {% endfor %}
+            </div>
         </div>
         <hr class="my-10">
-        <h2 class="text-xl mb-6">진행방식</h2>
+        <h2 class="mb-6 text-xl">진행방식</h2>
         <p class="pt-1">{{ study.process }}</p>
         <hr class="my-4">
-        <h2 class="text-xl mb-6">추가정보</h2>
+        <h2 class="mb-6 text-xl">추가정보</h2>
         <p class="pt-1">{{ study.info }}</p>
         <hr class="my-10">
         <div class="flex flex-col">
@@ -151,36 +166,30 @@
     </div>
 {% endblock content %}
 {% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        tagsForm = document.getElementById("tagsForm")
+        categoryForm = document.getElementById("categoryForm")
 
-        if (tagsForm) {
-            tagsForm.addEventListener("submit", function (event) {
-                event.preventDefault();  // 기본 form 제출 동작 방지
+        if (categoryForm) {
+            categoryForm.addEventListener("submit", function (event) {
+                event.preventDefault();
     
                 let form = event.target;
-                let room_cnt = "{{ room_list|length|escapejs }}";
+                let room_cnt = "{{ rooms|length|escapejs }}";
+                let category = form.elements["category"].value;
+                let exist_rooms_category = document.querySelectorAll("a.room");
+                let categoryArray = Array.from(exist_rooms_category).map((room) => room.getAttribute("data-category"));
+
                 if (room_cnt >= 3) {
                     alert("최대 3개의 채팅방을 생성할 수 있습니다.");
-                } 
-                let tag_name = form.elements["tag_name"].value;  // 입력 필드의 값 가져오기
-    
-                let tag_list_url="{% url 'chat:room_tag_list' study.id %}";
-    
-                fetch(tag_list_url)
-                .then((res) => res.json())
-                .then((data) => {
-                    let tag_list = data.tag_list;
-                    let room_tag_list = data.room_tag_list;
-                    if (room_tag_list.includes(tag_name)) {
-                        alert("이미 존재하는 채팅방입니다.");
-                    } else if (!tag_list.includes(tag_name)) {
-                        alert("해당 태그는 존재하지 않습니다.");
-                    } else {
-                        form.submit();
-                    }
-                });
+                } else if (categoryArray.includes(category)) {
+                    alert("이미 존재하는 방입니다");
+                } else {
+                    form.submit();
+                }
+                
+                
             });
-        };
+        }
     </script>
 {% endblock script %}
