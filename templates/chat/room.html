@@ -5,8 +5,35 @@
 {% endblock title %}
 {% block content %}
     <div class="flex flex-col items-center max-w-5xl mx-auto overflow-hidden chat-room-wrap">
-        <div class="w-4/5 mt-16 text-3xl font-bold lg:max-w-3xl title">
-            {{ room.study.title|truncatechars:20 }} - {{ room.tags.all.0 }}
+        <div class="grid items-center w-4/5 grid-cols-10 mt-16 lg:max-w-3xl title-wrap">
+            <div class="col-span-8 text-3xl font-bold title">
+                {{ room.study.title|truncatechars:20 }} - {{ room.get_category_display }}
+            </div>
+            <div class="flex justify-end return">
+                <a href="{% url "manager:study_detail" room.study.id %}"
+                   class="block w-5">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                    </svg>
+                </a>
+            </div>
+            <div class="flex justify-end mr-2 close">
+                <a href="" class="hover:font-extrabold" class="block w-5">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </a>
+            </div>
         </div>
         <div class="w-4/5 py-3 mt-8 overflow-y-auto lg:max-w-3xl h-96" id="chat">
             {% for chat in chats|reverse %}
@@ -171,12 +198,12 @@
                     if (isMe) {
                         message_wrapper.className = "m-2 bg-[#eaf8f3] grid float-right w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me"
                         time_box.className = "self-center col-span-4 text-xs text-right text-neutral-400 chat-time";
-                        name_box_className = "self-center my-1 font-bold text-center chat-sender"
+                        name_box.className = "self-center my-1 font-bold text-center chat-sender"
                         message_wrapper.appendChild(time_box);
                         message_wrapper.appendChild(name_box);
                     } else {
                         message_wrapper.className = "m-2 bg-[#f0ecec] grid w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper other"
-                        name_box_className = "self-center my-1 font-bold text-center chat-sender"
+                        name_box.className = "self-center my-1 font-bold text-center chat-sender"
                         time_box.className = "self-center col-span-4 text-xs text-neutral-400 chat-time";
                         message_wrapper.appendChild(name_box);
                         message_wrapper.appendChild(time_box);
