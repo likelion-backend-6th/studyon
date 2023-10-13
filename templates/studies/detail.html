@@ -40,7 +40,7 @@
         <div class="grid grid-cols-2 mb-6 title-wrap">
             <div class="mr-5 text-2xl">
                 스터디 멤버 <span class="text-sm">{{ study.members.count }}명 / {{ study.recruits.total_seats }}명</span>
-                <div class="flex flex-row flex-wrap justify-between mt-3 text-base">
+                <div class="flex flex-row flex-wrap mt-3 text-base">
                     {% for member in study.members.all %}
                         <div class="flex flex-row flex-wrap mx-4">
                             {% if member != study.creator %}
