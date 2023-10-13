@@ -1,19 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
-from taggit.managers import TaggableManager
 
 from manager.models import Study
 
 
 class Room(models.Model):
+    class CategoryChoices(models.IntegerChoices):
+        계획 = 1
+        진행 = 2
+        질의응답 = 3
+        리뷰 = 4
+        기타 = 5
+
     study = models.ForeignKey(Study, on_delete=models.CASCADE, related_name="rooms")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="rooms")
-    tags = TaggableManager()
+    category = models.IntegerField(choices=CategoryChoices.choices)
     created_at = models.DateTimeField(auto_now_add=True)
     closed_at = models.DateTimeField(null=True)
 
     def __str__(self):
-        return f"{self.study}의 채팅방"
+        return f"{self.study}의 채팅방 : {self.category}"
 
     class Meta:
         indexes = [
