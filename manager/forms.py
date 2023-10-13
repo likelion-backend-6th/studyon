@@ -20,12 +20,20 @@ class StudyForm(forms.ModelForm):
 class TaskForm(forms.ModelForm):
     start = forms.DateField(
         widget=forms.DateInput(
-            attrs={"type": "date", "class": "bg-neutral-100 px-2 rounded-md"}
+            attrs={
+                "type": "date",
+                "class": "bg-neutral-100 px-2 rounded-md",
+                "placeholder": "시작일 선택",
+            }
         )
     )
     end = forms.DateField(
         widget=forms.DateInput(
-            attrs={"type": "date", "class": "bg-neutral-100 px-2 rounded-md"}
+            attrs={
+                "type": "date",
+                "class": "bg-neutral-100 px-2 rounded-md",
+                "placeholder": "종료일 선택",
+            }
         )
     )
 
