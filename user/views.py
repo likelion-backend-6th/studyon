@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.contrib import auth
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
@@ -20,21 +21,17 @@ class LoginView(View):
     def get(self, request):
         if request.user.is_authenticated:
             return redirect("recruits:index")
-        return render(request, self.template_name)
+        form = AuthenticationForm(request=request)
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request):
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = auth.authenticate(request, username=username, password=password)
-        if user is not None:
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
             auth.login(request, user)
             return redirect("recruits:index")
-        else:
-            return render(
-                request,
-                self.template_name,
-                {"error": "username or password is incorrect"},
-            )
+
+        return render(request, self.template_name, {"form": form})
 
 
 class SignupView(View):
