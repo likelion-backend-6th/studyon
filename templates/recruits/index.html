@@ -57,7 +57,7 @@
             <ul id="recruit-list"
                 class="grid {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-8 pt-8">
                 {% for recruit in recruits %}
-                    {% if recruit.members.count < recruit.total_seats %}
+                    {% if recruit.members.count < recruit.total_seats and recruit.study.status != 3 and recruit.study.status != 4 %}
                         <li class="p-2">
                             <a href="{% url 'recruits:recruit_detail' recruit.id %}">
                                 <div class="w-full">
