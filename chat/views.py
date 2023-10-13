@@ -3,9 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import ListView
 
-from taggit.models import Tag
-
-from chat.forms import TagsForm
+from chat.forms import CategoryForm
 
 
 from chat.models import Chat, Room
@@ -18,34 +16,20 @@ from manager.models import Study
 
 
 @study_access_permission
-def room_tag_list(request, study_id):
-    study = get_object_or_404(Study, pk=study_id)
-    tag_list = list(Tag.objects.all().values_list("name", flat=True))
-    room_tag_list = list(
-        Room.objects.filter(study=study).values_list("tags__name", flat=True)
-    )
-    return JsonResponse({"tag_list": tag_list, "room_tag_list": room_tag_list})
-
-
-@study_access_permission
 def make_chat_room(request, study_id):
-    tags_form = TagsForm(request.POST)
+    category_form = CategoryForm(request.POST)
     study = get_object_or_404(Study, id=study_id)
 
-    study_rooms = Room.objects.filter(study=study).count()
-
+    study_rooms = Room.objects.filter(study=study, closed_at=None).count()
     if study_rooms >= 3:
         return HttpResponse("You cannot create more than 3 rooms.")
 
-    if tags_form.is_valid():
-        tag_name = tags_form.cleaned_data.get("tag_name")
+    if category_form.is_valid():
+        category = category_form.cleaned_data.get("category")
 
         room, created = Room.objects.get_or_create(
-            study=study, tags__name=tag_name, defaults={"creator": request.user}
+            study=study, category=category, defaults={"creator": request.user}
         )
-
-        if created:
-            room.tags.add(tag_name)
 
         chat_room_url = reverse("chat:chat_room", kwargs={"room_id": room.id})
 
@@ -54,7 +38,9 @@ def make_chat_room(request, study_id):
 
 @chat_room_access_permission
 def chat_room(request: HttpRequest, room_id):
-    room = get_object_or_404(Room.objects.select_related("study"), id=room_id)
+    room = get_object_or_404(
+        Room.objects.select_related("study"), id=room_id, closed_at=None
+    )
     chats = Chat.objects.filter(room=room)
     return render(
         request,
@@ -74,7 +60,9 @@ class ChatRoomView(ChatRoomMixin, ListView):
 
     def get_queryset(self):
         room_id = self.kwargs["room_id"]
-        room = get_object_or_404(Room.objects.select_related("study"), id=room_id)
+        room = get_object_or_404(
+            Room.objects.select_related("study"), id=room_id, closed_at=None
+        )
         queryset = Chat.objects.filter(room=room)
 
         return queryset
@@ -82,6 +70,8 @@ class ChatRoomView(ChatRoomMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         room_id = self.kwargs["room_id"]
-        room = get_object_or_404(Room.objects.select_related("study"), id=room_id)
+        room = get_object_or_404(
+            Room.objects.select_related("study"), id=room_id, closed_at=None
+        )
         context["room"] = room
         return context
