@@ -57,24 +57,28 @@
             {% for member in study.members.all %}
                 <div class="flex flex-row flex-wrap">
                     {% if member != study.creator %}
+                        <span>•
+                            {% if member.username != user.username %}
+                                <a href="{% url "message:send_message" member.id %}"><i class="fa-regular fa-envelope mx-0.5"></i></a>
+                            {% endif %}
+                            {{ member.username }}
+                        </span>
                         {% if user == study.creator %}
                             <form action="{% url 'manager:study_kickout' study.id member.id %}"
                                   method="post"
-                                  class="hover:text-red-500">
+                                  class="text-red-500 ml-1">
                                 {% csrf_token %}
-                                <button type="submit">• {{ member.username }}</button>
+                                <button type="submit">
+                                    <i class="fa-solid fa-delete-left"></i>
+                                </button>
                             </form>
-                        {% else %}
-                            <span>• {{ member.username }}</span>
-                        {% endif %}
-                        {% if member.username != user.username %}
-                            <a href="{% url "message:send_message" member.id %}"><i class="fa-regular fa-envelope ml-0.5"></i></a>
                         {% endif %}
                     {% else %}
-                        <span class="mx-2">• <i class="fa-solid fa-crown"></i>{{ member.username }}
+                        <span>•
                             {% if member.username != user.username %}
                                 <a href="{% url "message:send_message" member.id %}"><i class="fa-regular fa-envelope ml-0.5"></i></a>
                             {% endif %}
+                            {{ member.username }} <i class="fa-solid fa-crown ml-1"></i>
                         </span>
                     {% endif %}
                 </div>
