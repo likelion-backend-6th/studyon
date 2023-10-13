@@ -1,10 +1,28 @@
 {% extends "base.html" %}
+{% load static %}
+{% block style %}
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}"
+          rel="stylesheet"
+          type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}"
+          rel="stylesheet"
+          type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}"
+          rel="stylesheet"
+          type="text/css">
+    <link href="{% static 'fontawesomefree/css/regular.css' %}"
+          rel="stylesheet"
+          type="text/css">
+{% endblock style %}
 {% block content %}
     <div class="mx-auto max-w-5xl h-full">
         {% for message in messages %}
             <div class="flex my-4 max-w-[80%] mx-auto justify-center">
                 <p class="text-lg bg-neutral-100 px-2 rounded-md">
                     <a class="mr-6" href="{% url "message:read_message" message.id %}">{{ message }}</a> <span class="text-xs">{{ message.created_at|date:"n/j G:i" }}</span>
+                </p>
+                <p class="ml-4">
+                    {% if message.read_at %}<i class="fa-solid fa-check"></i>{% endif %}
                 </p>
             </div>
         {% endfor %}
