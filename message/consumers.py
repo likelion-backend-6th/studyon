@@ -56,7 +56,7 @@ class NoticeConsumer(AsyncWebsocketConsumer):
 
             await self.channel_layer.group_send(
                 self.room_group_name,
-                {"type": "send_notice", "user_ids": reciever_id, "content": content},
+                {"type": "send_notice", "reciever_id": reciever_id, "content": content},
             )
 
     async def send_notice(self, event):
