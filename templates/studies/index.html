@@ -105,7 +105,7 @@
                         </div>
                         <div class="m-1 flex justify-between">
                             <span class="text-xs self-center">{{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</span>
-                            <span>{{ my_study.members.count }} / {{ my_study.recruits.total_seats }} <i class="fa-solid fa-user"></i></span>
+                            <span>{{ my_study.recruits.members.count }} / {{ my_study.recruits.total_seats }} <i class="fa-solid fa-user"></i></span>
                         </div>
                         <p>
                             {% if my_study.study_tasks.all %}

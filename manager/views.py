@@ -165,10 +165,13 @@ class StudyLeaveView(StudyAccessMixin, View):
 
     def post(self, request, pk):
         study = get_object_or_404(Study, id=pk, is_active=True)
+        recruits = get_object_or_404(Recruit, study=study)
         # 요청유저가 스터디 멤버에 포함되어 있고 스터디장이 아닐 경우
         if request.user in study.members.all() and request.user != study.creator:
             study.members.remove(request.user)
             study.save()
+            recruits.members.remove(request.user)
+            recruits.save()
             return redirect("manager:studies_list")
         # 그 외 post 요청
         else:
@@ -183,10 +186,13 @@ class StudyKickoutView(StudyCreatorMixin, View):
     def post(self, request, pk, member_id):
         user = get_object_or_404(User, id=member_id)
         study = get_object_or_404(Study, id=pk, is_active=True)
+        recruit = get_object_or_404(Recruit, study=study)
         # 요청 유저가 스터디장이고 퇴출유저가 스터디 멤버에 포함되어 있을 경우
         if request.user == study.creator and user in study.members.all():
             study.members.remove(user)
             study.save()
+            recruit.members.remove(user)
+            recruit.save()
             return redirect("manager:study_detail", pk)
         else:
             return redirect("manager:study_detail", pk)
