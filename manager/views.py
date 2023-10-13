@@ -14,7 +14,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib import messages
 
-from chat.forms import TagsForm
+from chat.forms import CategoryForm
 from chat.models import Room
 from common.utils import InfiniteListView, s3_file_upload
 from recruit.models import Recruit
@@ -81,12 +81,8 @@ class StudyDetailView(StudyAccessMixin, DetailView):
         context["tasks"] = Task.objects.filter(study=self.object, is_active=True)
         if self.request.user in self.object.members.all():
             context["task_form"] = TaskForm()
-            context["tags_form"] = TagsForm()
-            context["room_list"] = list(
-                Room.objects.filter(study=self.get_object()).values_list(
-                    "id", "tags__name"
-                )
-            )
+            context["category_form"] = CategoryForm()
+            context["rooms"] = Room.objects.filter(study=self.get_object())
         return context
 
 
