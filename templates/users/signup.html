@@ -6,6 +6,43 @@
             <form action="{% url "users:signup" %}"
                   method="post"
                   class="pt-4 max-w-md mx-auto mt-7">
+                {% if form.errors %}
+                    <ul>
+                        {% for field in form %}
+                            {% if field.errors %}
+                                <li>
+                                    <div class="flex items-end justify-center min-h-full p-4 text-center sm:items-center sm:p-0">
+                                        <div class="relative overflow-hidden text-left transition-all transform bg-white rounded-lg sm:my-3 sm:w-full sm:max-w-lg">
+                                            <div class="px-4 pt-2 pb-1 bg-white">
+                                                <div class="sm:flex sm:items-start">
+                                                    <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-red-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                                                        <svg class="w-6 h-6 text-red-600"
+                                                             fill="none"
+                                                             viewBox="0 0 24 24"
+                                                             stroke-width="1.5"
+                                                             stroke="currentColor"
+                                                             aria-hidden="true">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z">
+                                                            </path>
+                                                        </svg>
+                                                    </div>
+                                                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                                        <h3 class="text-base font-semibold leading-6 text-gray-900"
+                                                            id="modal-title">{{ field.label }} 오류</h3>
+                                                        <div class="mt-2">
+                                                            <p class="text-sm text-gray-500">{{ field.errors }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
                 {% csrf_token %}
                 <h3 class="text-sm">아이디</h3>
                 <input type="text"
@@ -13,7 +50,7 @@
                        placeholder="아이디를 입력해주세요."
                        required
                        class="mt-3 w-full p-2 border-b-2 text-base focus:outline-none focus:ring-0 focus:border-gray-600">
-                <h3 class="mt-5 text-sm">별명</h3>
+                <h3 class="mt-5 text-sm">이름</h3>
                 <input type="text"
                        name="nickname"
                        placeholder="사용할 이름을 입력해주세요."

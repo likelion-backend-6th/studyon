@@ -7,6 +7,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import ListView, View
 
+from .forms import SignupForm
 from .models import Profile, Review
 
 
@@ -38,31 +39,20 @@ class SignupView(View):
     template_name = "users/signup.html"
 
     def get(self, request):
-        return render(request, self.template_name)
+        form = SignupForm()
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request):
-        username = request.POST["username"]
-        nickname = request.POST["nickname"]
-        password = request.POST["password"]
-        password_check = request.POST["password_check"]
-        if User.objects.filter(username=username).exists():
-            return render(
-                request, self.template_name, {"error": "username is already exists"}
-            )
-        if Profile.objects.filter(nickname=nickname).exists():
-            return render(
-                request, self.template_name, {"error": "nickname is already exists"}
-            )
-        if password == password_check:
+        form = SignupForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password_check"]
+            nickname = form.cleaned_data["nickname"]
             user = User.objects.create_user(username=username, password=password)
             Profile.objects.create(user=user, nickname=nickname)
             return redirect("users:login")
-        else:
-            return render(
-                request,
-                self.template_name,
-                {"error": "password and password_check is not same"},
-            )
+
+        return render(request, self.template_name, {"form": form})
 
 
 class MyHistoryView(ListView):
