@@ -82,7 +82,9 @@ class StudyDetailView(StudyAccessMixin, DetailView):
         if self.request.user in self.object.members.all():
             context["task_form"] = TaskForm()
             context["category_form"] = CategoryForm()
-            context["rooms"] = Room.objects.filter(study=self.get_object())
+            context["rooms"] = Room.objects.filter(
+                study=self.get_object(), closed_at=None
+            )
         return context
 
 
