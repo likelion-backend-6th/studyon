@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 from manager.models import Study
 
 
@@ -19,7 +20,13 @@ class Room(models.Model):
     closed_at = models.DateTimeField(null=True)
 
     def __str__(self):
-        return f"{self.study}의 채팅방 : {self.category}"
+        suffix = (
+            "현재 사용중"
+            if not self.closed_at
+            else f'{self.closed_at.strftime("%Y-%m-%d %H:%M:%S")}에 종료됨'
+        )
+
+        return f"{self.study}의 채팅방 : {self.get_category_display()} - {suffix}"
 
     class Meta:
         indexes = [
@@ -49,3 +56,7 @@ class Chat(models.Model):
             models.Index(fields=["room"]),
         ]
         ordering = ["-created_at"]
+
+    def __str__(self):
+        msg = f"{self.content[:20]}.." if len(self.content) > 20 else self.content
+        return f"{self.creator}의 메세지: {msg}"
