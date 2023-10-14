@@ -1,20 +1,25 @@
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from datetime import datetime
+
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import ListView
+from django.contrib import messages
+from django.views.decorators.http import require_POST, require_GET
 
 from chat.forms import CategoryForm
-
 
 from chat.models import Chat, Room
 from chat.permissions import (
     ChatRoomMixin,
     chat_room_access_permission,
+    chat_room_manage_permission,
     study_access_permission,
 )
 from manager.models import Study
 
 
+@require_POST
 @study_access_permission
 def make_chat_room(request, study_id):
     category_form = CategoryForm(request.POST)
@@ -28,7 +33,10 @@ def make_chat_room(request, study_id):
         category = category_form.cleaned_data.get("category")
 
         room, created = Room.objects.get_or_create(
-            study=study, category=category, defaults={"creator": request.user}
+            study=study,
+            category=category,
+            closed_at=None,
+            defaults={"creator": request.user},
         )
 
         chat_room_url = reverse("chat:chat_room", kwargs={"room_id": room.id})
@@ -36,6 +44,7 @@ def make_chat_room(request, study_id):
         return redirect(chat_room_url)
 
 
+@require_GET
 @chat_room_access_permission
 def chat_room(request: HttpRequest, room_id):
     room = get_object_or_404(
@@ -75,3 +84,17 @@ class ChatRoomView(ChatRoomMixin, ListView):
         )
         context["room"] = room
         return context
+
+
+@require_POST
+@chat_room_manage_permission
+def room_delete(request: HttpRequest, room_id):
+    room = get_object_or_404(
+        Room.objects.select_related("study"), id=room_id, closed_at=None
+    )
+    room.closed_at = datetime.now()
+    room.save()
+
+    study_detail_url = reverse("manager:study_detail", kwargs={"pk": room.study_id})
+
+    return redirect(study_detail_url)
