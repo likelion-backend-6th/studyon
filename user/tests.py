@@ -81,7 +81,7 @@ class UserTest(TestCase):
             },
         )
         self.assertEqual(res.status_code, 200)
-        self.assertIn("exists", str(res.context["form"].errors))
+        self.assertIn("존재", str(res.context["form"].errors))
 
     def test_user_logout(self):
         self.client.login(username="base_user", password="base_user")
