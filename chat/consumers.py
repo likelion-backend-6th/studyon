@@ -73,6 +73,10 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             }
         )
 
+    async def chat_room_delete(self, message_dict):
+        custom_code = 4000
+        await self.close(code=custom_code)
+
     @database_sync_to_async
     def save_message(self, username, room_id, content):
         user = User.objects.get(username=username)
