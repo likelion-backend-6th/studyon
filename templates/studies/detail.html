@@ -17,10 +17,10 @@
           href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock style %}
 {% block content %}
-    <div class="container py-6 mx-auto md:max-w-3xl">
-        <div class="flex flex-row">
+    <div class="container w-5/6 py-10 mx-auto sm:w-full md:max-w-3xl">
+        <div class="flex flex-row detail-head">
             <div class="text-4xl font-bold">{{ study.title }}</div>
-            <div class="self-end ml-6">{{ study.start|date:'Y.m.d' }}~{{ study.end|date:'Y.m.d' }}</div>
+            <div class="self-end hidden ml-6 sm:block">{{ study.start|date:'Y.m.d' }}~{{ study.end|date:'Y.m.d' }}</div>
             <div class="ml-auto">
                 {% if study.creator == user %}
                     <button class="inline-block ml-4 modify"
@@ -36,8 +36,9 @@
                 {% endif %}
             </div>
         </div>
+        <div class="mt-3 ml-3 sm:hidden">{{ study.start|date:'Y.m.d' }}~{{ study.end|date:'Y.m.d' }}</div>
         <hr class="my-10">
-        <div class="grid grid-cols-2 mb-6 title-wrap">
+        <div class="grid-cols-2 mb-6 sm:grid title-wrap">
             <div class="mr-5 text-2xl">
                 스터디 멤버 <span class="text-sm">{{ study.members.count }}명 / {{ study.recruits.total_seats }}명</span>
                 <div class="flex flex-row flex-wrap mt-3 text-base">
@@ -72,9 +73,10 @@
                     {% endfor %}
                 </div>
             </div>
-            <div class="ml-5 chat-room">
+            <hr class="my-10 sm:hidden">
+            <div class="sm:ml-5 chat-room">
                 <div class="flex justify-between chat-title">
-                    <div class="text-2xl room-title">채팅방 생성</div>
+                    <div class="text-xl room-title">채팅방 생성</div>
                     <div class="flex items-end mr-4 chat-video">
                         <button class="text-lg text-wanted-blue hover:text-wanted-indigo"
                                 onclick="location.href='{% url 'video:video_room' study.id %}'">화상채팅</button>
@@ -92,9 +94,11 @@
                                value="생성">
                     </form>
                 {% endif %}
+                <div class="mb-2 mr-6 text-xl sm: sm:mb-0 sm:inline room-list">채팅방 목록</div>
+                <span class="sm:hidden empty">&nbsp;&nbsp;&nbsp;</span>
                 {% for room in rooms %}
                     <a href="{% url 'chat:chat_room' room.id %}"
-                       class="mx-4 mt-3 room hover:font-extrabold hover:text-neutral-500 hover:underline"
+                       class="mx-4 mt-3 underline room hover:font-extrabold hover:text-neutral-500"
                        data-category="{{ room.category }}">{{ room.get_category_display }}</a>
                 {% endfor %}
             </div>
@@ -102,7 +106,7 @@
         <hr class="my-10">
         <h2 class="mb-6 text-xl">진행방식</h2>
         <p class="pt-1">{{ study.process }}</p>
-        <hr class="my-4">
+        <hr class="my-10">
         <h2 class="mb-6 text-xl">추가정보</h2>
         <p class="pt-1">{{ study.info }}</p>
         <hr class="my-10">
