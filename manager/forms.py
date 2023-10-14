@@ -22,7 +22,7 @@ class TaskForm(forms.ModelForm):
         widget=forms.DateInput(
             attrs={
                 "type": "date",
-                "class": "bg-neutral-100 px-2 rounded-md",
+                "class": "w-28 text-center bg-neutral-100 px-2 rounded-md",
                 "placeholder": "시작일 선택",
             }
         )
@@ -31,7 +31,7 @@ class TaskForm(forms.ModelForm):
         widget=forms.DateInput(
             attrs={
                 "type": "date",
-                "class": "bg-neutral-100 px-2 rounded-md",
+                "class": "w-28 text-center bg-neutral-100 px-2 rounded-md",
                 "placeholder": "종료일 선택",
             }
         )
