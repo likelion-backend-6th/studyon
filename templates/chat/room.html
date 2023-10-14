@@ -5,8 +5,8 @@
 {% endblock title %}
 {% block content %}
     <div class="flex flex-col items-center max-w-5xl mx-auto overflow-hidden chat-room-wrap">
-        <div class="grid items-center w-4/5 grid-cols-10 mt-16 lg:max-w-3xl title-wrap">
-            <div class="col-span-8 text-3xl font-bold title">
+        <div class="flex flex-row items-center justify-between w-4/5 mt-16 lg:max-w-3xl title-wrap">
+            <div class="w-10/12 text-3xl font-bold title">
                 {{ room.study.title|truncatechars:20 }} - {{ room.get_category_display }}
             </div>
             <div class="flex justify-end return">
@@ -22,22 +22,25 @@
                     </svg>
                 </a>
             </div>
-            <div class="flex justify-end mr-2 close">
-                <a href="" class="hover:font-extrabold" class="block w-5">
+            {% if user == room.study.creator %}
+                <form action="{% url 'chat:room_delete' room.id %}"
+                      method="post"
+                      class="room-delete-form">
+                    {% csrf_token %}
                     <svg xmlns="http://www.w3.org/2000/svg"
                          fill="none"
                          viewBox="0 0 24 24"
                          stroke-width="1.5"
                          stroke="currentColor"
-                         class="w-4 h-4">
+                         class="w-4 h-4 mr-2 room-delete-btn">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                </a>
-            </div>
+                </form>
+            {% endif %}
         </div>
         <div class="w-4/5 py-3 mt-8 overflow-y-auto lg:max-w-3xl h-96" id="chat">
             {% for chat in chats|reverse %}
-                {% if chat.creator == request.user %}
+                {% if user == chat.creator %}
                     <div class="m-2 bg-[#eaf8f3] grid float-right w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me">
                         <div class="self-center col-span-4 text-xs text-right text-neutral-400 chat-time">{{ chat.created_at|date:"P" }}</div>
                         <div class="self-center my-1 font-bold text-center chat-sender">Me</div>
@@ -67,7 +70,7 @@
 {% block include_js %}
     {{ room.id|json_script:"room-id" }}
     {{ room.study.id|json_script:"study-id" }}
-    {{ request.user.username|json_script:"request-user" }}
+    {{ user.username|json_script:"request-user" }}
 {% endblock include_js %}
 {% block script %}
     <script>
@@ -142,7 +145,12 @@
                 },
 
                 onclose(event) {
-                    if (!event.wasClean) {
+                    const close_code = event.code;
+
+                    if (close_code == 4000) {
+                        alert("Chat is closed. Move to Study Detail Page.")
+                        window.location.href = `/studies/${studyId}/`;
+                    } else if (!event.wasClean) {
                         console.error("Chat socket closed unexpectedly");
             
                         if (this.retry < 3) {
@@ -233,14 +241,31 @@
                     }
                 },
 
+
+
             };
-            
+
+            const roomDeleteForm = document.querySelector(".room-delete-form");
+            const deleteBtn = document.querySelector(".room-delete-btn");
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    if (confirm("채팅을 종료하시겠습니까?")) {
+
+                        roomDeleteForm.submit();
+                    } else {
+                    }
+                })
+            };
+
             handlers.init();
             
             handlers.connect(url);
 
             const chat_box = document.getElementById("chat");
             chat_box.scrollTop = chat_box.scrollHeight;      
+            
         })
     </script>
 {% endblock script %}
