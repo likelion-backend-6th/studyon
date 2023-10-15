@@ -306,8 +306,6 @@ class PostTest(TestCase):
 
         res: TemplateResponse = self.client.post(test_url)
 
-        print(File.objects.all())
-
         self.assertEqual(res.status_code, 204)
         self.assertEqual(File.objects.count(), 1)
         with self.assertRaises(File.DoesNotExist):
