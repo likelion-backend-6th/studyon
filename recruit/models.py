@@ -1,11 +1,12 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django_prometheus.models import ExportModelOperationsMixin
 from taggit.managers import TaggableManager
 
 from manager.models import File, Study
 
 
-class Recruit(models.Model):
+class Recruit(ExportModelOperationsMixin("recruit"), models.Model):
     study = models.OneToOneField(
         Study, on_delete=models.CASCADE, related_name="recruits"
     )
@@ -39,7 +40,7 @@ class Recruit(models.Model):
         ordering = ["-created_at"]
 
 
-class Register(models.Model):
+class Register(ExportModelOperationsMixin("register"), models.Model):
     recruit = models.ForeignKey(
         Recruit, on_delete=models.CASCADE, related_name="registers"
     )

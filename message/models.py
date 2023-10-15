@@ -1,8 +1,9 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django_prometheus.models import ExportModelOperationsMixin
 
 
-class Message(models.Model):
+class Message(ExportModelOperationsMixin("message"), models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="senders")
     reciever = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="recievers"
@@ -24,7 +25,7 @@ class Message(models.Model):
         ordering = ["-created_at"]
 
 
-class Notice(models.Model):
+class Notice(ExportModelOperationsMixin("notice"), models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notices")
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
 from django.db import models
-from taggit.managers import TaggableManager
+from django_prometheus.models import ExportModelOperationsMixin
 from markdownx.models import MarkdownxField
+from taggit.managers import TaggableManager
 
 
-class Study(models.Model):
+class Study(ExportModelOperationsMixin("study"), models.Model):
     class Status(models.IntegerChoices):
         RECRUITING = 1
         IN_PROGRESS = 2
@@ -50,7 +51,7 @@ class Study(models.Model):
         )
 
 
-class Task(models.Model):
+class Task(ExportModelOperationsMixin("task"), models.Model):
     study = models.ForeignKey(
         Study, on_delete=models.CASCADE, related_name="study_tasks"
     )
@@ -77,7 +78,7 @@ class Task(models.Model):
         ordering = ["-created_at"]
 
 
-class File(models.Model):
+class File(ExportModelOperationsMixin("file"), models.Model):
     name = models.CharField(max_length=50)
     url = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -89,7 +90,7 @@ class File(models.Model):
         return self.get_file_name()
 
 
-class Post(models.Model):
+class Post(ExportModelOperationsMixin("post"), models.Model):
     title = models.CharField(max_length=100)
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="posts")
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
