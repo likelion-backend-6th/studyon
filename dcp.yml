@@ -1,0 +1,95 @@
+version: "3"
+
+services:
+  postgres:
+    container_name: studyon_db
+    image: postgres:13
+    ports:
+      - 5432:5432
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_studyon:/var/lib/postgresql/data
+
+  redis:
+    container_name: studyon_redis
+    build:
+      context: .
+      dockerfile: Dockerfile_redis
+    image: studyon_redis
+    privileged: true
+    ports:
+      - 6379:6379
+
+  studyon:
+    depends_on:
+      - postgres
+      - redis
+    container_name: studyon_dj
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: studyon_dj
+    volumes:
+      - .:/app
+      - studyon-static:/var/www/html/static
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env
+    environment:
+      RUN_MODE: local
+
+  studyon-celery:
+    depends_on:
+      - studyon
+    container_name: studyon_celery
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: studyon_celery
+    volumes:
+      - .:/app
+    command: celery -A config worker -l info
+    env_file:
+      - ./.env
+    environment:
+      RUN_MODE: local
+
+  studyon-celery-beat:
+    depends_on:
+      - studyon
+    container_name: studyon_celery_beat
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: studyon_celery_beat
+    volumes:
+      - .:/app
+    command: celery -A config beat -l info
+    env_file:
+      - ./.env
+    environment:
+      RUN_MODE: local
+
+  studyon-celery-flower:
+    depends_on:
+      - studyon
+    container_name: studyon_celery_flower
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: studyon_celery_flower
+    volumes:
+      - .:/app
+    command: celery -A config flower -l info
+    env_file:
+      - ./.env
+    environment:
+      RUN_MODE: local
+    ports:
+      - 5555:5555
+
+volumes:
+  postgres_studyon:
+  studyon-static:
