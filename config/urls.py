@@ -31,6 +31,7 @@ urlpatterns = [
     path("video/", include("video.urls")),
     path("messages/", include("message.urls", namespace="message")),
     path("chat/", include("chat.urls")),
+    path("", include("django_prometheus.urls")),
 ]
 
 if settings.DEBUG:

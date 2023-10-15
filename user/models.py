@@ -1,13 +1,14 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django_prometheus.models import ExportModelOperationsMixin
 
 
-class Profile(models.Model):
+class Profile(ExportModelOperationsMixin("profile"), models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nickname = models.CharField(max_length=50)
 
 
-class Review(models.Model):
+class Review(ExportModelOperationsMixin("review"), models.Model):
     reviewer = models.ForeignKey(
         User, related_name="reviewers", on_delete=models.CASCADE
     )

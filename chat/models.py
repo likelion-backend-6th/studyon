@@ -1,11 +1,12 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django_prometheus.models import ExportModelOperationsMixin
 
 
 from manager.models import Study
 
 
-class Room(models.Model):
+class Room(ExportModelOperationsMixin("room"), models.Model):
     class CategoryChoices(models.IntegerChoices):
         계획 = 1
         진행 = 2
@@ -44,7 +45,7 @@ class Room(models.Model):
         return f"chat-{room_pk or room.pk}"
 
 
-class Chat(models.Model):
+class Chat(ExportModelOperationsMixin("chat"), models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="chats")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="chats")
     content = models.TextField()
