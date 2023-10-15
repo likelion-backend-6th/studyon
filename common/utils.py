@@ -1,7 +1,9 @@
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from django.apps import apps
+from django.db.models import Q
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.views.generic import ListView
@@ -84,3 +86,29 @@ class InfiniteListView(ListView):
         except EmptyPage:
             return (paginator, 1, [], False)
         return (paginator, page, page.object_list, page.has_other_pages())
+
+
+def filter_model_data_to_delete(
+    app_label,
+    model_name,
+    datetime_field,
+    period_to_check,
+    status_field,
+    status_value,
+    status,
+):
+    Model = apps.get_model(app_label=app_label, model_name=model_name)
+
+    thirty_days_ago = datetime.now() - timedelta(days=period_to_check)
+
+    query1 = Q(**{datetime_field + "__lt": thirty_days_ago})
+    query2 = Q(**{status_field: status_value})
+
+    filtered_data = Model.objects.filter(query1)
+
+    if status:
+        filtered_data = filtered_data.filter(query2)
+    else:
+        filtered_data = filtered_data.exclude(query2)
+
+    return filtered_data
