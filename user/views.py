@@ -3,12 +3,40 @@ from typing import Any
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import ListView, View
 
+from manager.models import Study
+
 from .forms import SignupForm
 from .models import Profile, Review
+
+
+def write_review(request, pk):
+    if request.method == "POST":
+        reviewer = request.user
+        reviewee = User.objects.get(pk=pk)
+        study_id = request.POST["study"]
+        content = request.POST["review"]
+        score = request.POST["score"]
+        study = Study.objects.get(pk=study_id)
+        if reviewer == reviewee:
+            raise Http404("same user")
+        if not {reviewer, reviewee}.issubset(set(study.members.all())):
+            raise Http404("not member")
+        review, created = Review.objects.get_or_create(
+            reviewer=reviewer,
+            reviewee=reviewee,
+            defaults={"score": score, "review": content},
+        )
+        if not created:
+            review.score = score
+            review.review = content
+        review.save()
+        return redirect("manager:study_detail", study_id)
+    else:
+        raise Http404("잘못된 접근입니다.")
 
 
 def logout(request):

@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Review
+from manager.models import Study
 
 
 class UserTest(TestCase):
@@ -19,6 +20,22 @@ class UserTest(TestCase):
             Review.objects.create(
                 reviewer=user, reviewee=cls.base_user, score=i, review="good"
             )
+        cls.user1 = User.objects.create_user(
+            username="study_user1", password="study_user1"
+        )
+        cls.user2 = User.objects.create_user(
+            username="study_user2", password="study_user2"
+        )
+        cls.study = Study.objects.create(
+            creator=cls.user1,
+            title="test_study",
+            start="2021-01-01",
+            end="2021-01-01",
+            process="test",
+            info="test",
+        )
+        cls.study.members.add(cls.user1)
+        cls.study.members.add(cls.user2)
 
     def test_login_page(self):
         res = self.client.get(reverse("users:login"))
@@ -98,3 +115,63 @@ class UserTest(TestCase):
         self.client.login(username="base_user", password="base_user")
         res = self.client.get(reverse("users:info"))
         self.assertEqual(res.status_code, 200)
+
+    def test_write_review(self):
+        review_data = {
+            "review": "good",
+            "score": 5,
+            "study": self.study.id,
+        }
+        self.client.force_login(self.user1)
+        res = self.client.post(
+            reverse("users:write_review", args=[self.user2.id]), review_data
+        )
+        review = Review.objects.get(reviewer=self.user1, reviewee=self.user2)
+        print(review)
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res.url, reverse("manager:study_detail", args=[self.study.id]))
+        self.assertEqual(review.score, 5)
+        self.assertEqual(review.review, "good")
+
+    def test_write_review_update(self):
+        Review.objects.create(
+            reviewer=self.user1, reviewee=self.user2, score=5, review="good"
+        )
+        review_data = {
+            "review": "verry good",
+            "score": 3,
+            "study": self.study.id,
+        }
+        self.client.force_login(self.user1)
+        res = self.client.post(
+            reverse("users:write_review", args=[self.user2.id]), review_data
+        )
+        review = Review.objects.get(reviewer=self.user1, reviewee=self.user2)
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res.url, reverse("manager:study_detail", args=[self.study.id]))
+        self.assertEqual(review.score, 3)
+        self.assertEqual(review.review, "verry good")
+
+    def test_write_review_same_user(self):
+        review_data = {
+            "review": "good",
+            "score": 5,
+            "study": self.study.id,
+        }
+        self.client.force_login(self.user1)
+        res = self.client.post(
+            reverse("users:write_review", args=[self.user1.id]), review_data
+        )
+        self.assertEqual(res.status_code, 404)
+
+    def test_write_review_bad_user(self):
+        review_data = {
+            "score": 5,
+            "review": "good",
+            "study": self.study.id,
+        }
+        self.client.force_login(self.user1)
+        res = self.client.post(
+            reverse("users:write_review", args=[self.base_user.id]), review_data
+        )
+        self.assertEqual(res.status_code, 404)
