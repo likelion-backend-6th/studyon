@@ -248,4 +248,5 @@ if DEBUG:
 CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 
+# Async to Sync - Settings
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
