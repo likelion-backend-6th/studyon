@@ -14,7 +14,8 @@
                                value="confirm"
                                class="bg-cyan-500 text-white p-1 rounded-md mr-3 cursor-pointer">
                     </form>
-                    <form onsubmit="recruit_cancel('{{ register.recruit }}','{{ register.requester.pk }}')" action="{% url 'recruits:cancel_request' register.pk %}"
+                    <form onsubmit="recruit_cancel('{{ register.recruit }}','{{ register.requester.pk }}')"
+                          action="{% url 'recruits:cancel_request' register.pk %}"
                           method="post">
                         {% csrf_token %}
                         <input type="submit"
