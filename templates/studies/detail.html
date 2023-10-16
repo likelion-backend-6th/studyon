@@ -75,7 +75,7 @@
                 <div class="flex flex-row flex-wrap mt-3 text-base">
                     {% for member in study.members.all %}
                         <div class="flex flex-row flex-wrap mx-4">
-                            <button class="group cursor-default user-button">
+                            <button class="cursor-default group user-button">
                                 {% if member.username == user.username %}
                                     <span class="before:content-['•'] before:pr-2">{{ member.username }}</span>
                                 {% else %}
@@ -111,15 +111,15 @@
                                value="생성">
                     </form>
                 {% endif %}
-                <div class="mb-2 mr-6 text-xl sm:mb-0 sm:inline room-list">
+                <div class="my-3 mr-6 text-xl sm:inline room-list">
                     채팅방 목록
-                    <a href="#" class="mx-2">
+                    <a href="#" onClick="location.reload();" class="mx-2">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              fill="none"
                              viewBox="0 0 24 24"
                              stroke-width="1"
                              stroke="currentColor"
-                             class="inline w-4 h-4">
+                             class="inline w-4 h-4 hover:text-[#89DABF]">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                         </svg>
                     </a>
@@ -198,9 +198,9 @@
         {% include "studies/tasks/create.html" %}
     </div>
     <div id="modal"
-         class="fixed top-0 bg-neutral-400/20 w-full h-full z-50 backdrop-blur-sm  justify-center items-center hidden"
+         class="fixed top-0 z-50 items-center justify-center hidden w-full h-full bg-neutral-400/20 backdrop-blur-sm"
          hidden>
-        <div class="bg-white p-6 w-full max-w-3xl">
+        <div class="w-full max-w-3xl p-6 bg-white">
             <h1 id="modal-title" class="text-3xl"></h1>
             <hr class="my-2" />
             <form action="{% url "users:write_review" 0 %}" method="post">
@@ -215,7 +215,7 @@
                 <div class="flex justify-between">
                     <input id="score" name="score" value="0">
                     <input type="submit"
-                           class="cursor-pointer px-4 py-2 text-white bg-neutral-600 hover:bg-neutral-700"
+                           class="px-4 py-2 text-white cursor-pointer bg-neutral-600 hover:bg-neutral-700"
                            value="작성완료">
                 </div>
             </form>

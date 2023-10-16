@@ -10,10 +10,10 @@ class Profile(ExportModelOperationsMixin("profile"), models.Model):
 
 class Review(ExportModelOperationsMixin("review"), models.Model):
     reviewer = models.ForeignKey(
-        User, related_name="reviewers", on_delete=models.CASCADE
+        User, related_name="left_reviews", on_delete=models.CASCADE
     )
     reviewee = models.ForeignKey(
-        User, related_name="reviewees", on_delete=models.CASCADE
+        User, related_name="received_reviews", on_delete=models.CASCADE
     )
     score = models.IntegerField()
     review = models.TextField()
