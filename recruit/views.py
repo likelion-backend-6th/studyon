@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, F, Count, Avg
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import DeleteView, DetailView, FormView, ListView
 from django.views.generic.edit import UpdateView
@@ -28,6 +28,7 @@ class RecruitView(InfiniteListView):
         queryset = Recruit.objects.annotate(members_count=Count("members")).filter(
             Q(study__status=1) | Q(study__status=2),
             members_count__lt=F("total_seats"),
+            is_active=True,
         )
         query = self.request.GET.get("query")
         tag = self.request.GET.get("tag")
@@ -50,21 +51,21 @@ class RecruitView(InfiniteListView):
         context["query"] = self.request.GET.get("query")
         context["form"] = SearchForm()
         if self.request.user.is_authenticated:
-            context["in_studies"] = Recruit.objects.filter(
-                study__members=self.request.user
+            context["in_studies"] = Study.objects.filter(
+                members=self.request.user, is_active=True
             )
-            context["liked_studies"] = Recruit.objects.filter(
-                like_users=self.request.user
+            context["liked_recruits"] = Recruit.objects.filter(
+                like_users=self.request.user, is_active=True
             )
         else:
             context["in_studies"] = None
-            context["liked_studies"] = None
+            context["liked_recruits"] = None
         return context
 
 
 @login_required
 def like_recruit(request, pk):
-    recruit = get_object_or_404(Recruit, pk=pk)
+    recruit = get_object_or_404(Recruit, pk=pk, is_active=True)
     if request.user.is_authenticated:
         recruit.like_users.add(request.user)
     return redirect("recruits:index")
@@ -72,7 +73,7 @@ def like_recruit(request, pk):
 
 @login_required()
 def unlike_recruit(request, pk):
-    recruit = get_object_or_404(Recruit, pk=pk)
+    recruit = get_object_or_404(Recruit, pk=pk, is_active=True)
     if request.user.is_authenticated:
         recruit.like_users.remove(request.user)
     return redirect("recruits:index")
@@ -86,6 +87,12 @@ class RecruitDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = ApplicationForm()
+        if Register.objects.filter(
+            recruit_id=self.kwargs.get("pk"),
+            requester=self.request.user,
+            is_joined=None,
+        ).exists():
+            context["exist_request"] = "이미 신청하였습니다."
         return context
 
     def post(self, request, *args, **kwargs):
@@ -93,16 +100,24 @@ class RecruitDetailView(DetailView):
             return redirect("users:login")
 
         form = ApplicationForm(request.POST)
-        recruit = self.get_object()
-        if Register.objects.filter(recruit=recruit, requester=request.user).exists():
-            messages.error(request, "이미 신청하셨습니다.")
+        recruit = get_object_or_404(
+            self.model, pk=self.kwargs.get("pk"), is_active=True
+        )
+        if Register.objects.filter(
+            recruit=recruit, requester=request.user, is_joined=None
+        ).exists():
+            messages.error(request, "이미 신청하였습니다.")
             return redirect("recruits:recruit_detail", recruit.id)
         if form.is_valid():
             register = form.save(commit=False)
-            register.recruit = self.get_object()
+            register.recruit = recruit
             register.requester = request.user
             register.save()
-            return redirect("recruits:index")
+
+            recruit_detail = reverse(
+                "recruits:recruit_detail", args=[self.kwargs.get("pk")]
+            )
+            return redirect(recruit_detail)
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
@@ -121,6 +136,7 @@ class RequestView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["recruit_id"] = self.kwargs.get("pk")
         return context
 
 
@@ -273,12 +289,17 @@ class RecruitModifyView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class RecruitDeleteView(LoginRequiredMixin, DeleteView):
-    model = Recruit
-    template_name = "recruits/recruit_confirm_delete.html"
+class RecruitDeleteView(LoginRequiredMixin, View):
+    def post(self, reuqest, pk):
+        print(f"pk:{pk}")
+        recruit = get_object_or_404(Recruit, id=pk, is_active=True)
+        print(f"recruit:{recruit}")
+        recruit.is_active = False
+        recruit.save()
 
-    def get_success_url(self):
-        return reverse_lazy("recruits:index")
+        study_manage_url = reverse("manager:studies_list")
+
+        return redirect(study_manage_url)
 
 
 class FileDeleteView(LoginRequiredMixin, View):
