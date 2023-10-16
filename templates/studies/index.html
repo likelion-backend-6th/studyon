@@ -22,8 +22,8 @@
 {% endblock style %}
 {% block content %}
     <div class="flex flex-row-reverse max-w-5xl mx-auto">
-        <div class="z-40 box-border right-0 w-64 bg-white border-solid border-l-2 h-full">
-            <p class="text-xl p-2">나의 모집글</p>
+        <div class="box-border right-0 z-40 w-64 h-full bg-white border-l-2 border-solid">
+            <p class="p-2 text-xl">나의 모집글</p>
             <div class="scroll_invisible h-[280px] overflow-hidden overflow-y-scroll">
                 {% for my_recruit in my_recruits %}
                     <div class=" w-[90%] p-1 mb-1 mx-auto">
@@ -37,7 +37,7 @@
                             <span class="mr-auto">{{ my_recruit.like_users.count }}
                                 {% if my_recruit in like_recruits %}
                                     <a href="{% url 'manager:studies_unlike_recruit' my_recruit.pk %}">
-                                        <i class="fa-solid fa-heart text-red-400"></i>
+                                        <i class="text-red-400 fa-solid fa-heart"></i>
                                     </a>
                                 {% else %}
                                     <a href="{% url 'manager:studies_like_recruit' my_recruit.pk %}">
@@ -45,7 +45,7 @@
                                     </a>
                                 {% endif %}
                             </span>
-                            <div class="mr-2 p-1">
+                            <div class="p-1 mr-2">
                                 <a href="{% url 'recruits:modify_recruit' my_recruit.id %}">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          viewBox="0 0 20 20"
@@ -56,21 +56,28 @@
                                     </svg>
                                 </a>
                             </div>
-                            <div class="mr-2 p-1">
-                                <a href="{% url 'recruits:delete_recruit' my_recruit.id %}">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 20 20"
-                                         fill="currentColor"
-                                         class="w-5 h-5 text-red-500 hover:scale-125">
-                                        <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
-                                    </svg>
-                                </a>
+                            <div class="p-1 mr-2">
+                                <form action="{% url 'recruits:delete_recruit' my_recruit.id %}"
+                                      method="post"
+                                      id="deleteRecruitForm_{{ my_recruit.id }}">
+                                    {% csrf_token %}
+                                    <button type="button"
+                                            class="delete-recruit-btn"
+                                            onclick="confirmRecruitDelete({{ my_recruit.id }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="w-5 h-5 text-red-500 hover:scale-125">
+                                            <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-            <p class="text-xl p-2">찜한 모집글</p>
+            <p class="p-2 text-xl">찜한 모집글</p>
             <div class="scroll_invisible h-[275px] overflow-hidden overflow-y-scroll">
                 {% for like_recruit in like_recruits %}
                     {% if like_recruit.creator != user %}
@@ -84,7 +91,7 @@
                             <div class="flex justify-end">
                                 <span class="mr-auto">{{ like_recruit.like_users.count }}
                                     <a href="{% url 'manager:studies_unlike_recruit' like_recruit.pk %}">
-                                        <i class="fa-solid fa-heart text-red-400"></i>
+                                        <i class="text-red-400 fa-solid fa-heart"></i>
                                     </a>
                                 </span>
                             </div>
@@ -94,17 +101,17 @@
             </div>
         </div>
         <div class="box-border w-[calc(100%-256px)] min-w-[270px]">
-            <p class="text-4xl p-2">나의 스터디</p>
+            <p class="p-2 text-4xl">나의 스터디</p>
             <div class="flex flex-row flex-wrap min-w-[250px] overflow-hidden overflow-y-scroll scroll_invisible h-[300px] pb-4">
                 {% for my_study in my_studies %}
                     <div class=" p-1 min-w-[250px] h-[100px] hover:h-[250px] overflow-hidden">
-                        <div class="relative pt-2 flex items-end">
+                        <div class="relative flex items-end pt-2">
                             <a class="text-2xl truncate w-[100px]"
                                href="{% url 'manager:study_detail' my_study.id %}">{{ my_study.title }}</a>
-                            <span class="absolute top-0 right-0 text-xs bg-slate-100 pl-1 pr-1">{{ my_study.get_status_display }}</span>
+                            <span class="absolute top-0 right-0 pl-1 pr-1 text-xs bg-slate-100">{{ my_study.get_status_display }}</span>
                         </div>
-                        <div class="m-1 flex justify-between">
-                            <span class="text-xs self-center">{{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</span>
+                        <div class="flex justify-between m-1">
+                            <span class="self-center text-xs">{{ my_study.start|date:'Y.m.d' }} ~ {{ my_study.end|date:'Y.m.d' }}</span>
                             <span>{{ my_study.recruits.members.count }} / {{ my_study.recruits.total_seats }} <i class="fa-solid fa-user"></i></span>
                         </div>
                         <p>
@@ -114,54 +121,55 @@
                                 tasks : 0 / 0 ( 0.0% )
                             {% endif %}
                         </p>
-                        <div class="grid grid-cols-2 gap-4 place-content-center mt-4">
+                        <div class="grid grid-cols-2 gap-4 mt-4 place-content-center">
                             <form onsubmit="recruting('{{ my_study.title }}',{{ my_study.id }});"
                                   action="{% url "manager:study_recuting" my_study.id %}"
                                   method="post">
                                 {% csrf_token %}
-                                <input class="cursor-pointer pl-1 pr-1" type="submit" value="Recruting">
+                                <input class="pl-1 pr-1 cursor-pointer" type="submit" value="Recruting">
                             </form>
                             <form onsubmit="in_progress('{{ my_study.title }}',{{ my_study.id }});"
                                   action="{% url 'manager:study_inprogress' my_study.id %}"
                                   method="post">
                                 {% csrf_token %}
-                                <input class="cursor-pointer pl-1 pr-1" type="submit" value="In Progress">
+                                <input class="pl-1 pr-1 cursor-pointer" type="submit" value="In Progress">
                             </form>
                             <form onsubmit="complete('{{ my_study.title }}',{{ my_study.id }});"
                                   action="{% url 'manager:study_done' my_study.id %}"
                                   method="post">
                                 {% csrf_token %}
-                                <input class="cursor-pointer pl-1 pr-1" type="submit" value="Complete">
+                                <input class="pl-1 pr-1 cursor-pointer" type="submit" value="Complete">
                             </form>
                             <form onsubmit="finished('{{ my_study.title }}',{{ my_study.id }});"
                                   action="{% url 'manager:study_finished' my_study.id %}"
                                   method="post">
                                 {% csrf_token %}
-                                <input class="cursor-pointer pl-1 pr-1" type="submit" value="Finished">
+                                <input class="pl-1 pr-1 cursor-pointer" type="submit" value="Finished">
                             </form>
                             <form onsubmit="study_delete('{{ my_study.title }}',{{ my_study.id }});"
                                   action="{% url 'manager:study_delete' my_study.id %}"
-                                  method="post">
+                                  method="post"
+                                  id="deleteStudyForm_{{ my_study.id }}">
                                 {% csrf_token %}
-                                <input class="cursor-pointer text-red-400 pl-1 pr-1"
-                                       type="submit"
-                                       value="Delete">
+                                <button type="button"
+                                        class="pl-1 pr-1 text-red-400 cursor-pointer"
+                                        onclick="confirmStudyDelete({{ my_study.id }})">Delete</button>
                             </form>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-            <p class="text-4xl p-2">참여 스터디</p>
+            <p class="p-2 text-4xl">참여 스터디</p>
             <div class="flex flex-row flex-wrap min-w-[250px] overflow-hidden overflow-y-scroll scroll_invisible h-[250px] pb-4">
                 {% for in_study in in_studies %}
                     <div class=" p-1 min-w-[250px] h-[100px] hover:h-[150px] overflow-hidden">
-                        <div class="relative pt-2 flex items-end">
+                        <div class="relative flex items-end pt-2">
                             <a class="text-2xl truncate w-[100px]"
                                href="{% url 'manager:study_detail' in_study.id %}">{{ in_study.title }}</a>
-                            <span class="absolute top-0 right-0 text-xs bg-slate-100 pl-1 pr-1">{{ in_study.get_status_display }}</span>
+                            <span class="absolute top-0 right-0 pl-1 pr-1 text-xs bg-slate-100">{{ in_study.get_status_display }}</span>
                         </div>
-                        <div class="m-1 flex justify-between">
-                            <span class="text-xs self-center">{{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</span>
+                        <div class="flex justify-between m-1">
+                            <span class="self-center text-xs">{{ in_study.start|date:'Y.m.d' }} ~ {{ in_study.end|date:'Y.m.d' }}</span>
                             <span>{{ in_study.members.count }} / {{ in_study.recruits.total_seats }} <i class="fa-solid fa-user"></i></span>
                         </div>
                         <p>
@@ -174,11 +182,12 @@
                         <div>
                             <form onsubmit="study_leave('{{ user.username }}','{{ in_study.title }}',{{ in_study.id }});"
                                   action="{% url 'manager:study_leave' in_study.id %}"
-                                  method="post">
+                                  method="post"
+                                  id="leaveStudyForm_{{ in_study.id }}">
                                 {% csrf_token %}
-                                <input class="cursor-pointer text-red-400 pl-1 pr-1 mt-4"
-                                       type="submit"
-                                       value="Leave">
+                                <button type="button"
+                                        class="pl-1 pr-1 text-red-400 cursor-pointer"
+                                        onclick="confirmStudyLeave({{ in_study.id }})">Leave</button>
                             </form>
                         </div>
                     </div>
@@ -232,3 +241,31 @@
     notice_socket.send(JSON.stringify(notice));
     };
 {% endblock websocket %}
+{% block script %}
+    <script>
+        function confirmRecruitDelete(recruitId) {
+            const confirmation = confirm("정말로 삭제하시겠습니까?");
+    
+            if (confirmation) {
+                const deleteForm = document.getElementById(`deleteRecruitForm_${recruitId}`);
+                deleteForm.submit();
+            }
+        }
+        function confirmStudyDelete(studyId) {
+            const confirmation = confirm("정말로 삭제하시겠습니까?");
+    
+            if (confirmation) {
+                const deleteForm = document.getElementById(`deleteStudyForm_${studyId}`);
+                deleteForm.submit();
+            }
+        }
+        function confirmStudyLeave(studyId) {
+            const confirmation = confirm("스터디 참여를 종료하시겠습니까?");
+    
+            if (confirmation) {
+                const leaveForm = document.getElementById(`leaveStudyForm_${studyId}`);
+                leaveForm.submit();
+            }
+        }
+    </script>
+{% endblock script %}
