@@ -39,4 +39,12 @@ app.conf.beat_schedule = {
         "task": "recruit.tasks.cleanup_old_recruits",
         "schedule": crontab(hour=0, minute=8),
     },
+    "change_finished_studies_status": {
+        "task": "manager.tasks.change_studies_status",
+        "schedule": crontab(hour=0, minute=9),
+    },
+    "change_finished_recruit_status": {
+        "task": "recruit.tasks.change_recruits_status",
+        "schedule": crontab(hour=0, minute=10),
+    },
 }
