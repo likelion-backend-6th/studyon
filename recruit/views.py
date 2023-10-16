@@ -1,17 +1,20 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q, F, Count
+from django.db.models import Q, F, Count, Avg
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DeleteView, DetailView, FormView, ListView
 from django.views.generic.edit import UpdateView
+from django.contrib.auth.models import User
 
 from common.utils import InfiniteListView, Tags, s3_file_upload
 from manager.models import File, Study
 from recruit.forms import ApplicationForm, RecruitForm, SearchForm
 from recruit.models import Recruit, Register
+from recruit.permissions import ReviewAccessMixin
+from user.models import Review
 
 
 # Create your views here.
@@ -286,3 +289,25 @@ class FileDeleteView(LoginRequiredMixin, View):
         if not file.recruits.exists():  # If there are no more associated recruits...
             file.delete()  # ...then delete the file.
         return redirect("recruits:modify_recruit", pk=recruit.id)
+
+
+class RequesterReviewView(ReviewAccessMixin, InfiniteListView):
+    model = Review
+    template_name = "recruits/requester_review.html"
+    context_object_name = "reviews"
+    paginate_by = 40
+
+    def get_queryset(self):
+        user_id = self.kwargs.get("user_id")
+        queryset = Review.objects.filter(reviewee_id=user_id)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_id = self.kwargs.get("user_id")
+        context["requester"] = get_object_or_404(User, id=user_id)
+        context["average_score"] = Review.objects.filter(reviewee_id=user_id).aggregate(
+            Avg("score")
+        )["score__avg"]
+        return context
