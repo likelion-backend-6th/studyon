@@ -150,4 +150,24 @@ def filter_model_data_to_delete(
     else:
         filtered_data = filtered_data.exclude(query2)
 
+    print("delete", app_label, model_name, filtered_data)
+
+    return filtered_data
+
+
+def filter_model_data_to_change_status(
+    app_label,
+    model_name,
+    date_field,
+):
+    Model = apps.get_model(app_label=app_label, model_name=model_name)
+
+    today = datetime.now()
+
+    query = Q(**{date_field + "__lt": today})
+
+    filtered_data = Model.objects.filter(query)
+
+    print("status", app_label, model_name, filtered_data)
+
     return filtered_data
