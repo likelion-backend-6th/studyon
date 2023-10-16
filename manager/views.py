@@ -16,7 +16,7 @@ from django.contrib import messages
 
 from chat.forms import CategoryForm
 from chat.models import Room
-from common.utils import InfiniteListView, s3_file_upload
+from common.utils import InfiniteListView, s3_file_download, s3_file_upload
 from recruit.models import Recruit
 from .models import File, Post, Study, Task
 from .forms import (
@@ -445,3 +445,9 @@ class FileDeleteView(FileManageMixin, View):
             return HttpResponse(status=204)
         except Exception as e:
             return HttpResponse(str(e))
+
+
+def download_s3_file(request, pk):
+    response = s3_file_download(pk)
+
+    return response
