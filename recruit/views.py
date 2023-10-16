@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import Q, F, Count
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -22,7 +22,10 @@ class RecruitView(InfiniteListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = Recruit.objects.all()
+        queryset = Recruit.objects.annotate(members_count=Count("members")).filter(
+            Q(study__status=1) | Q(study__status=2),
+            members_count__lt=F("total_seats"),
+        )
         query = self.request.GET.get("query")
         tag = self.request.GET.get("tag")
 
@@ -128,6 +131,8 @@ class ConfirmRegisterView(LoginRequiredMixin, View):
         recruit.save()
         study = recruit.study
         study.members.add(register.requester)
+        if recruit.members.count() == study.members.count():
+            study.status = 2
         study.save()
         return redirect(
             reverse_lazy("recruits:recruit_request", args=[register.recruit.id])
