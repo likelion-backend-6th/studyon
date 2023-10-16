@@ -1,13 +1,18 @@
 import os
 import uuid
 from datetime import datetime
+from urllib.parse import quote
 
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.core.paginator import PageNotAnInteger, EmptyPage
+from django.http import HttpResponse
 
 from boto3 import client
+
+from manager.models import File
 
 
 def s3_file_upload(upload_file: InMemoryUploadedFile, parent_directory):
@@ -32,7 +37,7 @@ def s3_file_upload(upload_file: InMemoryUploadedFile, parent_directory):
 
     file_id = str(uuid.uuid4())
 
-    file_path = f"MEDIA/{parent_directory}/{datetime.now().date()}/{file_id}.{file_ext}"
+    file_path = f"MEDIA/{parent_directory}/{datetime.now().date()}/{file_id}{file_ext}"
 
     try:
         s3.upload_fileobj(file, bucket_name, file_path)
@@ -44,6 +49,40 @@ def s3_file_upload(upload_file: InMemoryUploadedFile, parent_directory):
             print(f"Image setting to public failed: {e}")
     except Exception as e:
         print(f"Image upload failed: {e}")
+
+
+def s3_file_download(file_id):
+    service_name = "s3"
+    aws_access_key_id = settings.NCP_S3_ACCESS_KEY
+    aws_secret_access_key = settings.NCP_S3_SECRET_KEY
+    endpoint_url = settings.NCP_S3_ENDPOINT_URL
+    bucket_name = settings.NCP_S3_BUCKET_NAME
+
+    s3 = client(
+        service_name,
+        endpoint_url=endpoint_url,
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+    )
+
+    bucket_name = bucket_name
+
+    file = get_object_or_404(File, id=file_id)
+
+    file_key = file.url.split("https://kr.object.ncloudstorage.com/studyon/")[-1]
+
+    s3_file_object = s3.get_object(Bucket=bucket_name, Key=file_key)
+    file_body = s3_file_object.get("Body")
+    content_type = s3_file_object.get("ContentType")
+
+    response = HttpResponse(file_body, content_type=content_type)
+
+    encoded_filename = quote(file.name)
+    response[
+        "Content-Disposition"
+    ] = f'attachment; filename="{encoded_filename}.{file.url.split(".")[-1]}"'
+
+    return response
 
 
 class Tags:
