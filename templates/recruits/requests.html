@@ -3,7 +3,7 @@
     <div class="container max-w-3xl pt-16 mx-auto request-wrap">
         <div class="flex flex-row items-center justify-between mb-20 title-wrap">
             <div class="text-4xl font-bold title">참가 신청 확인</div>
-            <a href="#" onClick="history.back();" class="block">
+            <a href="{% url 'recruits:recruit_detail' recruit_id %}" class="block">
                 <svg xmlns="http://www.w3.org/2000/svg"
                      fill="none"
                      viewBox="0 0 24 24"
