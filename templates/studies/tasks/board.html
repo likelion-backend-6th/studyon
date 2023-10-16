@@ -75,7 +75,7 @@
                         <div class="mx-2 text-center basis-1/6 td">{{ post.author.username }}</div>
                         <div class="hidden mx-2 text-center basis-1/6 sm:block td">
                             {% if post.files.exists %}
-                                <a href="{{ post.files.last.url }}"
+                                <a href="{% url 'manager:download_s3_file' post.files.last.id %}"
                                    class="text-xs underline text-real-blue"
                                    download>{{ post.files.last.get_file_name|truncatechars:7 }}</a>
                             {% endif %}
