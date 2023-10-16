@@ -67,7 +67,7 @@
                                 {% for message in messages %}
                                     <div class="bg-red-200 p-2 rounded-md mt-2 before:content-['•'] before:pr-2">{{ message }}</div>
                                 {% endfor %}
-                                <form onsubmit="recruit_confirm('{{ user.username }}', '{{ recruit.title }}' , '{{ recruit.creator.id }}')"
+                                <form onsubmit="recruit_request('{{ user.username }}', '{{ recruit.title }}' , '{{ recruit.creator.id }}')"
                                       action=""
                                       method="post">
                                     {% csrf_token %}
@@ -93,7 +93,7 @@
     </div>
 {% endblock content %}
 {% block websocket %}
-    function recruit_confirm(user, recruit, user_id) {
+    function recruit_request(user, recruit, user_id) {
     var notice = {
     "content" :  user+"(이)가 "+recruit+"에 참가를 신청했습니다.",
     "user_id" : user_id
