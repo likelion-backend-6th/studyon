@@ -8,19 +8,18 @@
                    type="{{ task_form.title.widget.input_type }}"
                    placeholder="{{ task_form.title.label }}"
                    name="{{ task_form.title.name }}">
-            <div class="hidden sm:inline date">{{ task_form.start }} ~ {{ task_form.end }}</div>
+            <div class="sm:inline date">{{ task_form.start }} ~ {{ task_form.end }}</div>
             <button type="submit"
                     class="self-start w-5 h-5 ml-auto transition-all hover:scale-125 text-emerald-500">
                 <i class="fa-solid fa-plus"></i>
             </button>
         </div>
-        {% if messages %}
-            {% for message in messages %}<div class="text-red-600">{{ message }}</div>{% endfor %}
-        {% endif %}
-        <div class="block my-2 sm:hidden task-date">{{ task_form.start }} ~ {{ task_form.end }}</div>
     </div>
     <input class="w-full h-8 outline-none"
            type="{{ task_form.description.widget.input_type }}"
            placeholder="{{ task_form.description.label }}"
            name="{{ task_form.description.name }}">
+    {% if messages %}
+        {% for message in messages %}<div class="text-red-600">{{ message }}</div>{% endfor %}
+    {% endif %}
 </form>
