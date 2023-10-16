@@ -57,39 +57,37 @@
             <ul id="recruit-list"
                 class="grid {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-8 pt-8">
                 {% for recruit in recruits %}
-                    {% if recruit.members.count < recruit.total_seats and recruit.study.status != 3 and recruit.study.status != 4 %}
-                        <li class="p-2">
-                            <a href="{% url 'recruits:recruit_detail' recruit.id %}">
-                                <div class="w-full">
-                                    <h3 class="text-xl">{{ recruit.title }}</h3>
-                                    <p class="pt-1">{{ recruit.creator }}</p>
-                                </div>
-                                <div class="flex justify-between pt-2 text-sm">
-                                    <span class="text-neutral-500">{{ recruit.deadline|date:'Y.m.d' }}</span>
-                                    <span>{{ recruit.members.count }}/{{ recruit.total_seats }}</span>
-                                </div>
-                            </a>
-                            <ul class="flex pt-1 flex-wrap">
-                                {% for tag in recruit.tags.all %}
-                                    <li class="mr-2 mb-2 last:m-0 text-sm">
-                                        <a href="?tag={{ tag.name }}" class="bg-neutral-200 px-2">{{ tag.name }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                            <div class="pt-1">
-                                <span class="text-sm">{{ recruit.like_users.count }}</span>
-                                {% if recruit in liked_studies %}
-                                    <a href="{% url 'recruits:unlike_recruit' recruit.pk %}">
-                                        <i class="fa-solid fa-heart text-red-400"></i>
-                                    </a>
-                                {% else %}
-                                    <a href="{% url 'recruits:like_recruit' recruit.pk %}">
-                                        <i class="fa-solid fa-heart"></i>
-                                    </a>
-                                {% endif %}
+                    <li class="p-2">
+                        <a href="{% url 'recruits:recruit_detail' recruit.id %}">
+                            <div class="w-full">
+                                <h3 class="text-xl">{{ recruit.title }}</h3>
+                                <p class="pt-1">{{ recruit.creator }}</p>
                             </div>
-                        </li>
-                    {% endif %}
+                            <div class="flex justify-between pt-2 text-sm">
+                                <span class="text-neutral-500">{{ recruit.deadline|date:'Y.m.d' }}</span>
+                                <span>{{ recruit.members.count }}/{{ recruit.total_seats }}</span>
+                            </div>
+                        </a>
+                        <ul class="flex pt-1 flex-wrap">
+                            {% for tag in recruit.tags.all %}
+                                <li class="mr-2 mb-2 last:m-0 text-sm">
+                                    <a href="?tag={{ tag.name }}" class="bg-neutral-200 px-2">{{ tag.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="pt-1">
+                            <span class="text-sm">{{ recruit.like_users.count }}</span>
+                            {% if recruit in liked_studies %}
+                                <a href="{% url 'recruits:unlike_recruit' recruit.pk %}">
+                                    <i class="fa-solid fa-heart text-red-400"></i>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'recruits:like_recruit' recruit.pk %}">
+                                    <i class="fa-solid fa-heart"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </li>
                 {% endfor %}
             </ul>
         </div>
