@@ -249,7 +249,7 @@ class TaskCreateView(StudyAccessMixin, View):
                 messages.error(request, "Date form error")
                 return redirect("manager:study_detail", pk)
         else:
-            messages.error(request, "Form error")
+            messages.error(request, form.errors)
             return redirect("manager:study_detail", pk)
 
 
