@@ -14,7 +14,7 @@
         <form method="post"
               action="{% if request.resolver_match.url_name == "post_create" %}{% url 'manager:post_create' pk %}{% else %}{% url 'manager:post_modify' pk %}{% endif %}"
               enctype="multipart/form-data"
-              class="lg:max-w-3xl w-4/5"
+              class="w-4/5 lg:max-w-3xl"
               id="post-form">
             {% csrf_token %}
             <div class="flex flex-col mt-16 items-startmt-20 detail form-wrap">
@@ -29,7 +29,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          viewBox="0 0 20 20"
                                          fill="currentColor"
-                                         class="w-6 h-6 hover:scale-125 transition-all">
+                                         class="w-6 h-6 transition-all hover:scale-125">
                                         <path class="text-wanted-blue" fill-rule="evenodd" d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z" clip-rule="evenodd" />
                                         <path class="text-wanted-green" fill-rule="evenodd" d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
                                     </svg>
@@ -41,7 +41,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          viewBox="0 0 20 20"
                                          fill="currentColor"
-                                         class="w-6 h-6 hover:scale-125 transition-all">
+                                         class="w-6 h-6 transition-all hover:scale-125">
                                         <path class="text-wanted-green" fill-rule="evenodd" d="M15.988 3.012A2.25 2.25 0 0118 5.25v6.5A2.25 2.25 0 0115.75 14H13.5V7A2.5 2.5 0 0011 4.5H8.128a2.252 2.252 0 011.884-1.488A2.25 2.25 0 0112.25 1h1.5a2.25 2.25 0 012.238 2.012zM11.5 3.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v.25h-3v-.25z" clip-rule="evenodd" />
                                         <path class="text-wanted-blue" fill-rule="evenodd" d="M2 7a1 1 0 011-1h8a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm2 3.25a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75zm0 3.5a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
                                     </svg>
@@ -68,7 +68,7 @@
                                  viewBox="0 0 24 24"
                                  stroke-width="1.5"
                                  stroke="currentColor"
-                                 class="w-5 h-5 hover:scale-125 transition-all">
+                                 class="w-5 h-5 transition-all hover:scale-125">
                                 <path stroke-linecap=" round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
                         </button>
@@ -78,8 +78,8 @@
                         {% if request.resolver_match.url_name != "post_create" %}
                             {% for file in files %}
                                 <div class="flex justify-between exist-file" id="{{ file.id }}">
-                                    <a href="{{ file.url }}"
-                                       class="my-1 text-real-blue underline hover:font-bold"
+                                    <a href="{% url 'manager:download_s3_file' file.id %}"
+                                       class="my-1 underline text-real-blue hover:font-bold"
                                        title="파일 다운로드"
                                        download>{{ file.get_file_name }}</a>
                                     <svg xmlns="http://www.w3.org/2000/svg"

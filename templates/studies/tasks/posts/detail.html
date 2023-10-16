@@ -69,7 +69,7 @@
                 <hr class="my-2">
                 <div class="flex flex-col mb-20 content sm:flex-row">
                     {% for file in post.files.all %}
-                        <a href="{{ file.url }}"
+                        <a href="{% url 'manager:download_s3_file' file.id %}"
                            class="my-1 mr-4 text-xs underline text-real-blue hover:font-bold"
                            title="파일 다운로드"
                            download>{{ file.get_file_name }}</a>
