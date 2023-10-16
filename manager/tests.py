@@ -288,9 +288,7 @@ class PostTest(TestCase):
         res: TemplateResponse = self.client.post(test_url)
 
         self.assertEqual(res.status_code, 204)
-        self.assertEqual(Post.objects.count(), 3)
-        with self.assertRaises(Post.DoesNotExist):
-            Post.objects.get(id=self.post01.pk)
+        self.assertEqual(Post.objects.filter(is_active=True).count(), 3)
 
     def test_post_delete_permission(self):
         test_url = reverse("manager:post_delete", args=[self.post04.pk])
