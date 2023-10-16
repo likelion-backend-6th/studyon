@@ -17,7 +17,7 @@ from django.contrib import messages
 from chat.forms import CategoryForm
 from chat.models import Room
 from common.utils import InfiniteListView, s3_file_download, s3_file_upload
-from recruit.models import Recruit
+from recruit.models import Recruit, Register
 from .models import File, Post, Study, Task
 from .forms import (
     FileUploadFormSet,
@@ -66,8 +66,12 @@ class StudyView(LoginRequiredMixin, ListView):
         context["in_studies"] = Study.objects.filter(
             members=self.request.user, is_active=True
         ).exclude(creator=self.request.user)
-        context["my_recruits"] = Recruit.objects.filter(creator=self.request.user)
-        context["like_recruits"] = Recruit.objects.filter(like_users=self.request.user)
+        context["my_recruits"] = Recruit.objects.filter(
+            creator=self.request.user, is_active=True
+        )
+        context["like_recruits"] = Recruit.objects.filter(
+            like_users=self.request.user, is_active=True
+        )
         return context
 
 
@@ -163,13 +167,17 @@ class StudyLeaveView(StudyAccessMixin, View):
 
     def post(self, request, pk):
         study = get_object_or_404(Study, id=pk, is_active=True)
-        recruits = get_object_or_404(Recruit, study=study)
+        recruit = get_object_or_404(Recruit, study=study)
         # 요청유저가 스터디 멤버에 포함되어 있고 스터디장이 아닐 경우
         if request.user in study.members.all() and request.user != study.creator:
             study.members.remove(request.user)
             study.save()
-            recruits.members.remove(request.user)
-            recruits.save()
+            recruit.members.remove(request.user)
+            recruit.save()
+            register = Register.objects.filter(
+                recruit=recruit, requester=request.user, is_joined=True
+            ).first()
+            register.delete()
             return redirect("manager:studies_list")
         # 그 외 post 요청
         else:
@@ -315,7 +323,7 @@ class PostView(TaskAccessMixin, InfiniteListView):
 
     def get_queryset(self):
         task_id = self.kwargs["pk"]
-        queryset = Post.objects.filter(task_id=task_id)
+        queryset = Post.objects.filter(task_id=task_id, is_active=True)
 
         query = self.request.GET.get("query")
         if query:
@@ -327,7 +335,7 @@ class PostView(TaskAccessMixin, InfiniteListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["task"] = get_object_or_404(Task, id=self.kwargs["pk"])
+        context["task"] = get_object_or_404(Task, id=self.kwargs["pk"], is_active=True)
 
         query = self.request.GET.get("query")
         if query:
@@ -387,7 +395,7 @@ def create_post_with_files(request, pk):
 def update_post_with_files(request, pk):
     template_name = "studies/tasks/posts/action.html"
 
-    post = get_object_or_404(Post, id=pk)
+    post = get_object_or_404(Post, id=pk, is_active=True)
     task_id = post.task_id
     files = post.files.all()
 
@@ -427,10 +435,11 @@ def update_post_with_files(request, pk):
 
 class PostDeleteView(PostManageMixin, View):
     def post(self, request, pk):
-        post = get_object_or_404(Post, id=pk)
+        post = get_object_or_404(Post, id=pk, is_active=True)
 
         try:
-            post.delete()
+            post.is_active = False
+            post.save()
             return HttpResponse(status=204)
         except Exception as e:
             return HttpResponse(str(e))
