@@ -19,7 +19,7 @@ class RecruitView(InfiniteListView):
     model = Recruit
     template_name = "recruits/index.html"
     context_object_name = "recruits"
-    paginate_by = 10
+    paginate_by = 50
 
     def get_queryset(self):
         queryset = Recruit.objects.annotate(members_count=Count("members")).filter(
