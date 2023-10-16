@@ -64,26 +64,30 @@
                         {% else %}
                             {% if recruit.total_seats > recruit.members.count %}
                                 <h2 class="text-lg font-bold">참가 신청하기</h2>
-                                {% for message in messages %}
-                                    <div class="bg-red-200 p-2 rounded-md mt-2 before:content-['•'] before:pr-2">{{ message }}</div>
-                                {% endfor %}
-                                <form onsubmit="recruit_request('{{ user.username }}', '{{ recruit.title }}' , '{{ recruit.creator.id }}')"
-                                      action=""
-                                      method="post">
-                                    {% csrf_token %}
-                                    <div class="p-2 mt-3 border-2 rounded-md border-neutral-500">
-                                        <label for="id_content">
-                                            <textarea name="content"
-                                                      rows="5"
-                                                      required
-                                                      id="id_content"
-                                                      class="w-full text-sm outline-none resize-none"></textarea>
-                                        </label>
-                                    </div>
-                                    <input class="px-2 py-1 mt-4 rounded-md cursor-pointer bg-neutral-200 hover:bg-neutral-400 hover:text-white"
-                                           type="submit"
-                                           value="신청하기">
-                                </form>
+                                {% if exist_request %}
+                                    <div class="exist_request_msg">이미 신청하였습니다.</div>
+                                {% else %}
+                                    {% for message in messages %}
+                                        <div class="bg-red-200 p-2 rounded-md mt-2 before:content-['•'] before:pr-2">{{ message }}</div>
+                                    {% endfor %}
+                                    <form onsubmit="recruit_request('{{ user.username }}', '{{ recruit.title }}' , '{{ recruit.creator.id }}')"
+                                          action=""
+                                          method="post">
+                                        {% csrf_token %}
+                                        <div class="p-2 mt-3 border-2 rounded-md border-neutral-500">
+                                            <label for="id_content">
+                                                <textarea name="content"
+                                                          rows="5"
+                                                          required
+                                                          id="id_content"
+                                                          class="w-full text-sm outline-none resize-none"></textarea>
+                                            </label>
+                                        </div>
+                                        <input class="px-2 py-1 mt-4 rounded-md cursor-pointer bg-neutral-200 hover:bg-neutral-400 hover:text-white"
+                                               type="submit"
+                                               value="신청하기">
+                                    </form>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </section>
