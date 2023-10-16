@@ -42,4 +42,9 @@ urlpatterns = [
         views.FileDeleteView.as_view(),
         name="file_delete",
     ),
+    path(
+        "recruits/<int:pk>/requests/<int:user_id>/reviews/",
+        views.RequesterReviewView.as_view(),
+        name="requester_review",
+    ),
 ]
