@@ -56,4 +56,5 @@ urlpatterns = [
     path("posts/<int:pk>/", views.PostDetailView.as_view(), name="post_detail"),
     path("posts/<int:pk>/delete/", views.PostDeleteView.as_view(), name="post_delete"),
     path("files/<int:pk>/delete/", views.FileDeleteView.as_view(), name="file_delete"),
+    path("files/<int:pk>/download/", views.download_s3_file, name="download_s3_file"),
 ]
