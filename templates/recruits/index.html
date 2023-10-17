@@ -102,7 +102,7 @@
                             <ul class="mt-2">
                                 {% for study in in_studies %}
                                     <li class="pl-2 border-b border-neutral-200 pb-1 mb-1 last:border-none last:pb-0 last:mb-0">
-                                        <a href="{% url 'manager:study_detail' study.id %}" class="block">{{ study.study.title }}</a>
+                                        <a href="{% url 'manager:study_detail' study.id %}" class="block">{{ study.title }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
