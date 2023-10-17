@@ -89,14 +89,16 @@ class RecruitDetailView(DetailView):
     context_object_name = "recruit"
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
         context = super().get_context_data(**kwargs)
         context["form"] = ApplicationForm()
-        if Register.objects.filter(
-            recruit_id=self.kwargs.get("pk"),
-            requester=self.request.user,
-            is_joined=None,
-        ).exists():
-            context["exist_request"] = "이미 신청하였습니다."
+        if user.is_authenticated:
+            if Register.objects.filter(
+                recruit_id=self.kwargs.get("pk"),
+                requester=user,
+                is_joined=None,
+            ).exists():
+                context["exist_request"] = "이미 신청하였습니다."
         return context
 
     def post(self, request, *args, **kwargs):
