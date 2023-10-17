@@ -47,7 +47,7 @@ class RecruitView(InfiniteListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["recruits_list"] = Recruit.objects.all().order_by('-created_at')
+        context["recruits_list"] = Recruit.objects.all().order_by("-created_at")
         context["tag"] = self.request.GET.get("tag")
         context["query"] = self.request.GET.get("query")
         context["form"] = SearchForm()
@@ -132,7 +132,11 @@ class RequestView(LoginRequiredMixin, ListView):
         return (
             super()
             .get_queryset()
-            .filter(is_joined=None, recruit__id=self.kwargs.get("pk"), recruit__creator=self.request.user)
+            .filter(
+                is_joined=None,
+                recruit__id=self.kwargs.get("pk"),
+                recruit__creator=self.request.user,
+            )
         )
 
     def get_context_data(self, **kwargs):
