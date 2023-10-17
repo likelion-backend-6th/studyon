@@ -18,7 +18,7 @@
                     <ul class="flex">
                         {% for tag in recruit.tags.all %}
                             <li class="mr-2 last:mr-0">
-                                <span class="text-sm bg-neutral-100 rounded-full py-2 px-3 before:content-['#']">{{ tag.name }}</span>
+                                <span class="text-sm bg-neutral-100 py-1 px-2 before:content-['#']">{{ tag.name }}</span>
                             </li>
                         {% endfor %}
                     </ul>
@@ -74,15 +74,13 @@
                                           action=""
                                           method="post">
                                         {% csrf_token %}
-                                        <div class="p-2 mt-3 border-2 rounded-md border-neutral-500">
-                                            <label for="id_content">
-                                                <textarea name="content"
-                                                          rows="5"
-                                                          required
-                                                          id="id_content"
-                                                          class="w-full text-sm outline-none resize-none"></textarea>
-                                            </label>
-                                        </div>
+                                        <hr class="my-2" />
+                                        <textarea name="content"
+                                                  maxheight="300px"
+                                                  required
+                                                  id="id_content"
+                                                  placeholder="신청 메시지를 입력해주세요."
+                                                  class="w-full outline-none resize-none"></textarea>
                                         <input class="px-2 py-1 mt-4 rounded-md cursor-pointer bg-neutral-200 hover:bg-neutral-400 hover:text-white"
                                                type="submit"
                                                value="신청하기">
@@ -96,6 +94,9 @@
         </div>
     </div>
 {% endblock content %}
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/resizeTextarea.js' %}"></script>
+{% endblock script %}
 {% block websocket %}
     function recruit_request(user, recruit, user_id) {
     var notice = {
