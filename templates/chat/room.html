@@ -10,7 +10,8 @@
                 {{ room.study.title|truncatechars:20 }} - {{ room.get_category_display }}
             </div>
             <div class="flex justify-end return">
-                <a href="{% url "manager:study_detail" room.study.id %}"
+                <a onclick="out_chatroom('{{ user.username }}','{{ room.get_category_display }}','{{ room.study.id }}')"
+                   href="{% url "manager:study_detail" room.study.id %}"
                    class="block w-5">
                     <svg xmlns="http://www.w3.org/2000/svg"
                          fill="none"
@@ -269,3 +270,13 @@
         })
     </script>
 {% endblock script %}
+{% block websocket %}
+    function out_chatroom(username,chat_name,study_id) {
+    var notice = {
+    "content" :  username + "(이)가 " + chat_name + "을 나갔습니다.",
+    "study_id" : study_id,
+    "username" : username
+    };
+    notice_socket.send(JSON.stringify(notice));
+    };
+{% endblock websocket %}
