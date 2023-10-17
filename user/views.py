@@ -120,6 +120,5 @@ class UserSocialSignupView(View):
                 {"error": "nickname is already exists"},
             )
         else:
-            user = request.user
             Profile.objects.create(user=request.user, nickname=nickname)
             return redirect("users:social_signup")
