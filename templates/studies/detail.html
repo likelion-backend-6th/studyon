@@ -126,7 +126,8 @@
                 </div>
                 <span class="sm:hidden empty">&nbsp;&nbsp;&nbsp;</span>
                 {% for room in rooms %}
-                    <a href="{% url 'chat:chat_room' room.id %}"
+                    <a onclick="init_chatroom('{{ user.username }}','{{ room.get_category_display }}','{{ study.id }}')"
+                       href="{% url 'chat:chat_room' room.id %}"
                        class="mx-2 mt-3 underline room hover:font-extrabold hover:text-neutral-500"
                        data-category="{{ room.category }}">{{ room.get_category_display }}</a>
                 {% endfor %}
@@ -259,3 +260,21 @@
         });
     </script>
 {% endblock script %}
+{% block websocket %}
+    function init_chatroom(username,chat_name,study_id) {
+    var notice = {
+    "content" :  username + "(이)가 " + chat_name + "에 접속했습니다.",
+    "study_id" : study_id,
+    "username" : username
+    };
+    notice_socket.send(JSON.stringify(notice));
+    };
+    function out_chatroom(username,chat_name,study_id) {
+    var notice = {
+    "content" :  username + "(이)가 " + chat_name + "을 나갔습니다.",
+    "study_id" : study_id,
+    "username" : username
+    };
+    notice_socket.send(JSON.stringify(notice));
+    };
+{% endblock websocket %}
