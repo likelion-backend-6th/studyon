@@ -41,7 +41,7 @@ INTERNAL_IPS = [
 # Redis Cache Setting
 CACHES = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "BACKEND": "django_prometheus.cache.backends.redis.RedisCache",
         "LOCATION": "redis://redis-studyon-staging:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
