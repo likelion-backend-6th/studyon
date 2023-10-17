@@ -269,12 +269,4 @@
     };
     notice_socket.send(JSON.stringify(notice));
     };
-    function out_chatroom(username,chat_name,study_id) {
-    var notice = {
-    "content" :  username + "(이)가 " + chat_name + "을 나갔습니다.",
-    "study_id" : study_id,
-    "username" : username
-    };
-    notice_socket.send(JSON.stringify(notice));
-    };
 {% endblock websocket %}
