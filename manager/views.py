@@ -248,7 +248,7 @@ class TaskCreateView(StudyAccessMixin, View):
         # 폼이 유효하고 요청자가 스터디 멤버일 경우
         if form.is_valid() and request.user in study.members.all():
             task = form.save(commit=False)
-            if task.start < task.end:
+            if study.start <= task.start <= task.end <= study.end:
                 task.study = study
                 task.author = request.user
                 task.save()
