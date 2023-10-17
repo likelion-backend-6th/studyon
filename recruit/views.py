@@ -47,7 +47,9 @@ class RecruitView(InfiniteListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["recruits_list"] = Recruit.objects.all().order_by("-created_at")
+        context["recruits_list"] = Recruit.objects.filter(is_active=True).order_by(
+            "-created_at"
+        )
         context["tag"] = self.request.GET.get("tag")
         context["query"] = self.request.GET.get("query")
         context["form"] = SearchForm()
