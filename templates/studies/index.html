@@ -102,9 +102,9 @@
         </div>
         <div class="box-border w-[calc(100%-256px)] min-w-[270px]">
             <p class="p-2 text-4xl">나의 스터디</p>
-            <div class="flex flex-row flex-wrap min-w-[250px] overflow-hidden overflow-y-scroll scroll_invisible h-[300px] pb-4">
+            <div class="flex flex-row flex-wrap min-w-[250px] overflow-hidden overflow-y-scroll scroll_invisible pb-4">
                 {% for my_study in my_studies %}
-                    <div class=" p-1 min-w-[250px] h-[100px] hover:h-[250px] overflow-hidden">
+                    <div class=" p-1 min-w-[250px] h-[100px] hover:h-[250px] overflow-hidden transition-all">
                         <div class="relative flex items-end pt-2">
                             <a class="text-2xl truncate w-[100px]"
                                href="{% url 'manager:study_detail' my_study.id %}">{{ my_study.title }}</a>
