@@ -55,7 +55,7 @@
                 </div>
             </div>
             <ul id="recruit-list"
-                class="grid {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-8 pt-8">
+                class="grid recruits {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-8 pt-8">
                 {% for recruit in recruits_list %}
                     <li class="p-2">
                         <a href="{% url 'recruits:recruit_detail' recruit.id %}">
@@ -135,10 +135,11 @@
             let lastScrollY = 0;
             let inputQuery = document.getElementById("id_query");
             let queryParameter = inputQuery.value;
+            let recruits = document.querySelector(".recruits")
 
-            window.addEventListener('scroll', function (e) {
-                let currentScrollY = window.scrollY;
-                let margin = document.body.clientHeight - window.innerHeight - 200;
+            recruits.addEventListener('scroll', function (e) {
+                let currentScrollY = recruits.scrollY;
+                let margin = recruits.scrollHeight - recruits.clientHeight - 200;
 
                 if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
                     blockRequest = true;
@@ -152,21 +153,20 @@
                         .then(html => {
                             let parser = new DOMParser();
                             let doc = parser.parseFromString(html, 'text/html');
-                            let recruitContent = doc.getElementById("recruit-list").innerHTML;
+                            let recruitContent = doc.querySelector(".recruits").innerHTML;
 
                             if (recruitContent === '') {
                                 emptyPage = true;
                             } else {
-                                let recruitList = document.getElementById("recruit-list");
-                                recruitList.insertAdjacentHTML('beforeend', recruitContent);
+                                recruits.insertAdjacentHTML('beforeend', recruitContent);
                                 blockRequest = false;
                             }
                         });
                 }
                 lastScrollY = currentScrollY;
             });
-            let scrollEvent = new Event('scroll');
-            window.dispatchEvent(scrollEvent);
         })
+        let scrollEvent = new Event('scroll');
+        document.querySelector(".recruits").dispatchEvent(scrollEvent);
     </script>
 {% endblock script %}
