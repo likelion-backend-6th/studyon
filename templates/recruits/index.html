@@ -19,7 +19,7 @@
                     <form method="get" class="flex flex-auto justify-between pr-10">
                         <div class="flex flex-col flex-auto">
                             <h2 class="text-2xl text-neutral-500">스터디 검색</h2>
-                            <label class="mt-2 p-2 px-4 rounded-full border border-neutral-600 cursor-text">
+                            <label class="mt-2 p-1 px-2 border-b border-neutral-500 cursor-text">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                                 <input type="text"
                                        name="query"
@@ -27,12 +27,12 @@
                                        id="id_query"
                                        value="{{ query|default:''|safe }}"
                                        placeholder="키워드를 입력해주세요."
-                                       class="pl-2 bg-transparent outline-none placeholder-black">
+                                       class="pl-2 bg-transparent outline-none placeholder-slate-400">
                             </label>
                         </div>
                         <div class="flex flex-col flex-auto pl-8">
                             <h2 class="text-2xl text-neutral-500">태그 필터</h2>
-                            <label class="mt-2 p-2 px-4 rounded-full border border-neutral-600 cursor-text">
+                            <label class="mt-2 p-1 px-2 border-b border-neutral-500 cursor-text">
                                 <i class="fa-regular fa-tag"></i>
                                 <input type="text"
                                        name="tag"
@@ -40,15 +40,15 @@
                                        id="id_tag"
                                        value="{{ tag|default:''|safe }}"
                                        placeholder="태그를 입력해주세요."
-                                       class="pl-2 bg-transparent outline-none placeholder-black">
+                                       class="pl-2 bg-transparent outline-none placeholder-slate-400">
                             </label>
                         </div>
-                        <button type="submit" hidden>검색</button>
+                        <input type="submit" hidden>
                     </form>
                     <div>
                         <a href="{% url 'recruits:create_recruit' %}">
-                            <div class="p-2 border-2 border-neutral-600">
-                                <i class="fa-solid fa-plus fa-xl"></i>
+                            <div class="px-2 py-1 bg-neutral-600 hover:bg-neutral-700 text-white">
+                                <span>모집하기</span>
                             </div>
                         </a>
                     </div>
