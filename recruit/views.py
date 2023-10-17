@@ -132,7 +132,7 @@ class RequestView(LoginRequiredMixin, ListView):
         return (
             super()
             .get_queryset()
-            .filter(recruit__creator=self.request.user, is_joined=None)
+            .filter(is_joined=None, recruit__id=self.kwargs.get("pk"), recruit__creator=self.request.user)
         )
 
     def get_context_data(self, **kwargs):
