@@ -45,22 +45,31 @@
                     {% for member in study.members.all %}
                         <div class="flex flex-row flex-wrap mx-4">
                             {% if member != study.creator %}
-                                <span>•
-                                    {% if member.username != user.username %}
-                                        <a href="{% url "message:send_message" study.id member.id %}"><i class="fa-regular fa-envelope mx-0.5"></i></a>
-                                    {% endif %}
-                                    {{ member.username }}
-                                </span>
-                                {% if user == study.creator %}
-                                    <form action="{% url 'manager:study_kickout' study.id member.id %}"
-                                          method="post"
-                                          class="ml-1 text-red-500">
-                                        {% csrf_token %}
-                                        <button type="submit">
-                                            <i class="fa-solid fa-delete-left"></i>
+                                <div class="flex before:content-['•'] before:pr-2">
+                                    <span class="pr-2">{{ member.username }}</span>
+                                    <p>
+                                        {% if member.username != user.username %}
+                                            <a href="{% url "message:send_message" study.id member.id %}"
+                                               class="pr-1 my-auto hover:text-wanted-blue"><i class="fa-regular fa-envelope"></i></a>
+                                        {% endif %}
+                                        <button class="self-center user-button hover:text-wanted-indigo">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                            <div class="hidden source"
+                                                 data-username="{{ member.username }}"
+                                                 data-url="{% url "users:write_review" member.id %}"></div>
                                         </button>
-                                    </form>
-                                {% endif %}
+                                        {% if user == study.creator %}
+                                            <form action="{% url 'manager:study_kickout' study.id member.id %}"
+                                                  method="post"
+                                                  class="ml-1 self-center">
+                                                {% csrf_token %}
+                                                <button type="submit" class="text-red-500 hover:text-red-600">
+                                                    <i class="fa-solid fa-delete-left"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </p>
+                                </div>
                             {% else %}
                                 <span>•
                                     {% if member.username != user.username %}
@@ -69,23 +78,6 @@
                                     {{ member.username }} <i class="ml-1 fa-solid fa-crown"></i>
                                 </span>
                             {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="flex flex-row flex-wrap mt-3 text-base">
-                    {% for member in study.members.all %}
-                        <div class="flex flex-row flex-wrap mx-4">
-                            <button class="cursor-default group user-button">
-                                {% if member.username == user.username %}
-                                    <span class="before:content-['•'] before:pr-2">{{ member.username }}</span>
-                                {% else %}
-                                    <span class="before:content-['•'] before:pr-2 group-hover:text-wanted-indigo group-hover:cursor-pointer">{{ member.username }}</span>
-                                    <div class="hidden source"
-                                         data-username="{{ member.username }}"
-                                         data-url="{% url "users:write_review" member.id %}"></div>
-                                {% endif %}
-                                {% if member == study.creator %}<i class="ml-1 fa-solid fa-crown"></i>{% endif %}
-                            </button>
                         </div>
                     {% endfor %}
                 </div>
@@ -199,27 +191,44 @@
         {% include "studies/tasks/create.html" %}
     </div>
     <div id="modal"
-         class="fixed top-0 z-50 items-center justify-center hidden w-full h-full bg-neutral-400/20 backdrop-blur-sm"
-         hidden>
+         class="fixed hidden top-0 z-50 items-center justify-center w-full h-full  bg-neutral-400/20 backdrop-blur-sm">
         <div class="w-full max-w-3xl p-6 bg-white">
-            <h1 id="modal-title" class="text-3xl"></h1>
-            <hr class="my-2" />
-            <form action="{% url "users:write_review" 0 %}" method="post">
-                {% csrf_token %}
-                <p>내 리뷰</p>
-                <input type="hidden" id="study" name="study" value="{{ study.id }}">
-                <textarea id="review"
-                          name="review"
-                          oninput="resize(this)"
-                          placeholder="리뷰를 입력해주세요."
-                          class="w-full outline-none resize-none">{{ form.target.value|default:''|safe }}</textarea>
-                <div class="flex justify-between">
-                    <input id="score" name="score" value="0">
-                    <input type="submit"
-                           class="px-4 py-2 text-white cursor-pointer bg-neutral-600 hover:bg-neutral-700"
-                           value="작성완료">
-                </div>
-            </form>
+            <div class="relative">
+                <button id="modal-close" class="absolute top-0 right-0">
+                    <i class="fa-solid fa-xmark text-3xl"></i>
+                </button>
+                <h1 id="modal-title" class="text-3xl"></h1>
+                <hr class="my-2" />
+                <form action="{% url "users:write_review" 0 %}" method="post">
+                    {% csrf_token %}
+                    <p>내 리뷰</p>
+                    <input type="hidden" id="study" name="study" value="{{ study.id }}">
+                    <textarea id="review"
+                              name="review"
+                              required
+                              oninput="resize(this)"
+                              placeholder="리뷰를 입력해주세요."
+                              class="w-full outline-none resize-none">{{ form.target.value|default:''|safe }}</textarea>
+                    <div class="flex justify-between">
+                        <span id="star" class="relative text-2xl text-neutral-400">
+                            ★★★★★
+                            <span class="left-0 absolute text-red-500 overflow-hidden pointer-events-none">★★★★★</span>
+                            <input id="score"
+                                   required
+                                   name="score"
+                                   type="range"
+                                   value="10"
+                                   step="1"
+                                   min="1"
+                                   max="10"
+                                   class="w-full h-full absolute left-0 opacity-0">
+                        </span>
+                        <input type="submit"
+                               class="px-4 py-2 text-white cursor-pointer bg-neutral-600 hover:bg-neutral-700"
+                               value="작성완료">
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock content %}
