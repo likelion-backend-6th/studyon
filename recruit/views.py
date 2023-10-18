@@ -153,19 +153,30 @@ class RequestView(LoginRequiredMixin, ListView):
 class ConfirmRegisterView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         register = Register.objects.get(pk=kwargs["pk"])
-        register.is_joined = True
-        register.save()
         recruit = register.recruit
-        recruit.members.add(register.requester)
-        recruit.save()
         study = recruit.study
-        study.members.add(register.requester)
-        if recruit.members.count() == study.members.count():
-            study.status = 2
-        study.save()
-        return redirect(
-            reverse_lazy("recruits:recruit_request", args=[register.recruit.id])
-        )
+
+        if recruit.members.count() < recruit.total_seats:
+            register.is_joined = True
+            register.save()
+            recruit.members.add(register.requester)
+            recruit.save()
+            study.members.add(register.requester)
+
+            if recruit.members.count() == study.members.count():
+                study.status = 2
+
+            study.save()
+
+            return redirect(
+                reverse_lazy("recruits:recruit_request", args=[register.recruit.id])
+            )
+
+        else:
+            messages.error(request, "모집하는 인원이 다 찼습니다.")
+            return redirect(
+                reverse_lazy("recruits:recruit_request", args=[register.recruit.id])
+            )
 
 
 class CancelRegisterView(LoginRequiredMixin, View):
