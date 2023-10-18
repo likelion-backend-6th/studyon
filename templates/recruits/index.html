@@ -54,9 +54,8 @@
                     </div>
                 </div>
             </div>
-            <ul id="recruit-list"
-                class="grid recruits {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-8 pt-8">
-                {% for recruit in recruits_list %}
+            <ul class="grid overflow-y-auto h-screen recruits {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-8 pt-8">
+                {% for recruit in recruits %}
                     <li class="p-2">
                         <a href="{% url 'recruits:recruit_detail' recruit.id %}">
                             <div class="w-full">
@@ -77,7 +76,7 @@
                         </ul>
                         <div class="pt-1">
                             <span class="text-sm">{{ recruit.like_users.count }}</span>
-                            {% if recruit in liked_studies %}
+                            {% if recruit in liked_recruits %}
                                 <a href="{% url 'recruits:unlike_recruit' recruit.pk %}">
                                     <i class="fa-solid fa-heart text-red-400"></i>
                                 </a>
@@ -111,9 +110,9 @@
                     <div>
                         <h3 class="text-xl font-bold pb-2">좋아요 누른 스터디</h3>
                         <hr class="border-neutral-300" />
-                        {% if liked_studies %}
+                        {% if liked_recruits %}
                             <ul class="mt-2">
-                                {% for recruit in liked_studies %}
+                                {% for recruit in liked_recruits %}
                                     <li class="pl-2 border-b border-neutral-200 pb-1 mb-1 last:border-none last:pb-0 last:mb-0">
                                         <a href="{% url 'recruits:recruit_detail' recruit.id %}" class="block">{{ recruit.title }}</a>
                                     </li>
@@ -138,7 +137,7 @@
             let recruits = document.querySelector(".recruits")
 
             recruits.addEventListener('scroll', function (e) {
-                let currentScrollY = recruits.scrollY;
+                let currentScrollY = recruits.scrollTop;
                 let margin = recruits.scrollHeight - recruits.clientHeight - 200;
 
                 if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
