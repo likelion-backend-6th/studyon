@@ -22,13 +22,17 @@ class RecruitView(InfiniteListView):
     model = Recruit
     template_name = "recruits/index.html"
     context_object_name = "recruits"
-    paginate_by = 50
+    paginate_by = 20
 
     def get_queryset(self):
-        queryset = Recruit.objects.annotate(members_count=Count("members")).filter(
-            Q(study__status=1) | Q(study__status=2),
-            members_count__lt=F("total_seats"),
-            is_active=True,
+        queryset = (
+            Recruit.objects.annotate(members_count=Count("members"))
+            .filter(
+                Q(study__status=1) | Q(study__status=2),
+                members_count__lt=F("total_seats"),
+                is_active=True,
+            )
+            .order_by("-created_at")
         )
         query = self.request.GET.get("query")
         tag = self.request.GET.get("tag")
@@ -47,9 +51,6 @@ class RecruitView(InfiniteListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["recruits_list"] = Recruit.objects.filter(is_active=True).order_by(
-            "-created_at"
-        )
         context["tag"] = self.request.GET.get("tag")
         context["query"] = self.request.GET.get("query")
         context["form"] = SearchForm()
@@ -74,7 +75,7 @@ def like_recruit(request, pk):
     return redirect("recruits:index")
 
 
-@login_required()
+@login_required
 def unlike_recruit(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk, is_active=True)
     if request.user.is_authenticated:
