@@ -70,6 +70,7 @@
 {% endblock content %}
 {% block include_js %}
     {{ room.id|json_script:"room-id" }}
+    {{ room.get_category_display|json_script:"room-title" }}
     {{ room.study.id|json_script:"study-id" }}
     {{ user.username|json_script:"request-user" }}
 {% endblock include_js %}
@@ -95,6 +96,9 @@
 
             const roomId = JSON.parse(
                 document.getElementById('room-id').textContent
+            );
+            const roomTitle = JSON.parse(
+                document.getElementById('room-title').textContent
             );
             const studyId = JSON.parse(
                 document.getElementById('study-id').textContent
@@ -142,6 +146,7 @@
             
                 onopen() {
                     console.log("Chat socket opened");
+                    init_chatroom(requestUser,roomTitle,studyId);
                     this.retry = 0;
                 },
 
@@ -268,14 +273,29 @@
             chat_box.scrollTop = chat_box.scrollHeight;      
             
         })
+
+        function init_chatroom(username,chat_name,study_id) {
+        var notice = {
+        "content" :  username + "(이)가 " + chat_name + " 채팅방에 접속했습니다.",
+        "study_id" : study_id,
+        "username" : username,
+        "db_save" : false
+        };
+        notice_socket.send(JSON.stringify(notice));
+        };
     </script>
 {% endblock script %}
 {% block websocket %}
+    window.onbeforeunload = function() {
+    out_chatroom('{{ user.username }}','{{ room.get_category_display }}','{{ room.study.id }}');
+    return null;
+    };
     function out_chatroom(username,chat_name,study_id) {
     var notice = {
-    "content" :  username + "(이)가 " + chat_name + "을 나갔습니다.",
+    "content" :  username + "(이)가 " + chat_name + " 채팅방을 나갔습니다.",
     "study_id" : study_id,
-    "username" : username
+    "username" : username,
+    "db_save" : false
     };
     notice_socket.send(JSON.stringify(notice));
     };

@@ -22,29 +22,41 @@ class NoticeConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         content = text_data_json["content"]
+        data_keys = text_data_json.keys()
 
         # 스터디 관련 알림
-        if (
-            "study_id" in text_data_json.keys()
-            and "username" not in text_data_json.keys()
-        ):
+        if "study_id" in data_keys and "username" not in data_keys:
             study_id = text_data_json["study_id"]
             user_ids = await self.get_members_not_creator(study_id)
 
-            await self.set_notice_to_db_not_creator(study_id=study_id, content=content)
+            if "db_save" in data_keys:
+                db_save = text_data_json["db_save"]
+            else:
+                db_save = True
+
+            if db_save:
+                await self.set_notice_to_db_not_creator(
+                    study_id=study_id, content=content
+                )
 
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "send_notice", "user_ids": user_ids, "content": content},
             )
-        if "study_id" in text_data_json.keys() and "username" in text_data_json.keys():
+        if "study_id" in data_keys and "username" in data_keys:
             study_id = text_data_json["study_id"]
             username = text_data_json["username"]
             user_ids = await self.get_members_not_request_user(study_id, username)
 
-            await self.set_notice_to_db_not_request_user(
-                study_id=study_id, content=content, username=username
-            )
+            if "db_save" in data_keys:
+                db_save = text_data_json["db_save"]
+            else:
+                db_save = True
+
+            if db_save:
+                await self.set_notice_to_db_not_request_user(
+                    study_id=study_id, content=content, username=username
+                )
 
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -52,7 +64,7 @@ class NoticeConsumer(AsyncWebsocketConsumer):
             )
 
         # 메세지 알림
-        if "reciever_id" in text_data_json.keys():
+        if "reciever_id" in data_keys:
             reciever_id = text_data_json["reciever_id"]
 
             await self.channel_layer.group_send(
@@ -61,7 +73,7 @@ class NoticeConsumer(AsyncWebsocketConsumer):
             )
 
         # 일반 알림만
-        if "user_id" in text_data_json.keys():
+        if "user_id" in data_keys:
             user_id = text_data_json["user_id"]
 
             await self.set_notice_to_db(content=content, user_id=user_id)
