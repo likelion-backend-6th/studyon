@@ -13,7 +13,7 @@
 {% endblock style %}
 {% block content %}
     <div class="mx-auto max-w-5xl flex h-full">
-        <div class="flex-auto">
+        <div class="flex flex-col flex-auto">
             <div class="pt-16">
                 <div class="flex justify-between">
                     <form method="get" class="flex flex-auto justify-between pr-10">
@@ -55,7 +55,7 @@
                 </div>
             </div>
             <ul id="recruit-list"
-                class="grid overflow-y-auto h-screen recruits {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-6 mt-8">
+                class="grid overflow-y-auto recruits {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-6 mt-8">
                 {% for recruit in recruits %}
                     <li class="py-4 px-6 border">
                         <a href="{% url 'recruits:recruit_detail' recruit.id %}">
