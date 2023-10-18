@@ -283,8 +283,8 @@ class TaskCompleteView(TaskAuthorMixin, View):
 
     def post(self, request, pk):
         task = get_object_or_404(Task, id=pk, is_active=True)
-        # 요청자가 task 생성자 일 경우
-        if request.user == task.author:
+        # 요청자가 task 생성자 또는 스터디장 일 경우
+        if request.user == task.author or task.study.creator == request.user:
             if task.is_finished:
                 task.is_finished = False
             else:
