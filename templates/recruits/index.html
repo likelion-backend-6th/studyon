@@ -14,7 +14,7 @@
 {% block content %}
     <div class="mx-auto max-w-5xl flex h-full">
         <div class="flex flex-col flex-auto">
-            <div class="pt-16">
+            <div class="pt-16 mr-8">
                 <div class="flex justify-between">
                     <form method="get" class="flex flex-auto justify-between pr-10">
                         <div class="flex flex-col flex-auto">
@@ -55,7 +55,7 @@
                 </div>
             </div>
             <ul id="recruit-list"
-                class="grid overflow-y-auto recruits {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-6 mt-8">
+                class="grid overflow-y-auto recruits {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-6 mt-8 pr-6">
                 {% for recruit in recruits %}
                     <li class="py-4 px-6 border">
                         <a href="{% url 'recruits:recruit_detail' recruit.id %}">
@@ -93,7 +93,7 @@
         </div>
         {% if user.is_authenticated %}
             <div id="sidebar"
-                 class="flex-none w-64 border-l border-r border-neutral-300 overflow-y-auto ml-8">
+                 class="flex-none w-64 border-l border-r border-neutral-300 overflow-y-auto">
                 <div class="pt-20 px-4">
                     <div class="pb-8">
                         <h3 class="text-xl font-bold mb-2">참여 중인 스터디</h3>
