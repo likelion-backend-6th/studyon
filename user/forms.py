@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 
 from user.models import Profile
 
@@ -33,4 +34,7 @@ class SignupForm(forms.ModelForm):
 
         if password != password_check:
             raise forms.ValidationError("비밀번호와 비밀번호 확인이 같지않습니다.")
+
+        validate_password(password)
+
         return password_check
