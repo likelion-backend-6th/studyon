@@ -116,82 +116,95 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="box-border right-0 z-40 w-64 h-full bg-white border-l-2 border-solid">
-            <p class="p-2 text-xl">나의 모집글</p>
-            <div class="scroll_invisible h-[280px] overflow-hidden overflow-y-scroll">
-                {% for my_recruit in my_recruits %}
-                    <div class=" w-[90%] p-1 mb-1 mx-auto">
-                        <a class="block text-xl truncate w-[100px]"
-                           href="{% url "recruits:recruit_detail" my_recruit.id %}">{{ my_recruit.title }}</a>
-                        <div class="flex justify-between">
-                            <span class="text-xs">~{{ my_recruit.deadline|date:'Y.m.d' }}</span>
-                            <span class="text-sm">{{ my_recruit.members.count }} / {{ my_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
-                        </div>
-                        <div class="flex justify-end">
-                            <span class="mr-auto">{{ my_recruit.like_users.count }}
-                                {% if my_recruit in like_recruits %}
-                                    <a href="{% url 'manager:studies_unlike_recruit' my_recruit.pk %}">
-                                        <i class="text-red-400 fa-solid fa-heart"></i>
-                                    </a>
-                                {% else %}
-                                    <a href="{% url 'manager:studies_like_recruit' my_recruit.pk %}">
-                                        <i class="fa-solid fa-heart"></i>
-                                    </a>
-                                {% endif %}
-                            </span>
-                            <div class="p-1 mr-2">
-                                <a href="{% url 'recruits:modify_recruit' my_recruit.id %}">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 20 20"
-                                         fill="currentColor"
-                                         class="w-5 h-5 fill-wanted-cyan hover:scale-125">
-                                        <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
-                                        <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
-                                    </svg>
+        <div id="sidebar"
+             class="flex-none w-64 border-l border-r border-neutral-300 overflow-y-auto ml-8">
+            <div class="pt-20 px-4">
+                <div class="pb-8">
+                    <h3 class="text-xl font-bold mb-2">나의 모집글</h3>
+                    <hr class="border-neutral-300" />
+                    <ul class="mt-2 scroll_invisible h-72 overflow-y-scroll">
+                        {% for my_recruit in my_recruits %}
+                            <li class="px-2 border-b border-neutral-200 pb-1 mb-1 last:border-none last:pb-0 last:mb-0">
+                                <a href="{% url "recruits:recruit_detail" my_recruit.id %}">
+                                    <p class="truncate">{{ my_recruit.title }}</p>
+                                    <div class="flex justify-between">
+                                        <span class="text-xs">~{{ my_recruit.deadline|date:'Y.m.d' }}</span>
+                                        <span class="text-sm">{{ my_recruit.members.count }} / {{ my_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
+                                    </div>
                                 </a>
-                            </div>
-                            <div class="p-1 mr-2">
-                                <form action="{% url 'recruits:delete_recruit' my_recruit.id %}"
-                                      method="post"
-                                      id="deleteRecruitForm_{{ my_recruit.id }}">
-                                    {% csrf_token %}
-                                    <button type="button"
-                                            class="delete-recruit-btn"
-                                            onclick="confirmRecruitDelete({{ my_recruit.id }})">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             viewBox="0 0 20 20"
-                                             fill="currentColor"
-                                             class="w-5 h-5 text-red-500 hover:scale-125">
-                                            <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-            <p class="p-2 text-xl">찜한 모집글</p>
-            <div class="scroll_invisible h-[275px] overflow-hidden overflow-y-scroll">
-                {% for like_recruit in like_recruits %}
-                    {% if like_recruit.creator != user %}
-                        <div class=" w-[90%] p-1 mb-1 mx-auto">
-                            <a class="text-xl truncate w-[100px]"
-                               href="{% url "recruits:recruit_detail" like_recruit.id %}">{{ like_recruit.title }}</a>
-                            <div class="flex justify-between">
-                                <span class="text-xs">~{{ like_recruit.deadline|date:'Y.m.d' }}</span>
-                                <span class="text-sm">{{ like_recruit.members.count }} / {{ like_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
-                            </div>
-                            <div class="flex justify-end">
-                                <span class="mr-auto">{{ like_recruit.like_users.count }}
-                                    <a href="{% url 'manager:studies_unlike_recruit' like_recruit.pk %}">
-                                        <i class="text-red-400 fa-solid fa-heart"></i>
+                                <div class="flex justify-between mt-2">
+                                    <p class="text-sm self-center">
+                                        <span>{{ my_recruit.like_users.count }}</span>
+                                        {% if my_recruit in like_recruits %}
+                                            <a href="{% url 'manager:studies_unlike_recruit' my_recruit.pk %}">
+                                                <i class="text-red-400 fa-solid fa-heart hover:scale-125"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'manager:studies_like_recruit' my_recruit.pk %}">
+                                                <i class="fa-solid fa-heart hover:scale-125"></i>
+                                            </a>
+                                        {% endif %}
+                                    </p>
+                                    <div class="flex self-center">
+                                        <a href="{% url 'recruits:modify_recruit' my_recruit.id %}"
+                                           class="w-5 h-5">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 viewBox="0 0 20 20"
+                                                 fill="currentColor"
+                                                 class="w-5 h-5 fill-wanted-cyan hover:scale-125">
+                                                <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                                                <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                                            </svg>
+                                        </a>
+                                        <form action="{% url 'recruits:delete_recruit' my_recruit.id %}"
+                                              method="post"
+                                              id="deleteRecruitForm_{{ my_recruit.id }}"
+                                              class="w-5 h-5">
+                                            {% csrf_token %}
+                                            <button type="button"
+                                                    class="delete-recruit-btn"
+                                                    onclick="confirmRecruitDelete({{ my_recruit.id }})">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     viewBox="0 0 20 20"
+                                                     fill="currentColor"
+                                                     class="w-5 h-5 text-red-500 hover:scale-125">
+                                                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold pb-2">찜한 모집글</h3>
+                    <hr class="border-neutral-300" />
+                    <ul class="mt-2 scroll_invisible h-72 overflow-y-scroll">
+                        {% for like_recruit in like_recruits %}
+                            {% if like_recruit.creator != user %}
+                                <li class="pl-2 border-b border-neutral-200 pb-1 mb-1 last:border-none last:pb-0 last:mb-0">
+                                    <a href="{% url "recruits:recruit_detail" like_recruit.id %}">
+                                        <p class="truncate">{{ like_recruit.title }}</p>
+                                        <div class="flex justify-between">
+                                            <span class="text-xs">~{{ like_recruit.deadline|date:'Y.m.d' }}</span>
+                                            <span class="text-sm">{{ like_recruit.members.count }} / {{ like_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
+                                        </div>
                                     </a>
-                                </span>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
+                                    <div class="flex justify-between mt-2">
+                                        <p class="text-sm self-center">
+                                            <span class="mr-auto">{{ like_recruit.like_users.count }}</span>
+                                            <a href="{% url 'manager:studies_unlike_recruit' like_recruit.pk %}">
+                                                <i class="text-red-400 fa-solid fa-heart hover:scale-125"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
