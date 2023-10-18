@@ -260,13 +260,3 @@
         });
     </script>
 {% endblock script %}
-{% block websocket %}
-    function init_chatroom(username,chat_name,study_id) {
-    var notice = {
-    "content" :  username + "(이)가 " + chat_name + "에 접속했습니다.",
-    "study_id" : study_id,
-    "username" : username
-    };
-    notice_socket.send(JSON.stringify(notice));
-    };
-{% endblock websocket %}
