@@ -17,8 +17,8 @@ function get_tag_list() {
 }
 
 function get_selected_tags() {
-  const dataBox = document.querySelector("#selected-tags")
-  return dataBox.innerHTML.split(",")
+  const dataBox = document.querySelector("#selected-tags input")
+  return dataBox.value.split(",").map(tag => tag.trim());
 }
 
 function draw(tag_list) {
