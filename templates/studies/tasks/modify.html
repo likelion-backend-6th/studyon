@@ -19,8 +19,11 @@
                        name="{{ form.description.name }}"
                        value="{{ form.description.value }}">
                 {% csrf_token %}
-                <div class="flex flex-row-reverse mt-4">
-                    <input type="submit" value="Modity">
+                <div class="flex justify-between h-full">
+                    <div></div>
+                    <div class="cursor-pointer self-center mt-4 px-3 py-2 text-white rounded-md bg-neutral-600 hover:bg-neutral-700">
+                        <input class="cursor-pointer" type="submit" value="수정 완료">
+                    </div>
                 </div>
             </div>
         </form>
