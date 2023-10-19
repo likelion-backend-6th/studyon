@@ -41,6 +41,9 @@
                        value="{{ form.end.value|default:''|safe }}"
                        required=""
                        class="px-2 text-base text-center rounded-md w-28 bg-neutral-100">
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}<div class="text-red-600 mt-2">{{ error }}</div>{% endfor %}
+                {% endif %}
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">진행 방식</p>
