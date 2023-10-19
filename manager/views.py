@@ -258,7 +258,10 @@ class TaskCreateView(StudyAccessMixin, View):
                 task.save()
                 return redirect("manager:study_detail", pk)
             else:
-                messages.error(request, f"Task의 기간은 스터디 기간({study.start} ~ {study.end})안에 지정해야 합니다.")
+                messages.error(
+                    request,
+                    f"Task의 기간은 스터디 기간({study.start} ~ {study.end})안에 지정해야 합니다.",
+                )
                 return redirect("manager:study_detail", pk)
         else:
             messages.error(request, form.errors)
@@ -278,7 +281,10 @@ class TaskModifyView(TaskAuthorMixin, UpdateView):
         if study.start <= task.start <= task.end <= study.end:
             return super().form_valid(form)
         else:
-            messages.error(self.request, f"Task의 기간은 스터디 기간({study.start} ~ {study.end})안에 지정해야 합니다.")
+            messages.error(
+                self.request,
+                f"Task의 기간은 스터디 기간({study.start} ~ {study.end})안에 지정해야 합니다.",
+            )
             return self.form_invalid(form)
 
     def get_success_url(self):
