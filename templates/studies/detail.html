@@ -96,6 +96,8 @@
                                type="submit"
                                value="생성">
                     </form>
+                {% else %}
+                    <div class="">&nbsp;</div>
                 {% endif %}
                 <div class="my-3 mr-6 text-xl sm:inline room-list">
                     채팅방 목록
@@ -231,36 +233,60 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script type="text/javascript" src="{% static 'js/review.js' %}"></script>
     <script>
-        categoryForm = document.getElementById("categoryForm")
+        document.addEventListener('DOMContentLoaded', (event) => {
+            categoryForm = document.getElementById("categoryForm")
 
-        if (categoryForm) {
-            categoryForm.addEventListener("submit", function (event) {
-                event.preventDefault();
-    
-                let form = event.target;
-                let room_cnt = "{{ rooms|length|escapejs }}";
-                let category = form.elements["category"].value;
-                let exist_rooms_category = document.querySelectorAll("a.room");
-                let categoryArray = Array.from(exist_rooms_category).map((room) => room.getAttribute("data-category"));
-
-                if (room_cnt >= 3) {
-                    alert("최대 3개의 채팅방을 생성할 수 있습니다.");
-                } else if (category == 0) {
-                    alert("카테고리를 선택해주세요.")
-                } else if (categoryArray.includes(category)) {
-                    alert("이미 존재하는 방입니다");
-                } else {
-                    form.submit();
-                }
-            });
-        }
-
-        flatpickr('#id_start', {
-            dateFormat: "Y-m-d",
-        });
+            if (categoryForm) {
+                categoryForm.addEventListener("submit", function (event) {
+                    event.preventDefault();
         
-        flatpickr('#id_end', {
-            dateFormat: "Y-m-d",
-        });
+                    let form = event.target;
+                    let room_cnt = "{{ rooms|length|escapejs }}";
+                    let category = form.elements["category"].value;
+                    let exist_rooms_category = document.querySelectorAll("a.room");
+                    let categoryArray = Array.from(exist_rooms_category).map((room) => room.getAttribute("data-category"));
+
+                    if (room_cnt >= 3) {
+                        alert("최대 3개의 채팅방을 생성할 수 있습니다.");
+                    } else if (category == 0) {
+                        alert("카테고리를 선택해주세요.")
+                    } else if (categoryArray.includes(category)) {
+                        alert("이미 존재하는 방입니다");
+                    } else {
+                        let formData = new FormData(categoryForm);
+
+                        let popupWindow = window.open("", "Chat Room", "width=600, height=700, scrollbars=yes, resizable=yes");
+
+                        if (popupWindow) {
+                            const newForm = popupWindow.document.createElement("form");
+                            newForm.method = "post";
+                            newForm.action = "{% url 'chat:make_chat_room' study.id %}";
+
+                            formData.forEach((value, key) => {
+                                const input = popupWindow.document.createElement("input");
+                                input.type = "hidden";
+                                input.name = key;
+                                input.value = value;
+                                newForm.appendChild(input);
+                            });
+
+                            popupWindow.document.body.appendChild(newForm);
+                            newForm.submit();
+                            window.location.reload();
+                        } else {
+                            alert("팝업 창을 열 수 없습니다.");
+                        }
+                    }
+                });
+            }
+
+            flatpickr('#id_start', {
+                dateFormat: "Y-m-d",
+            });
+            
+            flatpickr('#id_end', {
+                dateFormat: "Y-m-d",
+            });
+        })
     </script>
 {% endblock script %}
