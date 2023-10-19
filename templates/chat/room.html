@@ -5,7 +5,7 @@
 {% endblock title %}
 {% block content %}
     <div class="flex flex-col items-center max-w-5xl mx-auto overflow-hidden chat-room-wrap">
-        <div class="flex flex-row items-center justify-between w-4/5 mt-16 lg:max-w-3xl title-wrap">
+        <div class="flex flex-row items-center justify-between w-4/5 pt-16 lg:max-w-3xl title-wrap">
             <div class="w-10/12 text-3xl font-bold title">
                 {{ room.study.title|truncatechars:20 }} - {{ room.get_category_display }}
             </div>
@@ -39,18 +39,21 @@
                 </form>
             {% endif %}
         </div>
-        <div class="w-4/5 py-3 mt-8 overflow-y-auto lg:max-w-3xl h-96" id="chat">
-            {% for chat in chats|reverse %}
+        <div class="flex flex-col-reverse w-4/5 mt-8 overflow-y-auto lg:max-w-3xl"
+             id="chat">
+            {% for chat in chats %}
                 {% if user == chat.creator %}
-                    <div class="m-2 bg-[#eaf8f3] grid float-right w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me">
+                    <div class="m-2 bg-[#eaf8f3] grid ml-[calc(40%-10px)] w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me">
                         <div class="self-center col-span-4 text-xs text-right text-neutral-400 chat-time">{{ chat.created_at|date:"P" }}</div>
                         <div class="self-center my-1 font-bold text-center chat-sender">Me</div>
                         <div class="col-span-5 row-start-2 my-1 chat-message">{{ chat.content }}</div>
                     </div>
                 {% else %}
                     <div class="m-2 bg-[#f0ecec] grid w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper other">
-                        <div class="self-center my-1 font-bold text-center chat-sender">{{ chat.creator }}</div>
-                        <div class="self-center col-span-4 text-xs text-neutral-400 chat-time">{{ chat.created_at|date:"P" }}</div>
+                        <div class="self-center col-span-2 my-1 font-bold text-center sm:col-span-1 chat-sender">{{ chat.creator }}</div>
+                        <div class="self-center col-span-3 text-xs sm:col-span-4 text-neutral-400 chat-time">
+                            {{ chat.created_at|date:"P" }}
+                        </div>
                         <div class="col-span-5 row-start-2 my-1 chat-message">{{ chat.content }}</div>
                     </div>
                 {% endif %}
@@ -110,12 +113,12 @@
             const url = protocol + window.location.host + '/ws/chat/room/' + roomId + '/';
 
             const handlers = {
-                chat_box: null,
+                chatBox: null,
                 ws: null,
                 retry: 0,
 
                 init() {
-                    this.chat_box = document.getElementById("chat");
+                    this.chatBox = document.getElementById("chat");
                     const submitButton = document.getElementById('chat-message-submit');
                     const input = document.getElementById('chat-message-input');
 
@@ -151,9 +154,9 @@
                 },
 
                 onclose(event) {
-                    const close_code = event.code;
+                    const closeCode = event.code;
 
-                    if (close_code == 4000) {
+                    if (closeCode == 4000) {
                         alert("Chat is closed. Move to Study Detail Page.")
                         window.location.href = `/studies/${studyId}/`;
                     } else if (!event.wasClean) {
@@ -178,9 +181,9 @@
                 },
 
                 onmessage(event) {
-                    const message_dict = JSON.parse(event.data);
-                    console.log("recieved websocket message :", message_dict);
-                    const { type, message, sender, datetime } = message_dict;
+                    const messageDict = JSON.parse(event.data);
+                    console.log("recieved websocket message :", messageDict);
+                    const { type, message, sender, datetime } = messageDict;
                     const time = changeDateFormat(datetime);
                     
                     switch(type) {
@@ -197,37 +200,36 @@
                     const source = isMe ? 'me' : 'other';
                     const name = isMe ? 'Me' : sender;
 
-                    const name_box = document.createElement("div");
-                    name_box.textContent = name;
+                    const nameBox = document.createElement("div");
+                    nameBox.textContent = name;
 
-                    const time_box = document.createElement("div");
-                    time_box.textContent = time;
+                    const timeBox = document.createElement("div");
+                    timeBox.textContent = time;
 
-                    const message_box = document.createElement("div");
-                    message_box.className = "col-span-5 row-start-2 my-1 chat-message";
-                    message_box.textContent = message;
+                    const messageBox = document.createElement("div");
+                    messageBox.className = "col-span-5 row-start-2 my-1 chat-message";
+                    messageBox.textContent = message;
 
-                    const message_wrapper = document.createElement("div");
+                    const messageWrapper = document.createElement("div");
                     
                     if (isMe) {
-                        message_wrapper.className = "m-2 bg-[#eaf8f3] grid float-right w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me"
-                        time_box.className = "self-center col-span-4 text-xs text-right text-neutral-400 chat-time";
-                        name_box.className = "self-center my-1 font-bold text-center chat-sender"
-                        message_wrapper.appendChild(time_box);
-                        message_wrapper.appendChild(name_box);
+                        messageWrapper.className = "m-2 bg-[#eaf8f3] grid ml-[calc(40%-10px)] w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me"
+                        timeBox.className = "self-center col-span-4 text-xs text-right text-neutral-400 chat-time";
+                        nameBox.className = "self-center my-1 font-bold text-center chat-sender"
+                        messageWrapper.appendChild(timeBox);
+                        messageWrapper.appendChild(nameBox);
                     } else {
-                        message_wrapper.className = "m-2 bg-[#f0ecec] grid w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper other"
-                        name_box.className = "self-center my-1 font-bold text-center chat-sender"
-                        time_box.className = "self-center col-span-4 text-xs text-neutral-400 chat-time";
-                        message_wrapper.appendChild(name_box);
-                        message_wrapper.appendChild(time_box);
+                        messageWrapper.className = "m-2 bg-[#f0ecec] grid w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper other"
+                        nameBox.className = "self-center col-span-2 my-1 font-bold text-center sm:col-span-1 chat-sender"
+                        timeBox.className = "self-center col-span-3 text-xs sm:col-span-4 text-neutral-400 chat-time";
+                        messageWrapper.appendChild(nameBox);
+                        messageWrapper.appendChild(timeBox);
                     }
                     
-                    message_wrapper.classList.add(source);
-                    message_wrapper.appendChild(message_box);
+                    messageWrapper.classList.add(source);
+                    messageWrapper.appendChild(messageBox);
 
-                    this.chat_box.appendChild(message_wrapper);
-                    this.chat_box.scrollTop = this.chat_box.scrollHeight;                    
+                    this.chatBox.insertBefore(messageWrapper, this.chatBox.firstChild);
                 },
 
                 onsubmit(event) {
@@ -268,12 +270,52 @@
             handlers.init();
             
             handlers.connect(url);
-
-            const chat_box = document.getElementById("chat");
-            chat_box.scrollTop = chat_box.scrollHeight;      
             
+            const chatBox = document.getElementById("chat");
+
+            let page = 1;
+            let emptyPage = false;
+            let blockRequest = false;
+            let lastScrollY = 0;
+
+            chatBox.addEventListener('scroll', function (e) {
+                let currentScrollY = -chatBox.scrollTop;
+                let margin = chatBox.scrollHeight - chatBox.clientHeight - 500;
+
+                if (currentScrollY > lastScrollY && currentScrollY > margin && !emptyPage && !blockRequest) {
+                    blockRequest = true;
+                    page += 1;
+                    let requestUrl = `?page=${page}`;
+                    fetch(requestUrl)
+                        .then(response => response.text())
+                        .then(html => {
+                            let parser = new DOMParser();
+                            let doc = parser.parseFromString(html, 'text/html');
+                            let chatBoxContent = doc.querySelector("#chat").innerHTML;
+                            if (chatBoxContent === '') {
+                                emptyPage = true;
+                            } else {
+                                chatBox.insertAdjacentHTML('beforeend', chatBoxContent);
+                                blockRequest = false;
+                            }
+                        });
+                }
+                lastScrollY = currentScrollY;
+            });
         })
 
+
+        function adjustChatRoomHeight() {
+            const bodyContentHeight = document.getElementById("body-content").getBoundingClientRect().height;
+            const titleWrapHeight = document.querySelector(".title-wrap").getBoundingClientRect().height;
+            const chatRoomWrap = document.querySelector(".chat-room-wrap");
+            chatRoomWrap.style.height = `${bodyContentHeight - titleWrapHeight*0.5}px`;
+        }
+        
+        window.addEventListener("load", adjustChatRoomHeight);
+        window.addEventListener("resize", adjustChatRoomHeight);
+
+        
         function init_chatroom(username,chat_name,study_id) {
         var notice = {
         "content" :  username + "(이)가 " + chat_name + " 채팅방에 접속했습니다.",
