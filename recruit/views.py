@@ -193,7 +193,6 @@ class RecruitCreateView(LoginRequiredMixin, FormView):
     form_class = RecruitForm
     context_object_name = "recruit"
     template_name = "recruits/recruit_form.html"
-    view_type = "create"
 
     def form_valid(self, form):
         form.instance.creator = self.request.user
@@ -253,6 +252,7 @@ class RecruitCreateView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["tags"] = list(Tags())
+        context["view_type"] = "create"
         return context
 
 
