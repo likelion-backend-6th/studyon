@@ -261,14 +261,6 @@
 {% endblock websocket %}
 {% block script %}
     <script>
-        function confirmRecruitDelete(recruitId) {
-            const confirmation = confirm("정말로 삭제하시겠습니까?");
-    
-            if (confirmation) {
-                const deleteForm = document.getElementById(`deleteRecruitForm_${recruitId}`);
-                deleteForm.submit();
-            }
-        }
         function confirmStudyDelete(studyId) {
             const confirmation = confirm("정말로 삭제하시겠습니까?");
     
