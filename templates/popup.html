@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="study on">
+        <meta name="keywords" content="study, recruit, plan, todo">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Study On</title>
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        {% block style %}
+        {% endblock style %}
+    </head>
+    <body>
+        <div class="h-full">
+            <div class="fixed w-full h-[60px] border-b border-neutral-300 bg-[rgba(255,255,255,.88)] backdrop-blur-xl backdrop-saturate-150 z-50 header">
+                <div class="flex items-center w-4/5 h-full max-w-5xl px-5 mx-auto xl:w-full mx-2xl:px-0">
+                    <h1 class="self-center text-lg font-bold text-cyan-700">StudyOn</h1>
+                    <div id="notice" class="fixed inset-x-0 top-[10px] flex justify-center"></div>
+                    <div class="flex h-full ml-auto text-base">
+                        {% if user.is_authenticated %}
+                            <div class="flex items-center font-bold">
+                                <a href="{% url 'message:list_notices' %}">알림</a>
+                                <span id="recent_notice" class="pt-1 text-red-400 place-self-start">
+                                    {% if recent_notice.user == user %}•{% endif %}
+                                </span>
+                            </div>
+                            <div class="flex items-center pl-6 font-bold">
+                                <a href="{% url 'message:list_messages' %}">메세지</a>
+                                <span id="recent_message" class="pt-1 text-red-400 place-self-start">
+                                    {% if not recent_message.read_at and recent_message.reciever == user %}•{% endif %}
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="h-[60px]"></div>
+            <div class="h-[calc(100%-60px)] p-10" id="body-content">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+    </body>
+    <script>
+        var href = document.location.href; // 전체 url
+        var protocol = window.location.protocol; // http: or https:
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        var host = window.location.host; // 호스트 네임 ex) 127.0.0.1 , localhost
+        var link = href.replace(protocol+"//","").replace(host,"");
+        var notice_socket = new WebSocket(wsProtocol + host + "/ws/notice/");
+
+        notice_socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const notice = document.getElementById("notice");
+            const recent_notice = document.getElementById("recent_notice");
+            const recent_message = document.getElementById("recent_message");
+            if (data.reciever_id == {{ user.id }}) {
+                notice.innerHTML = "<p class=\"leading-10 bg-neutral-100 px-2\">" + data.content + "</p>";
+                recent_message.innerHTML = "•";
+
+                setTimeout(function () {
+                notice.innerHTML = '' ;
+            }, 1000);
+            };
+            if (data.user_id == {{ user.id }}) {
+                notice.innerHTML = "<p class=\"leading-10 bg-neutral-100 px-2\">" + data.content + "</p>";
+                recent_notice.innerHTML = "•";
+                setTimeout(function () {
+                notice.innerHTML = '' ;
+            }, 1000);
+            };
+            if ( data.user_ids.includes({{ user.id }})){
+                notice.innerHTML = "<p class=\"leading-10 bg-neutral-100 px-2\">" + data.content + "</p>";
+                recent_notice.innerHTML = "•";
+
+                setTimeout(function () {
+                notice.innerHTML = '' ;
+            }, 1000);
+            };
+        };
+
+        function openPopup(url) {
+            window.open(url, '_blank', 'width=600,height=600,scrollbars=yes');
+            return false;
+        }
+
+        {% block websocket %}
+        {% endblock websocket %}
+    </script>
+    {% block include_js %}
+    {% endblock include_js %}
+    {% block script %}
+    {% endblock script %}
+</html>
