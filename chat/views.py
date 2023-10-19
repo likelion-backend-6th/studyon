@@ -17,6 +17,7 @@ from chat.permissions import (
     study_access_permission,
 )
 from manager.models import Study
+from common.utils import InfiniteListView
 
 
 @require_POST
@@ -61,11 +62,11 @@ def chat_room(request: HttpRequest, room_id):
     )
 
 
-class ChatRoomView(ChatRoomMixin, ListView):
+class ChatRoomView(ChatRoomMixin, InfiniteListView):
     model = Chat
     template_name = "chat/room.html"
     context_object_name = "chats"
-    paginate_by = 30
+    paginate_by = 50
 
     def get_queryset(self):
         room_id = self.kwargs["room_id"]
