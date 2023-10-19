@@ -75,7 +75,12 @@
                        class="px-2 py-1 outline-none bg-neutral-100">
                 <div id="checkedbox" class="mt-4"></div>
                 <div id="tagbox" class="mt-4"></div>
-                <input id="id_tags" type="text" name="tags" required hidden>
+                <input id="id_tags"
+                       type="text"
+                       name="tags"
+                       class="absolute outline-none opacity-0 cursor-default"
+                       readonly
+                       required>
             </div>
             <div class="mt-10">
                 <p class="text-lg font-bold">마감일</p>
