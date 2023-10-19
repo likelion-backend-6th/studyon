@@ -180,7 +180,7 @@
                 <div class="flex justify-between h-full">
                     <div class="flex flex-row info self-center">
                         <p class="hidden font-bold sm:flex">{% now "Y년 m월 d일" %} : &nbsp;</p>
-                        <p class="font-bold">{{ user }}님의 게시글 작성</p>
+                        <p class="font-bold">{{ user }}님의 게시글 {% if view_type == 'create' %}작성{% else %}수정{% endif %}</p>
                     </div>
                     <button id="submit"
                             class="self-center px-5 py-3 text-white bg-neutral-600 hover:bg-neutral-700">작성 완료</button>
