@@ -310,19 +310,6 @@ class RecruitModifyView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class RecruitDeleteView(LoginRequiredMixin, View):
-    def post(self, reuqest, pk):
-        print(f"pk:{pk}")
-        recruit = get_object_or_404(Recruit, id=pk, is_active=True)
-        print(f"recruit:{recruit}")
-        recruit.is_active = False
-        recruit.save()
-
-        study_manage_url = reverse("manager:studies_list")
-
-        return redirect(study_manage_url)
-
-
 class FileDeleteView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         file = get_object_or_404(File, pk=kwargs["file_pk"])
