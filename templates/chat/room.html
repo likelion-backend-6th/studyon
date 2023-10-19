@@ -154,8 +154,8 @@
                     const closeCode = event.code;
 
                     if (closeCode == 4000) {
-                        alert("Chat is closed. Move to Study Detail Page.")
-                        window.location.href = `/studies/${studyId}/`;
+                        alert("Chat is closed.")
+                        window.close();
                     } else if (!event.wasClean) {
                         console.error("Chat socket closed unexpectedly");
             
@@ -246,8 +246,6 @@
                     }
                 },
 
-
-
             };
 
             const roomDeleteForm = document.querySelector(".room-delete-form");
@@ -306,7 +304,7 @@
             const bodyContentHeight = document.getElementById("body-content").getBoundingClientRect().height;
             const titleWrapHeight = document.querySelector(".title-wrap").getBoundingClientRect().height;
             const chatRoomWrap = document.querySelector(".chat-room-wrap");
-            chatRoomWrap.style.height = `${bodyContentHeight - titleWrapHeight}px`;
+            chatRoomWrap.style.height = `${bodyContentHeight - titleWrapHeight - 50}px`;
         }
         
         window.addEventListener("load", adjustChatRoomHeight);
