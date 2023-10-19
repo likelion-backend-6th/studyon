@@ -1,43 +1,43 @@
-{% extends "base.html" %}
+{% extends "popup.html" %}
 {% load chat_tags %}
 {% block title %}
     Chat room for "{{ study.title }}"
 {% endblock title %}
 {% block content %}
     <div class="flex flex-col items-center max-w-5xl mx-auto overflow-hidden chat-room-wrap">
-        <div class="flex flex-row items-center justify-between w-4/5 pt-16 lg:max-w-3xl title-wrap">
+        <div class="flex flex-row items-center justify-between w-4/5 lg:max-w-3xl title-wrap">
             <div class="w-10/12 text-3xl font-bold title">
                 {{ room.study.title|truncatechars:20 }} - {{ room.get_category_display }}
-            </div>
-            <div class="flex justify-end return">
-                <a onclick="out_chatroom('{{ user.username }}','{{ room.get_category_display }}','{{ room.study.id }}')"
-                   href="{% url "manager:study_detail" room.study.id %}"
-                   class="block w-5">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                         stroke-width="1.5"
-                         stroke="currentColor"
-                         class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-                    </svg>
-                </a>
             </div>
             {% if user == room.study.creator %}
                 <form action="{% url 'chat:room_delete' room.id %}"
                       method="post"
-                      class="room-delete-form">
+                      class="mr-5 room-delete-form"
+                      title="채팅방 종료">
                     {% csrf_token %}
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 20 20"
+                         fill="currentColor"
+                         class="w-5 h-5 transition-all fill-[#373737] hover:fill-wanted-indigo cursor-pointer room-delete-btn">
+                        <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l.3 7.5a.75.75 0 101.5-.06l.3-7.5z" clip-rule="evenodd" />
+                    </svg>
+                </form>
+            {% endif %}
+            <div class="flex justify-end return">
+                <a href="javascript:void(0);"
+                   onclick="window.close();"
+                   class="block w-5"
+                   title="창 닫기">
                     <svg xmlns="http://www.w3.org/2000/svg"
                          fill="none"
                          viewBox="0 0 24 24"
                          stroke-width="1.5"
                          stroke="currentColor"
-                         class="w-4 h-4 mr-2 room-delete-btn">
+                         class="w-5 h-5 mr-2 cursor-pointer hover:text-wanted-cyan">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                </form>
-            {% endif %}
+                </a>
+            </div>
         </div>
         <div class="flex flex-col-reverse w-4/5 mt-8 overflow-y-auto lg:max-w-3xl"
              id="chat">
@@ -309,7 +309,7 @@
             const bodyContentHeight = document.getElementById("body-content").getBoundingClientRect().height;
             const titleWrapHeight = document.querySelector(".title-wrap").getBoundingClientRect().height;
             const chatRoomWrap = document.querySelector(".chat-room-wrap");
-            chatRoomWrap.style.height = `${bodyContentHeight - titleWrapHeight*0.5}px`;
+            chatRoomWrap.style.height = `${bodyContentHeight - titleWrapHeight}px`;
         }
         
         window.addEventListener("load", adjustChatRoomHeight);
@@ -325,6 +325,14 @@
         };
         notice_socket.send(JSON.stringify(notice));
         };
+
+        let headerBtn = document.querySelector(".header .text-base");
+        headerBtn.replaceChildren();
+
+        let newText = document.createTextNode("Chat Room");
+        headerBtn.appendChild(newText);
+
+        headerBtn.classList.add("items-center", "font-bold", "text-lg");
     </script>
 {% endblock script %}
 {% block websocket %}
