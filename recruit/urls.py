@@ -33,11 +33,6 @@ urlpatterns = [
         name="modify_recruit",
     ),
     path(
-        "recruits/<int:pk>/delete/",
-        views.RecruitDeleteView.as_view(),
-        name="delete_recruit",
-    ),
-    path(
         "files/<int:file_pk>/delete/<int:recruit_pk>/",
         views.FileDeleteView.as_view(),
         name="file_delete",
