@@ -14,13 +14,13 @@
     </head>
     <body>
         <div class="h-full">
-            <div class="fixed w-full h-[60px] border-b border-neutral-300 bg-[rgba(255,255,255,.88)] backdrop-blur-xl backdrop-saturate-150 z-50">
+            <div class="fixed w-full h-[60px] border-b border-neutral-300 bg-[rgba(255,255,255,.88)] backdrop-blur-xl backdrop-saturate-150 z-50 header">
                 <div class="flex items-center h-full max-w-5xl px-5 mx-auto mx-2xl:px-0">
                     <a href="{% url 'recruits:index' %}" class="flex">
                         <h1 class="self-center text-lg font-bold text-cyan-700">StudyOn</h1>
                     </a>
                     <div id="notice" class="fixed inset-x-0 top-[10px] flex justify-center"></div>
-                    <div class="flex h-full ml-auto text-base ">
+                    <div class="flex h-full ml-auto text-base">
                         {% if user.is_authenticated %}
                             <div class="flex items-center font-bold">
                                 <a href="{% url 'message:list_notices' %}"
