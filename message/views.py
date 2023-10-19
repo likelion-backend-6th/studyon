@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View, DetailView, ListView
 from django.shortcuts import get_object_or_404
@@ -5,7 +6,7 @@ from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth.models import User
-from manager.models import Study
+from message.permissions import MessageAccessMixin, MessageSendMixin, NoticeAccessMixin
 from .models import Message, Notice
 
 
@@ -19,7 +20,7 @@ class NoticeListView(LoginRequiredMixin, ListView):
         return context
 
 
-class NoticeDeleteView(LoginRequiredMixin, View):
+class NoticeDeleteView(NoticeAccessMixin, View):
     def get(self, request, pk):
         return redirect("message:list_notices")
 
@@ -32,24 +33,37 @@ class NoticeDeleteView(LoginRequiredMixin, View):
 class MessageListView(LoginRequiredMixin, ListView):
     model = Message
     template_name = "messages/message_list.html"
+    context_object_name = "messages"
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(reciever=self.request.user)
+
+        return queryset
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["messages"] = Message.objects.filter(reciever=self.request.user)[:10]
+        context = super().get_context_data()
+        ...
+        page = context["page_obj"]
+        paginator = page.paginator
+        pagelist = paginator.get_elided_page_range(
+            page.number, on_each_side=3, on_ends=0
+        )
+        context["pagelist"] = pagelist
+        ...
         return context
 
 
-class MessageSendView(LoginRequiredMixin, View):
-    def get(self, request, study_id, user_id):
+class MessageSendTargetView(MessageSendMixin, View):
+    def get(self, request, user_id):
         reciever = get_object_or_404(User, id=user_id)
-        study = get_object_or_404(Study, id=study_id)
         return render(
             request,
-            "messages/send_message.html",
-            {"reciever": reciever, "study": study},
+            "messages/send_message_target.html",
+            {"reciever": reciever},
         )
 
-    def post(self, request, study_id, user_id):
+    def post(self, request, user_id):
         reciever = get_object_or_404(User, id=user_id)
         sender = request.user
         title = request.POST["title"]
@@ -59,10 +73,10 @@ class MessageSendView(LoginRequiredMixin, View):
             sender=sender, reciever=reciever, title=title, content=content
         )
 
-        return redirect("manager:study_detail", study_id)
+        return redirect("message:list_messages")
 
 
-class MessageReadView(LoginRequiredMixin, DetailView):
+class MessageReadView(MessageAccessMixin, DetailView):
     model = Message
     template_name = "messages/read_message.html"
     context_object_name = "message"
@@ -73,3 +87,14 @@ class MessageReadView(LoginRequiredMixin, DetailView):
             message.read_at = timezone.now()
             message.save()
         return super().dispatch(request, *args, **kwargs)
+
+
+class MessageDeleteView(MessageAccessMixin, View):
+    def post(self, request, pk):
+        message = get_object_or_404(Message, id=pk)
+
+        try:
+            message.delete()
+            return redirect("message:list_messages")
+        except Exception as e:
+            return HttpResponse(str(e))
