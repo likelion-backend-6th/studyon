@@ -157,10 +157,10 @@
                 <p class="text-lg font-bold">파일 등록</p>
                 <hr class="my-2" />
                 {% if not recruit.files.exists %}
-                <input id="id_file"
-                       type="file"
-                       name="file"
-                       class="cursor-pointer file:border-none file:bg-neutral-200 file:hover:bg-neutral-300 file:rounded-sm">
+                    <input id="id_file"
+                           type="file"
+                           name="file"
+                           class="cursor-pointer file:border-none file:bg-neutral-200 file:hover:bg-neutral-300 file:rounded-sm">
                 {% else %}
                     {% with recruit_file=recruit.files.first %}
                         <p class="flex justify-between mt-4">
