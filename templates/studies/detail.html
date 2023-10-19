@@ -45,7 +45,7 @@
                     {% for member in study.members.all %}
                         <div class="flex flex-row flex-wrap mx-4">
                             <div class="flex before:content-['•'] before:pr-2">
-                                {% if member == study.creator %}<i class="fa-solid fa-crown self-center mr-2"></i>{% endif %}
+                                {% if member == study.creator %}<i class="self-center mr-2 fa-solid fa-crown"></i>{% endif %}
                                 <span class="pr-2">{{ member.username }}</span>
                                 {% if member.username != user.username %}
                                     <p>
@@ -60,7 +60,7 @@
                                         {% if user == study.creator %}
                                             <form action="{% url 'manager:study_kickout' study.id member.id %}"
                                                   method="post"
-                                                  class="ml-1 self-center">
+                                                  class="self-center ml-1">
                                                 {% csrf_token %}
                                                 <button type="submit" class="text-red-500 hover:text-red-600">
                                                     <i class="fa-solid fa-delete-left"></i>
@@ -110,8 +110,9 @@
                 </div>
                 <span class="sm:hidden empty">&nbsp;&nbsp;&nbsp;</span>
                 {% for room in rooms %}
-                    <a onclick="init_chatroom('{{ user.username }}','{{ room.get_category_display }}','{{ study.id }}')"
-                       href="{% url 'chat:chat_room' room.id %}"
+                    <a href="{% url 'chat:chat_room' room.id %}"
+                       target="_blank"
+                       onclick="return openPopup(this.href)"
                        class="mx-2 mt-3 underline room hover:font-extrabold hover:text-neutral-500"
                        data-category="{{ room.category }}">{{ room.get_category_display }}</a>
                 {% endfor %}
@@ -183,11 +184,11 @@
         {% include "studies/tasks/create.html" %}
     </div>
     <div id="modal"
-         class="fixed hidden top-0 z-50 items-center justify-center w-full h-full  bg-neutral-400/20 backdrop-blur-sm">
+         class="fixed top-0 z-50 items-center justify-center hidden w-full h-full bg-neutral-400/20 backdrop-blur-sm">
         <div class="w-full max-w-3xl p-6 bg-white">
             <div class="relative">
                 <button id="modal-close" class="absolute top-0 right-0">
-                    <i class="fa-solid fa-xmark text-3xl"></i>
+                    <i class="text-3xl fa-solid fa-xmark"></i>
                 </button>
                 <h1 id="modal-title" class="text-3xl"></h1>
                 <hr class="my-2" />
@@ -204,7 +205,7 @@
                     <div class="flex justify-between">
                         <span id="star" class="relative text-2xl text-neutral-400">
                             ★★★★★
-                            <span class="left-0 absolute text-red-500 overflow-hidden pointer-events-none">★★★★★</span>
+                            <span class="absolute left-0 overflow-hidden text-red-500 pointer-events-none">★★★★★</span>
                             <input id="score"
                                    required
                                    name="score"
@@ -213,7 +214,7 @@
                                    step="1"
                                    min="1"
                                    max="10"
-                                   class="w-full h-full absolute left-0 opacity-0">
+                                   class="absolute left-0 w-full h-full opacity-0">
                         </span>
                         <input type="submit"
                                class="px-4 py-2 text-white cursor-pointer bg-neutral-600 hover:bg-neutral-700"
