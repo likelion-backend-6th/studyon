@@ -19,14 +19,15 @@
         </div>
         <div class="flex my-4 items-center justify-between xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 header">
             <form method="get" class="mr-3 search">
-                <label class="px-4 py-2 border border-neutral-300 cursor-text">
+                <label class="px-4 py-2 border-b border-neutral-500 cursor-text">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text"
                            name="query"
                            maxlength="30"
                            id="id_query"
+                           value="{{ query|default:''|safe }}"
                            placeholder="키워드 검색"
-                           class="pl-2 bg-transparent outline-none placeholder-black search xl:w-[300px] lg:w-[200px] sm:w-[150px] w-[100px]"
+                           class="pl-2 bg-transparent outline-none placeholder-slate-400 search xl:w-[300px] lg:w-[200px] sm:w-[150px] w-[100px]"
                            value="{{ query }}">
                 </label>
                 <button type="submit" hidden>검색</button>
