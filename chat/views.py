@@ -3,8 +3,6 @@ from datetime import datetime
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.views.generic import ListView
-from django.contrib import messages
 from django.views.decorators.http import require_POST, require_GET
 
 from chat.forms import CategoryForm
@@ -96,6 +94,4 @@ def room_delete(request: HttpRequest, room_id):
     room.closed_at = datetime.now()
     room.save()
 
-    study_detail_url = reverse("manager:study_detail", kwargs={"pk": room.study_id})
-
-    return redirect(study_detail_url)
+    return HttpResponse(status=204)
