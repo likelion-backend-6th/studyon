@@ -258,7 +258,7 @@ class TaskCreateView(StudyAccessMixin, View):
                 task.save()
                 return redirect("manager:study_detail", pk)
             else:
-                messages.error(request, "Date form error")
+                messages.error(request, f"Task의 기간은 스터디 기간({study.start} ~ {study.end})안에 지정해야 합니다.")
                 return redirect("manager:study_detail", pk)
         else:
             messages.error(request, form.errors)
@@ -270,6 +270,16 @@ class TaskModifyView(TaskAuthorMixin, UpdateView):
     form_class = TaskForm
     template_name = "studies/tasks/modify.html"
     success_url = reverse_lazy("manager:study_detail")
+
+    def form_valid(self, form):
+        task = form.save(commit=False)
+        study = task.study
+
+        if study.start <= task.start <= task.end <= study.end:
+            return super().form_valid(form)
+        else:
+            messages.error(self.request, f"Task의 기간은 스터디 기간({study.start} ~ {study.end})안에 지정해야 합니다.")
+            return self.form_invalid(form)
 
     def get_success_url(self):
         return reverse("manager:study_detail", kwargs={"pk": self.object.study.id})
