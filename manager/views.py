@@ -235,6 +235,10 @@ class StudyDeleteView(StudyCreatorMixin, View):
         study = get_object_or_404(Study, id=pk, is_active=True)
         study.is_active = False
         study.save()
+
+        recruit = study.recruits
+        recruit.is_active = False
+        recruit.save()
         return redirect("manager:studies_list")
 
 
