@@ -31,8 +31,8 @@ app.conf.beat_schedule = {
         "task": "manager.tasks.cleanup_old_posts",
         "schedule": crontab(hour=0, minute=6),
     },
-    "clean_up_old_messagges": {
-        "task": "message.tasks.cleanup_old_messagges",
+    "clean_up_old_messages": {
+        "task": "message.tasks.cleanup_old_messages",
         "schedule": crontab(hour=0, minute=7),
     },
     "clean_up_old_recruits": {
@@ -46,5 +46,9 @@ app.conf.beat_schedule = {
     "change_finished_recruit_status": {
         "task": "recruit.tasks.change_recruits_status",
         "schedule": crontab(hour=0, minute=10),
+    },
+    "clean_up_old_notices": {
+        "task": "message.tasks.cleanup_old_notices",
+        "schedule": crontab(hour=0, minute=11),
     },
 }
