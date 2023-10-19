@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% block style %}
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock style %}
 {% block content %}
     <div class="mx-auto max-w-5xl pt-10 min-h-[calc(100%-68px)]">
         <form method="post">
@@ -10,7 +14,10 @@
                        value="{{ form.title.value }}">
                 <p class="text-lg font-bold mt-10">기간</p>
                 <hr class="my-2" />
-                <div>{{ form.start }} ~ {{ form.end }}</div>
+                <div class="sm:inline date">{{ form.start }} ~ {{ form.end }}</div>
+                {% if messages %}
+                    {% for message in messages %}<div class="text-red-600">{{ message }}</div>{% endfor %}
+                {% endif %}
                 <p class="text-lg font-bold mt-10">설명</p>
                 <hr class="my-2" />
                 <input class="w-full outline-none"
@@ -29,3 +36,15 @@
         </form>
     </div>
 {% endblock content %}
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr('#id_start', {
+            dateFormat: "Y-m-d",
+        });
+
+        flatpickr('#id_end', {
+            dateFormat: "Y-m-d",
+        });
+    </script>
+{% endblock script %}
