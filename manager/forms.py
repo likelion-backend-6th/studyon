@@ -16,6 +16,17 @@ class StudyForm(forms.ModelForm):
         model = Study
         fields = ["title", "start", "end", "process", "info"]
 
+    def clean(self):
+        cleaned_data = super().clean()
+        start = cleaned_data.get("start")
+        end = cleaned_data.get("end")
+
+        if start and end:
+            if start > end:
+                raise ValidationError("시작일은 종료일보다 뒤에 있을 수 없습니다.")
+
+        return cleaned_data
+
 
 class TaskForm(forms.ModelForm):
     start = forms.DateField(
