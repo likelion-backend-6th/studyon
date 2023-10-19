@@ -44,14 +44,13 @@
                 <div class="flex flex-row flex-wrap mt-3 text-base">
                     {% for member in study.members.all %}
                         <div class="flex flex-row flex-wrap mx-4">
-                            {% if member != study.creator %}
-                                <div class="flex before:content-['•'] before:pr-2">
-                                    <span class="pr-2">{{ member.username }}</span>
+                            <div class="flex before:content-['•'] before:pr-2">
+                                {% if member == study.creator %}<i class="fa-solid fa-crown self-center mr-2"></i>{% endif %}
+                                <span class="pr-2">{{ member.username }}</span>
+                                {% if member.username != user.username %}
                                     <p>
-                                        {% if member.username != user.username %}
-                                            <a href="{% url "message:send_message" study.id member.id %}"
-                                               class="pr-1 my-auto hover:text-wanted-blue"><i class="fa-regular fa-envelope"></i></a>
-                                        {% endif %}
+                                        <a href="{% url "message:send_message" study.id member.id %}"
+                                           class="pr-1 my-auto hover:text-wanted-blue"><i class="fa-regular fa-envelope"></i></a>
                                         <button class="self-center user-button hover:text-wanted-indigo">
                                             <i class="fa-regular fa-pen-to-square"></i>
                                             <div class="hidden source"
@@ -69,15 +68,8 @@
                                             </form>
                                         {% endif %}
                                     </p>
-                                </div>
-                            {% else %}
-                                <span>•
-                                    {% if member.username != user.username %}
-                                        <a href="{% url "message:send_message" study.id member.id %}"><i class="fa-regular fa-envelope ml-0.5"></i></a>
-                                    {% endif %}
-                                    {{ member.username }} <i class="ml-1 fa-solid fa-crown"></i>
-                                </span>
-                            {% endif %}
+                                {% endif %}
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
