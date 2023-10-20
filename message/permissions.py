@@ -19,7 +19,7 @@ class NoticeAccessMixin(LoginRequiredMixin):
 
     def get_notice(self):
         notice_id = self.kwargs["pk"]
-        notice: Notice = get_object_or_404(User, id=notice_id)
+        notice: Notice = get_object_or_404(Notice, id=notice_id)
         return notice
 
 
