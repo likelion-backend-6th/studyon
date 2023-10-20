@@ -24,8 +24,8 @@ class NoticeDeleteView(NoticeAccessMixin, View):
     def get(self, request, pk):
         return redirect("message:list_notices")
 
-    def post(self, reuqest, pk):
-        notice = get_object_or_404(Notice, id=pk, user=reuqest.user)
+    def post(self, request, pk):
+        notice = get_object_or_404(Notice, id=pk, user=request.user)
         notice.delete()
         return redirect("message:list_notices")
 
