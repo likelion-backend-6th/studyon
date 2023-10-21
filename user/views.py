@@ -26,6 +26,7 @@ def write_review(request, pk):
         if not {reviewer, reviewee}.issubset(set(study.members.all())):
             raise Http404("not member")
         review, created = Review.objects.get_or_create(
+            study=study,
             reviewer=reviewer,
             reviewee=reviewee,
             defaults={"score": score, "review": content},
