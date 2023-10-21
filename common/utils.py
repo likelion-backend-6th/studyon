@@ -88,7 +88,7 @@ def s3_file_download(file_id):
 
 
 class Tags:
-    tag_list = ["database", "frontend", "backend", "CD/CD", "python", "비대면", "게임"]
+    tag_list = ["database", "frontend", "backend", "CI/CD", "python", "비대면", "게임"]
 
     # for in, list() operator
     def __iter__(self):
