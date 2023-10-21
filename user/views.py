@@ -1,8 +1,10 @@
+from itertools import groupby
 from typing import Any
 
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.db.models import Avg
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import ListView, View
@@ -85,18 +87,41 @@ class SignupView(View):
 
 
 class MyHistoryView(ListView):
-    model = Review
+    model = Study
     template_name = "users/info.html"
-    context_object_name = "reviews"
+    context_object_name = "studies"
+    paginate_by = 3
+    paginate_orphans = 1
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["my_reviews"] = Review.objects.filter(reviewer=self.request.user)
+
+        reviews_for_studies_on_current_page = Review.objects.filter(
+            reviewer=self.request.user,
+            study__in=context["studies"],
+        ).order_by("study")
+
+        grouped_reviews = [
+            (study, list(reviews))
+            for study, reviews in groupby(
+                reviews_for_studies_on_current_page, key=lambda review: review.study
+            )
+        ]
+
+        context["grouped_reviews"] = grouped_reviews
+        context["my_study"] = Study.objects.filter(members=self.request.user)
+        context["nickname"] = Profile.objects.get(user=self.request.user).nickname
+        avg_score_info = Review.objects.filter(reviewee=self.request.user).aggregate(
+            avg_score=Avg("score")
+        )
+        context["avg_score"] = avg_score_info["avg_score"]
         return context
 
     def get_queryset(self):
-        user = self.request.user
-        return super().get_queryset().filter(reviewee=user)
+        return Study.objects.filter(
+            members=self.request.user,
+            reviews__reviewer=self.request.user,
+        ).distinct()
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if request.user.is_authenticated:
