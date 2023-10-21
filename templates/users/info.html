@@ -1,36 +1,52 @@
 {% extends "base.html" %}
-{% load static %}
 {% block content %}
-    <p>
-        username: {{ request.user.username }} <br>
-        nickname: {{ nickname }} <br>
-        참여 스터디수: {{ my_study.count }} <br>
-        평균 리뷰 점수: {% if avg_score %}{{ avg_score|floatformat:2 }}{% else %}0{% endif %}
-    </p>
-    <h1 class="text-[18px] mt-4">작성한 리뷰 목록</h1>
-    <div class="pagination mt-5">
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-        {% endif %}
-
-        <span class="current-page">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Next</a>
-        {% endif %}
-    </div>
-    <ul>
-        {% for study, reviews in grouped_reviews %}
-            <li class="mt-3 bg-amber-100">
-                <h2>스터디 제목: {{ study.title }}</h2>
-                {% for review in reviews %}
-                    <div class="mt-2">
-                        <p>멤버: {{ review.reviewee.username }}</p>
-                        <p>리뷰 점수: {{ review.score }}</p>
-                        <p>리뷰 내용: {{ review.review }}</p>
-                    </div>
+    <div class="mx-auto max-w-5xl">
+        <div class="p-2 pt-16">
+            <p class="text-3xl font-bold">
+                {{ request.user.username }}
+                <span class="text-lg font-light text-gray-500">( {{ nickname }} )</span>
+            </p>
+            <div class="flex flex-col mt-2 ml-2 text-lg">
+                <p>참여 스터디수 : {{ my_study.count }}개</p>
+                <p>
+                    평균 리뷰 점수
+                    {% if avg_score %}
+                        {{ avg_score|floatformat:2 }}
+                    {% else %}
+                        0
+                    {% endif %}
+                    / 10
+                </p>
+            </div>
+        </div>
+        <p class="text-2xl font-semibold title p-2">작성한 리뷰 목록</p>
+        <div class="p-2">
+            <div class="flex flex-row justify-center">
+                {% for index in pagelist %}
+                    {% if index == page_obj.number %}
+                        <div class="mx-2 page-item">
+                            <span class="page-link text-wanted-cyan">{{ index }}</span>
+                        </div>
+                    {% else %}
+                        <div class="mx-2 page-item">
+                            <a class="page-link hover:text-wanted-blue hover:underline"
+                               href="?page={{ index }}">{{ index }}</a>
+                        </div>
+                    {% endif %}
                 {% endfor %}
-            </li>
-        {% endfor %}
-    </ul>
+            </div>
+            {% for study, reviews in grouped_reviews %}
+                <div class="mt-8">
+                    <p class="text-xl my-2">{{ study.title }}</p>
+                    <div class="ml-2 p-2 flex flex-col max-h-[150px] overflow-auto border-border border-2">
+                        {% for review in reviews %}
+                            <div class="mt-1 break-words">
+                                {{ review.reviewee.username }} <span class="text-xs">( {{ review.score }}/10 )</span> - {{ review.review }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock content %}
