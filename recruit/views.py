@@ -336,10 +336,12 @@ class RequesterReviewView(ReviewAccessMixin, InfiniteListView):
         context = super().get_context_data(**kwargs)
         user_id = self.kwargs.get("user_id")
         context["requester"] = get_object_or_404(User, id=user_id)
-        context["average_score"] = round(
-            Review.objects.filter(reviewee_id=user_id).aggregate(Avg("score"))[
-                "score__avg"
-            ],
-            2,
-        )
+        average_score = Review.objects.filter(reviewee_id=user_id).aggregate(
+            Avg("score")
+        )["score__avg"]
+        if average_score:
+            average_score = round(average_score, 2)
+        else:
+            average_score = 0
+        context["average_score"] = average_score
         return context
