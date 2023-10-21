@@ -151,25 +151,26 @@
                     <ul class="mt-2 overflow-y-scroll scroll_invisible h-72">
                         {% for my_recruit in my_recruits %}
                             <li class="px-2 pb-1 mb-1 border-b border-neutral-200 last:border-none last:pb-0 last:mb-0">
-                                <a href="{% url "recruits:recruit_detail" my_recruit.id %}" class="truncate">
-                                    <div class="flex justify-between my-1 my-recruit">
+                                <div class="flex justify-between my-1 my-recruit">
+                                    <a href="{% url "recruits:recruit_detail" my_recruit.id %}"
+                                       class="flex-auto overflow-hidden">
                                         <p class="truncate">{{ my_recruit.title }}</p>
-                                        <a href="{% url 'recruits:modify_recruit' my_recruit.id %}"
-                                           class="w-5 h-5">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 20 20"
-                                                 fill="currentColor"
-                                                 class="w-5 h-5 fill-wanted-cyan hover:scale-125">
-                                                <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
-                                                <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
-                                            </svg>
-                                        </a>
-                                    </div>
-                                    <div class="flex justify-between my-1">
-                                        <span class="text-xs">~{{ my_recruit.deadline|date:'Y.m.d' }}</span>
-                                        <span class="text-sm">{{ my_recruit.members.count }} / {{ my_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
-                                    </div>
-                                </a>
+                                    </a>
+                                    <a href="{% url 'recruits:modify_recruit' my_recruit.id %}"
+                                       class="w-5 h-5 flex-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="w-5 h-5 fill-wanted-cyan hover:scale-125">
+                                            <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                                            <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                                <div class="flex justify-between my-1">
+                                    <span class="text-xs">~{{ my_recruit.deadline|date:'Y.m.d' }}</span>
+                                    <span class="text-sm">{{ my_recruit.members.count }} / {{ my_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
+                                </div>
                             </li>
                         {% empty %}
                             <li class="px-2 pb-1 mb-1 border-b border-neutral-200 last:border-none last:pb-0 last:mb-0">
@@ -185,21 +186,22 @@
                         {% for like_recruit in like_recruits %}
                             {% if like_recruit.creator != user %}
                                 <li class="px-2 pb-1 mb-1 border-b border-neutral-200 last:border-none last:pb-0 last:mb-0">
-                                    <a href="{% url "recruits:recruit_detail" like_recruit.id %}" class="truncate">
-                                        <div class="flex justify-between my-1 like-recruit">
+                                    <div class="flex justify-between my-1 like-recruit">
+                                        <a href="{% url "recruits:recruit_detail" like_recruit.id %}"
+                                           class="overflow-hidden flex-auto">
                                             <p class="truncate">{{ like_recruit.title }}</p>
-                                            <p class="self-center text-sm">
-                                                <span class="mr-auto">{{ like_recruit.like_users.count }}</span>
-                                                <a href="{% url 'manager:studies_unlike_recruit' like_recruit.pk %}">
-                                                    <i class="text-red-400 fa-solid fa-heart hover:scale-125"></i>
-                                                </a>
-                                            </p>
-                                        </div>
-                                        <div class="flex justify-between my-1">
-                                            <span class="text-xs">~{{ like_recruit.deadline|date:'Y.m.d' }}</span>
-                                            <span class="text-sm">{{ like_recruit.members.count }} / {{ like_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
-                                        </div>
-                                    </a>
+                                        </a>
+                                        <p class="self-center text-sm flex-none">
+                                            <span class="mr-auto">{{ like_recruit.like_users.count }}</span>
+                                            <a href="{% url 'manager:studies_unlike_recruit' like_recruit.pk %}">
+                                                <i class="text-red-400 fa-solid fa-heart hover:scale-125"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div class="flex justify-between my-1">
+                                        <span class="text-xs">~{{ like_recruit.deadline|date:'Y.m.d' }}</span>
+                                        <span class="text-sm">{{ like_recruit.members.count }} / {{ like_recruit.total_seats }} <i class="fa-solid fa-user"></i></span>
+                                    </div>
                                     <div class="flex justify-between mt-1"></div>
                                 </li>
                             {% endif %}
