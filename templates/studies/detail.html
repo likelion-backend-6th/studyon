@@ -19,7 +19,7 @@
 {% block content %}
     <div class="container w-5/6 py-10 mx-auto sm:w-full md:max-w-3xl">
         <div class="flex flex-row detail-head">
-            <div class="text-4xl font-bold">{{ study.title }}</div>
+            <div class="text-4xl font-bold truncate">{{ study.title }}</div>
             <div class="self-end hidden ml-6 sm:block">{{ study.start|date:'Y.m.d' }}~{{ study.end|date:'Y.m.d' }}</div>
             <div class="ml-auto">
                 {% if study.creator == user %}
