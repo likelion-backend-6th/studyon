@@ -12,14 +12,7 @@ class UserTest(TestCase):
         cls.base_user = User.objects.create_user(
             username="base_user", password="base_user"
         )
-        for i in range(3):
-            user = User.objects.create_user(username=f"user{i}", password=f"user{i}")
-            Review.objects.create(
-                reviewer=cls.base_user, reviewee=user, score=i, review="good"
-            )
-            Review.objects.create(
-                reviewer=user, reviewee=cls.base_user, score=i, review="good"
-            )
+
         cls.user1 = User.objects.create_user(
             username="study_user1", password="study_user1"
         )
@@ -36,6 +29,22 @@ class UserTest(TestCase):
         )
         cls.study.members.add(cls.user1)
         cls.study.members.add(cls.user2)
+        for i in range(3):
+            user = User.objects.create_user(username=f"user{i}", password=f"user{i}")
+            Review.objects.create(
+                study=cls.study,
+                reviewer=cls.base_user,
+                reviewee=user,
+                score=i,
+                review="good",
+            )
+            Review.objects.create(
+                study=cls.study,
+                reviewer=user,
+                reviewee=cls.base_user,
+                score=i,
+                review="good",
+            )
 
     def test_login_page(self):
         res = self.client.get(reverse("users:login"))
@@ -135,7 +144,11 @@ class UserTest(TestCase):
 
     def test_write_review_update(self):
         Review.objects.create(
-            reviewer=self.user1, reviewee=self.user2, score=5, review="good"
+            study=self.study,
+            reviewer=self.user1,
+            reviewee=self.user2,
+            score=5,
+            review="good",
         )
         review_data = {
             "review": "verry good",

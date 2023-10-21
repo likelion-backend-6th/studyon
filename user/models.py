@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django_prometheus.models import ExportModelOperationsMixin
 
+from manager.models import Study
+
 
 class Profile(ExportModelOperationsMixin("profile"), models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -9,6 +11,7 @@ class Profile(ExportModelOperationsMixin("profile"), models.Model):
 
 
 class Review(ExportModelOperationsMixin("review"), models.Model):
+    study = models.ForeignKey(Study, related_name="reviews", on_delete=models.CASCADE)
     reviewer = models.ForeignKey(
         User, related_name="left_reviews", on_delete=models.CASCADE
     )
@@ -27,5 +30,6 @@ class Review(ExportModelOperationsMixin("review"), models.Model):
             models.Index(fields=["-created_at"]),
             models.Index(fields=["reviewer"]),
             models.Index(fields=["reviewee"]),
+            models.Index(fields=["study"]),
         ]
         ordering = ["-created_at"]
