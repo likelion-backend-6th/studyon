@@ -40,7 +40,7 @@
                     <p class="text-xl my-2">{{ study.title }}</p>
                     <div class="ml-2 p-2 flex flex-col max-h-[150px] overflow-auto border-border border-2">
                         {% for review in reviews %}
-                            <div class="mt-1 break-words">
+                            <div class="mt-1 break-all">
                                 {{ review.reviewee.username }} <span class="text-xs">( {{ review.score }}/10 )</span> - {{ review.review }}
                             </div>
                         {% endfor %}
