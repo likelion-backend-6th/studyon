@@ -87,8 +87,7 @@ class Command(BaseCommand):
         # users
         def generate_random_users(num, creator):
             users = User.objects.exclude(username=creator.username)
-            total_users = users.count()
-            random_user_cnt = random.randrange(1, total_users + 1)
+            random_user_cnt = random.randrange(1, num + 1)
             random_users = set(random.choices(list(users), k=random_user_cnt))
             return random_users
 
