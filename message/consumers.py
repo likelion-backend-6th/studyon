@@ -64,12 +64,12 @@ class NoticeConsumer(AsyncWebsocketConsumer):
             )
 
         # 메세지 알림
-        if "reciever_id" in data_keys:
-            reciever_id = text_data_json["reciever_id"]
+        if "receiver_id" in data_keys:
+            receiver_id = text_data_json["receiver_id"]
 
             await self.channel_layer.group_send(
                 self.room_group_name,
-                {"type": "send_notice", "reciever_id": reciever_id, "content": content},
+                {"type": "send_notice", "receiver_id": receiver_id, "content": content},
             )
 
         # 일반 알림만
