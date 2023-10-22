@@ -70,16 +70,22 @@ class RecruitView(InfiniteListView):
 @login_required
 def like_recruit(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk, is_active=True)
+    page_type = request.GET.get("type", "main")
     if request.user.is_authenticated:
         recruit.like_users.add(request.user)
+    if page_type == "detail":
+        return redirect("recruits:recruit_detail", recruit.id)
     return redirect("recruits:index")
 
 
 @login_required
 def unlike_recruit(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk, is_active=True)
+    page_type = request.GET.get("type", "main")
     if request.user.is_authenticated:
         recruit.like_users.remove(request.user)
+    if page_type == "detail":
+        return redirect("recruits:recruit_detail", recruit.id)
     return redirect("recruits:index")
 
 
@@ -336,10 +342,12 @@ class RequesterReviewView(ReviewAccessMixin, InfiniteListView):
         context = super().get_context_data(**kwargs)
         user_id = self.kwargs.get("user_id")
         context["requester"] = get_object_or_404(User, id=user_id)
-        context["average_score"] = round(
-            Review.objects.filter(reviewee_id=user_id).aggregate(Avg("score"))[
-                "score__avg"
-            ],
-            2,
-        )
+        average_score = Review.objects.filter(reviewee_id=user_id).aggregate(
+            Avg("score")
+        )["score__avg"]
+        if average_score:
+            average_score = round(average_score, 2)
+        else:
+            average_score = 0
+        context["average_score"] = average_score
         return context

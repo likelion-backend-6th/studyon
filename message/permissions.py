@@ -46,7 +46,7 @@ class MessageAccessMixin(LoginRequiredMixin):
             return self.handle_no_permission()
 
         message: Message = self.get_message()
-        if request.user != message.reciever:
+        if request.user != message.receiver:
             raise PermissionDenied("Not Authorized to Access")
         return super().dispatch(request, *args, **kwargs)
 

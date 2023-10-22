@@ -91,14 +91,15 @@
             {% endif %}
         </div>
         {% for message in messages %}
-            <div class="flex my-4 max-w-[80%] mx-auto justify-center">
-                <p class="px-2 text-lg rounded-md bg-neutral-100">
-                    <a class="mr-6 underline hover:text-neutral-400"
-                       href="{% url "message:read_message" message.id %}">{{ message }}</a> <span class="text-xs">{{ message.created_at|date:"n/j G:i" }}</span>
-                </p>
-                <p class="ml-4">
+            <div class="flex my-4 max-w-[80%] mx-auto justify-center rounded-md bg-neutral-100">
+                <div class="flex flex-row justify-between w-full px-2 text-lg truncate ">
+                    <a class="block mr-6 underline truncate hover:text-neutral-400"
+                       href="{% url "message:read_message" message.id %}">{{ message }}</a>
+                    <div class="self-center text-xs">{{ message.created_at|date:"n/j G:i" }}</div>
+                </div>
+                <div class="flex self-center justify-center w-8">
                     {% if message.read_at %}<i class="fa-solid fa-check fa-xs"></i>{% endif %}
-                </p>
+                </div>
             </div>
         {% endfor %}
     </div>

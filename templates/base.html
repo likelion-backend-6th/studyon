@@ -35,7 +35,7 @@
                                    target="_blank"
                                    onclick="return openPopup(this.href)">메세지</a>
                                 <span id="recent_message" class="pt-1 text-red-400 place-self-start">
-                                    {% if not recent_message.read_at and recent_message.reciever == user %}•{% endif %}
+                                    {% if not recent_message.read_at and recent_message.receiver == user %}•{% endif %}
                                 </span>
                             </div>
                             <div class="flex items-center pl-6 font-bold">
@@ -75,7 +75,7 @@
             const notice = document.getElementById("notice");
             const recent_notice = document.getElementById("recent_notice");
             const recent_message = document.getElementById("recent_message");
-            if (data.reciever_id == {{ user.id }}) {
+            if (data.receiver_id == {{ user.id }}) {
                 notice.innerHTML = "<p class=\"leading-10 bg-neutral-100 px-2\">" + data.content + "</p>";
                 recent_message.innerHTML = "•";
 

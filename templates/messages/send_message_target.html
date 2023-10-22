@@ -36,11 +36,11 @@
                 </a>
             </div>
         </div>
-        <form onsubmit="send_message('{{ user.username }}','{{ reciever.id }}');"
-              action="{% url "message:send_message_target" reciever.id %}"
+        <form onsubmit="send_message('{{ user.username }}','{{ receiver.id }}');"
+              action="{% url "message:send_message_target" receiver.id %}"
               method="post"
               class="w-4/5 pt-4 mx-auto xl:w-full mt-7">
-            <div class="text-2xl">To. {{ reciever }}</div>
+            <div class="text-2xl">To. {{ receiver }}</div>
             <hr class="my-4">
             {% csrf_token %}
             <input class="w-full" type="text" name="title" placeholder="Title" required>
@@ -54,10 +54,10 @@
     </div>
 {% endblock content %}
 {% block websocket %}
-    function send_message(user, reciever_id) {
+    function send_message(user, receiver_id) {
     var notice = {
     "content" :  user+"(이)가 메시지를 보냈습니다.",
-    "reciever_id" : reciever_id
+    "receiver_id" : receiver_id
     };
     notice_socket.send(JSON.stringify(notice));
     };

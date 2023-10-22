@@ -50,7 +50,16 @@
                 <section class="p-4">
                     <p class="flex justify-between text-xl">
                         <span>
-                            {{ recruit.like_users.count }} <i class="text-red-500 fa-solid fa-heart"></i>
+                            {{ recruit.like_users.count }}
+                            {% if user in recruit.like_users.all %}
+                                <a href="{% url 'recruits:unlike_recruit' recruit.pk %}?type=detail">
+                                    <i class="text-red-500 fa-solid fa-heart"></i>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'recruits:like_recruit' recruit.pk %}?type=detail">
+                                    <i class=" fa-solid fa-heart"></i>
+                                </a>
+                            {% endif %}
                         </span>
                         <span class="self-center text-base">모집 인원: {{ recruit.members.count }}/{{ recruit.total_seats }}</span>
                     </p>

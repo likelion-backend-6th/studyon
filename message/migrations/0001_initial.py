@@ -30,10 +30,10 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("read_at", models.DateTimeField(null=True)),
                 (
-                    "reciever",
+                    "receiver",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="recievers",
+                        related_name="receivers",
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                         fields=["sender"], name="message_mes_sender__902e29_idx"
                     ),
                     models.Index(
-                        fields=["reciever"], name="message_mes_recieve_4311ce_idx"
+                        fields=["receiver"], name="message_mes_recieve_4311ce_idx"
                     ),
                 ],
             },

@@ -37,7 +37,7 @@ class MessageListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(reciever=self.request.user)
+        queryset = super().get_queryset().filter(receiver=self.request.user)
 
         return queryset
 
@@ -56,21 +56,21 @@ class MessageListView(LoginRequiredMixin, ListView):
 
 class MessageSendTargetView(MessageSendMixin, View):
     def get(self, request, user_id):
-        reciever = get_object_or_404(User, id=user_id)
+        receiver = get_object_or_404(User, id=user_id)
         return render(
             request,
             "messages/send_message_target.html",
-            {"reciever": reciever},
+            {"receiver": receiver},
         )
 
     def post(self, request, user_id):
-        reciever = get_object_or_404(User, id=user_id)
+        receiver = get_object_or_404(User, id=user_id)
         sender = request.user
         title = request.POST["title"]
         content = request.POST["content"]
 
         Message.objects.create(
-            sender=sender, reciever=reciever, title=title, content=content
+            sender=sender, receiver=receiver, title=title, content=content
         )
 
         return redirect("message:list_messages")
@@ -83,7 +83,7 @@ class MessageReadView(MessageAccessMixin, DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         message = get_object_or_404(Message, id=kwargs["pk"])
-        if message.reciever == request.user:
+        if message.receiver == request.user:
             message.read_at = timezone.now()
             message.save()
         return super().dispatch(request, *args, **kwargs)

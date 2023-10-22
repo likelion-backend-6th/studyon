@@ -14,24 +14,40 @@
 {% block content %}
     <div class="flex flex-col items-center max-w-5xl mx-auto">
         <div class="flex flex-col items-start xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 mt-14 task">
-            <div class="text-5xl font-bold title">{{ task.title }}</div>
-            <div class="mt-10 mb-10 text-3xl description">{{ task.description }}</div>
+            <div class="text-5xl font-bold truncate title xl:w-full lg:w-[768px] sm:w-3/4 w-4/5">{{ task.title }}</div>
+            <div class="mt-10 mb-10 text-3xl truncate description xl:w-full lg:w-[768px] sm:w-3/4 w-4/5">
+                {{ task.description }}
+            </div>
         </div>
         <div class="flex my-4 items-center justify-between xl:w-full lg:w-[768px] sm:w-3/4 w-4/5 header">
-            <form method="get" class="mr-3 search">
-                <label class="px-4 py-2 border-b border-neutral-500 cursor-text">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text"
-                           name="query"
-                           maxlength="30"
-                           id="id_query"
-                           value="{{ query|default:''|safe }}"
-                           placeholder="키워드 검색"
-                           class="pl-2 bg-transparent outline-none placeholder-slate-400 search xl:w-[300px] lg:w-[200px] sm:w-[150px] w-[100px]"
-                           value="{{ query }}">
-                </label>
-                <button type="submit" hidden>검색</button>
-            </form>
+            <div class="flex flex-row search">
+                <form method="get" class="block mr-3 search">
+                    <label class="px-4 py-2 border-b border-neutral-500 cursor-text">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text"
+                               name="query"
+                               maxlength="30"
+                               id="id_query"
+                               value="{{ query|default:''|safe }}"
+                               placeholder="키워드 검색"
+                               class="pl-2 bg-transparent outline-none placeholder-slate-400 search xl:w-[300px] lg:w-[200px] sm:w-[150px] w-[100px]"
+                               value="{{ query }}">
+                    </label>
+                    <button type="submit" hidden>검색</button>
+                </form>
+                {% if query %}
+                    <a href="{% url 'manager:post_list' task.id %}">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke-width="1.5"
+                             stroke="currentColor"
+                             class="w-5 h-5 hover:text-wanted-blue mt-[6px]">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </a>
+                {% endif %}
+            </div>
             <div class="flex item-center btn">
                 <button class="px-3 mr-4 create"
                         onclick="location.href='{% url 'manager:post_create' task.id %}'">
@@ -70,15 +86,15 @@
                 {% for post in posts %}
                     <div class="flex flex-row items-center h-10 text-sm border-y border-neutral-100 hover:bg-neutral-100/75">
                         <div class="mx-2 text-center basis-1/6 td">{{ post.created_at|date:"Y.m.d" }}</div>
-                        <div class="mx-2 underline basis-3/6 td hover:text-wanted-indigo">
-                            <a href="{% url 'manager:post_detail' post.id %}">{{ post.title|truncatechars:30 }}</a>
+                        <div class="mx-2 underline truncate basis-3/6 td hover:text-wanted-indigo">
+                            <a href="{% url 'manager:post_detail' post.id %}">{{ post.title }}</a>
                         </div>
                         <div class="mx-2 text-center basis-1/6 td">{{ post.author.username }}</div>
-                        <div class="hidden mx-2 text-center basis-1/6 sm:block td">
+                        <div class="hidden mx-2 text-center truncate basis-1/6 sm:block td">
                             {% if post.files.exists %}
                                 <a href="{% url 'manager:download_s3_file' post.files.last.id %}"
                                    class="text-xs underline text-real-blue"
-                                   download>{{ post.files.last.get_file_name|truncatechars:7 }}</a>
+                                   download>{{ post.files.last.get_file_name }}</a>
                             {% endif %}
                         </div>
                     </div>
