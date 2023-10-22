@@ -89,7 +89,7 @@ class Command(BaseCommand):
             users = User.objects.exclude(username=creator.username)
             total_users = users.count()
             random_user_cnt = random.randrange(1, total_users + 1)
-            random_users = random.choices(list(users), k=random_user_cnt)
+            random_users = set(random.choices(list(users), k=random_user_cnt))
             return random_users
 
         # paragraph
