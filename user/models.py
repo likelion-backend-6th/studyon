@@ -9,6 +9,9 @@ class Profile(ExportModelOperationsMixin("profile"), models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nickname = models.CharField(max_length=50)
 
+    def __str__(self):
+        return f"{self.user}의 프로필 : {self.nickname}"
+
 
 class Review(ExportModelOperationsMixin("review"), models.Model):
     study = models.ForeignKey(Study, related_name="reviews", on_delete=models.CASCADE)
