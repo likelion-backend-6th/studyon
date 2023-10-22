@@ -81,8 +81,9 @@
                 <div class="flex justify-between chat-title">
                     <div class="text-xl room-title">채팅방 생성</div>
                     <div class="flex items-end mr-4 chat-video">
-                        <button class="text-lg text-wanted-blue hover:text-wanted-indigo"
-                                onclick="location.href='{% url 'video:video_room' study.id %}'">화상채팅</button>
+                        <a class="text-lg text-wanted-blue hover:text-wanted-indigo"
+                           href="{% url 'video:video_room' study.id %}"
+                           target="_blank">화상채팅</a>
                     </div>
                 </div>
                 {% if rooms|length < 3 %}
