@@ -41,17 +41,19 @@
             {% for chat in chats %}
                 {% if user == chat.creator %}
                     <div class="m-2 bg-[#eaf8f3] grid ml-[calc(40%-10px)] w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me">
-                        <div class="self-center col-span-4 text-xs text-right text-neutral-400 chat-time">{{ chat.created_at|date:"P" }}</div>
-                        <div class="self-center my-1 font-bold text-center chat-sender">Me</div>
-                        <div class="col-span-5 row-start-2 my-1 chat-message">{{ chat.content }}</div>
+                        <div class="self-center col-span-2 mx-3 text-xs text-left text-neutral-400 chat-time">
+                            {{ chat.created_at|date:"P" }}
+                        </div>
+                        <div class="self-center col-span-3 mx-3 my-1 font-bold text-right chat-sender">Me</div>
+                        <div class="col-span-5 row-start-2 mx-1 my-1 chat-message">{{ chat.content }}</div>
                     </div>
                 {% else %}
                     <div class="m-2 bg-[#f0ecec] grid w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper other">
-                        <div class="self-center col-span-2 my-1 font-bold text-center sm:col-span-1 chat-sender">{{ chat.creator }}</div>
-                        <div class="self-center col-span-3 text-xs sm:col-span-4 text-neutral-400 chat-time">
+                        <div class="self-center col-span-3 mx-3 my-1 font-bold text-left chat-sender">{{ chat.creator }}</div>
+                        <div class="self-center col-span-2 mx-3 text-xs text-right text-neutral-400 chat-time">
                             {{ chat.created_at|date:"P" }}
                         </div>
-                        <div class="col-span-5 row-start-2 my-1 chat-message">{{ chat.content }}</div>
+                        <div class="col-span-5 row-start-2 mx-1 my-1 chat-message">{{ chat.content }}</div>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -204,21 +206,21 @@
                     timeBox.textContent = time;
 
                     const messageBox = document.createElement("div");
-                    messageBox.className = "col-span-5 row-start-2 my-1 chat-message";
+                    messageBox.className = "col-span-5 row-start-2 mx-1 my-1 chat-message";
                     messageBox.textContent = message;
 
                     const messageWrapper = document.createElement("div");
                     
                     if (isMe) {
                         messageWrapper.className = "m-2 bg-[#eaf8f3] grid ml-[calc(40%-10px)] w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper me"
-                        timeBox.className = "self-center col-span-4 text-xs text-right text-neutral-400 chat-time";
-                        nameBox.className = "self-center my-1 font-bold text-center chat-sender"
+                        timeBox.className = "self-center col-span-2 mx-3 text-xs text-left text-neutral-400 chat-time";
+                        nameBox.className = "self-center col-span-3 mx-3 my-1 font-bold text-right chat-sender"
                         messageWrapper.appendChild(timeBox);
                         messageWrapper.appendChild(nameBox);
                     } else {
                         messageWrapper.className = "m-2 bg-[#f0ecec] grid w-3/5 grid-cols-5 grid-row-2 chat-message-wrapper other"
-                        nameBox.className = "self-center col-span-2 my-1 font-bold text-center sm:col-span-1 chat-sender"
-                        timeBox.className = "self-center col-span-3 text-xs sm:col-span-4 text-neutral-400 chat-time";
+                        nameBox.className = "self-center col-span-3 mx-3 my-1 font-bold text-left chat-sender"
+                        timeBox.className = "self-center col-span-2 mx-3 text-xs text-right text-neutral-400 chat-time";
                         messageWrapper.appendChild(nameBox);
                         messageWrapper.appendChild(timeBox);
                     }
