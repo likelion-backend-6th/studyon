@@ -5,8 +5,8 @@ from django_prometheus.models import ExportModelOperationsMixin
 
 class Message(ExportModelOperationsMixin("message"), models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="senders")
-    reciever = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="recievers"
+    receiver = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="receivers"
     )
     title = models.CharField(max_length=50)
     content = models.TextField(blank=True)
@@ -20,7 +20,7 @@ class Message(ExportModelOperationsMixin("message"), models.Model):
         indexes = [
             models.Index(fields=["-created_at"]),
             models.Index(fields=["sender"]),
-            models.Index(fields=["reciever"]),
+            models.Index(fields=["receiver"]),
         ]
         ordering = ["-created_at"]
 

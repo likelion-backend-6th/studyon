@@ -38,13 +38,13 @@ class Command(BaseCommand):
                     chat_users = generate_random_message_users(study)
                     send_message = Message.objects.create(
                         sender=chat_users[0],
-                        reciever=chat_users[1],
+                        receiver=chat_users[1],
                         title=generate_random_sentence(),
                         content=generate_random_sentence(),
                     )
                     reply_message = Message.objects.create(
                         sender=chat_users[0],
-                        reciever=chat_users[1],
+                        receiver=chat_users[1],
                         title=generate_random_sentence(),
                         content=generate_random_sentence(),
                     )

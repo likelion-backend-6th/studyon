@@ -3,7 +3,7 @@ from .models import Message, Notice
 
 def get_recent_message(request):
     if request.user.is_authenticated:
-        recent_message = Message.objects.filter(reciever=request.user).first()
+        recent_message = Message.objects.filter(receiver=request.user).first()
         return {"recent_message": recent_message}
     else:
         recent_message = None
