@@ -70,16 +70,22 @@ class RecruitView(InfiniteListView):
 @login_required
 def like_recruit(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk, is_active=True)
+    page_type = request.GET.get("type", "main")
     if request.user.is_authenticated:
         recruit.like_users.add(request.user)
+    if page_type == "detail":
+        return redirect("recruits:recruit_detail", recruit.id)
     return redirect("recruits:index")
 
 
 @login_required
 def unlike_recruit(request, pk):
     recruit = get_object_or_404(Recruit, pk=pk, is_active=True)
+    page_type = request.GET.get("type", "main")
     if request.user.is_authenticated:
         recruit.like_users.remove(request.user)
+    if page_type == "detail":
+        return redirect("recruits:recruit_detail", recruit.id)
     return redirect("recruits:index")
 
 
