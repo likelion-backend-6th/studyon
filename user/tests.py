@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from .models import Review
+from .models import Review, Profile
 from manager.models import Study
 
 
@@ -11,6 +11,9 @@ class UserTest(TestCase):
         cls.client = Client()
         cls.base_user = User.objects.create_user(
             username="base_user", password="base_user"
+        )
+        cls.base_profile = Profile.objects.create(
+            user=cls.base_user, nickname="BaseUser"
         )
 
         cls.user1 = User.objects.create_user(
