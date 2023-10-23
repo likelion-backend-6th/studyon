@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -31,6 +33,7 @@ class RecruitView(InfiniteListView):
                 Q(study__status=1) | Q(study__status=2),
                 members_count__lt=F("total_seats"),
                 is_active=True,
+                deadline__gte=datetime.now().date(),
             )
             .order_by("deadline", "-created_at")
         )
@@ -207,12 +210,16 @@ class RecruitCreateView(LoginRequiredMixin, FormView):
         deadline = form.cleaned_data.get("deadline")
         tags = form.cleaned_data.get("tags")
 
+        if deadline and deadline < datetime.now().date():
+            form.add_error("deadline", "마감일은 현재 날짜이거나, 이후여야 합니다.")
+            return self.form_invalid(form)
+
         if end_date and start_date and end_date <= start_date:
             form.add_error("end", "종료일은 시작일 이후여야 합니다.")
             return self.form_invalid(form)
 
         if deadline and start_date and deadline > start_date:
-            form.add_error("deadline", "마감일은 시작일 이전이어야 합니다.")
+            form.add_error("start", "시작일은 마감일과 같거나, 이후이어야 합니다.")
             return self.form_invalid(form)
 
         if len(tags) > 3:
