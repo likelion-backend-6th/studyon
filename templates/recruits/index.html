@@ -28,9 +28,9 @@
                                        id="id_query"
                                        value="{{ query|default:''|safe }}"
                                        placeholder="키워드를 입력해주세요."
-                                       class="flex pl-2 bg-transparent outline-none placeholder-slate-400">
+                                       class="flex w-full pl-2 bg-transparent outline-none placeholder-slate-400">
                                 {% if query %}
-                                    <a href="/">
+                                    <a href="{% url 'recruits:index' %}">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              fill="none"
                                              viewBox="0 0 24 24"
@@ -53,9 +53,9 @@
                                        id="id_tag"
                                        value="{{ tag|default:''|safe }}"
                                        placeholder="태그를 입력해주세요."
-                                       class="flex pl-2 bg-transparent outline-none placeholder-slate-400">
+                                       class="flex w-full pl-2 bg-transparent outline-none placeholder-slate-400">
                                 {% if tag %}
-                                    <a href="/">
+                                    <a href="{% url 'recruits:index' %}">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              fill="none"
                                              viewBox="0 0 24 24"
