@@ -62,21 +62,21 @@
 
                 setTimeout(function () {
                 notice.innerHTML = '' ;
-            }, 1000);
+            }, 3000);
             };
             if (data.user_id == {{ user.id }}) {
                 notice.innerHTML = "<p class=\"leading-10 bg-neutral-100 px-2\">" + data.content + "</p>";
                 recent_notice.innerHTML = "•";
                 setTimeout(function () {
                 notice.innerHTML = '' ;
-            }, 1000);
+            }, 3000);
             };
             if ( data.user_ids.includes({{ user.id }})){
                 notice.innerHTML = "<p class=\"leading-10 bg-neutral-100 px-2\">" + data.content + "</p>";
 
                 setTimeout(function () {
                 notice.innerHTML = '' ;
-            }, 1000);
+            }, 3000);
             };
         };
 
