@@ -21,11 +21,11 @@
     </style>
 {% endblock style %}
 {% block content %}
-    <div class="flex h-full max-w-5xl mx-auto">
+    <div class="mx-auto px-8 max-w-3xl flex h-full lg:max-w-5xl lg:px-0">
         <div class="flex-auto">
             <div class="pt-16">
                 <h1 class="p-2 text-3xl">나의 스터디</h1>
-                <ul class="grid pr-8 sm:grid-cols-2 lg:grid-cols-3">
+                <ul class="grid pr-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {% for my_study in my_studies %}
                         <li class="m-2">
                             <div class="w-full border p-4 h-[115px] hover:h-[240px] overflow-hidden transition-all">
