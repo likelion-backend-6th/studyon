@@ -10,7 +10,7 @@ urlpatterns = [
     path("<int:pk>/", views.StudyDetailView.as_view(), name="study_detail"),
     path("<int:pk>/like/", views.studies_like_recruit, name="studies_like_recruit"),
     path(
-        "<int:pk>/unlike", views.studies_unlike_recruit, name="studies_unlike_recruit"
+        "<int:pk>/unlike/", views.studies_unlike_recruit, name="studies_unlike_recruit"
     ),
     path("<int:pk>/modify/", views.StudyModifyView.as_view(), name="study_modify"),
     path(
