@@ -86,7 +86,7 @@
                                           method="post"
                                           id="deleteStudyForm_{{ my_study.id }}">
                                         {% csrf_token %}
-                                        <button type="button"
+                                        <button type="submit"
                                                 class="pl-1 pr-1 text-red-400 cursor-pointer hover:text-red-600"
                                                 onclick="confirmStudyDelete({{ my_study.id }})">Delete</button>
                                     </form>
@@ -124,12 +124,12 @@
                                     </div>
                                 </a>
                                 <div class="mt-4">
-                                    <form onsubmit="study_leave('{{ user.username }}','{{ in_study.title }}',{{ in_study.id }});"
+                                    <form onsubmit="study_leave('{{ user.username }}','{{ in_study.title }}','{{ in_study.id }}');"
                                           action="{% url 'manager:study_leave' in_study.id %}"
                                           method="post"
                                           id="leaveStudyForm_{{ in_study.id }}">
                                         {% csrf_token %}
-                                        <button type="button"
+                                        <button type="submit"
                                                 class="pl-1 pr-1 text-red-400 cursor-pointer hover:text-red-600"
                                                 onclick="confirmStudyLeave({{ in_study.id }})">Leave</button>
                                     </form>
@@ -261,7 +261,7 @@
     notice_socket.send(JSON.stringify(notice));
     };
 {% endblock websocket %}
-{% block script %}
+{% comment %} {% block script %}
     <script>
         function confirmStudyDelete(studyId) {
             const confirmation = confirm("정말로 삭제하시겠습니까?");
@@ -279,5 +279,5 @@
                 leaveForm.submit();
             }
         }
-    </script>
-{% endblock script %}
+</script>
+{% endblock script %} {% endcomment %}
