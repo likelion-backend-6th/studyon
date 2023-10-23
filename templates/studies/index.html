@@ -21,11 +21,11 @@
     </style>
 {% endblock style %}
 {% block content %}
-    <div class="mx-auto px-8 max-w-3xl flex h-full lg:max-w-5xl lg:px-0">
+    <div class="flex h-full max-w-3xl px-8 mx-auto lg:max-w-5xl lg:px-0">
         <div class="flex-auto">
             <div class="pt-16">
                 <h1 class="p-2 text-3xl">나의 스터디</h1>
-                <ul class="grid pr-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                <ul class="grid grid-cols-1 pr-8 md:grid-cols-2 lg:grid-cols-3">
                     {% for my_study in my_studies %}
                         <li class="m-2">
                             <div class="w-full border p-4 h-[115px] hover:h-[240px] overflow-hidden transition-all">
@@ -100,7 +100,7 @@
             </div>
             <div class="pt-16">
                 <h1 class="p-2 text-3xl">참여 스터디</h1>
-                <ul class="grid pr-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                <ul class="grid grid-cols-1 pr-8 md:grid-cols-2 lg:grid-cols-3">
                     {% for in_study in in_studies %}
                         <li class="m-2">
                             <div class="border p-4 h-[115px] hover:h-[160px] overflow-hidden transition-all">
@@ -157,7 +157,7 @@
                                         <p class="truncate">{{ my_recruit.title }}</p>
                                     </a>
                                     <a href="{% url 'recruits:modify_recruit' my_recruit.id %}"
-                                       class="w-5 h-5 flex-none">
+                                       class="flex-none w-5 h-5">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              viewBox="0 0 20 20"
                                              fill="currentColor"
@@ -188,10 +188,10 @@
                                 <li class="px-2 pb-1 mb-1 border-b border-neutral-200 last:border-none last:pb-0 last:mb-0">
                                     <div class="flex justify-between my-1 like-recruit">
                                         <a href="{% url "recruits:recruit_detail" like_recruit.id %}"
-                                           class="overflow-hidden flex-auto">
+                                           class="flex-auto overflow-hidden">
                                             <p class="truncate">{{ like_recruit.title }}</p>
                                         </a>
-                                        <p class="self-center text-sm flex-none">
+                                        <p class="self-center flex-none text-sm">
                                             <span class="mr-auto">{{ like_recruit.like_users.count }}</span>
                                             <a href="{% url 'manager:studies_unlike_recruit' like_recruit.pk %}">
                                                 <i class="text-red-400 fa-solid fa-heart hover:scale-125"></i>
@@ -269,6 +269,8 @@
             if (confirmation) {
                 const deleteForm = document.getElementById(`deleteStudyForm_${studyId}`);
                 deleteForm.submit();
+            } else {
+                event.preventDefault();
             }
         }
         function confirmStudyLeave(studyId) {
@@ -277,6 +279,8 @@
             if (confirmation) {
                 const leaveForm = document.getElementById(`leaveStudyForm_${studyId}`);
                 leaveForm.submit();
+            } else {
+                event.preventDefault();
             }
         }
     </script>
