@@ -261,7 +261,7 @@
     notice_socket.send(JSON.stringify(notice));
     };
 {% endblock websocket %}
-{% comment %} {% block script %}
+{% block script %}
     <script>
         function confirmStudyDelete(studyId) {
             const confirmation = confirm("정말로 삭제하시겠습니까?");
@@ -280,4 +280,4 @@
             }
         }
 </script>
-{% endblock script %} {% endcomment %}
+{% endblock script %}
