@@ -2,24 +2,26 @@
 {% block content %}
     <div class="mx-auto max-w-5xl">
         <div class="p-2 pt-16">
-            <p class="text-3xl font-bold">
+            <p class="text-5xl font-bold">
                 {{ request.user.username }}
-                <span class="text-lg font-light text-gray-500">( {{ nickname }} )</span>
+                <span class="text-lg font-light text-gray-500">{{ nickname }}</span>
             </p>
-            <div class="flex flex-col mt-2 ml-2 text-lg">
-                <p>참여 스터디수 : {{ my_study.count }}개</p>
+            <div class="grid grid-cols-2 my-6 ml-2 text-lg">
+                <p>
+                    참여 스터디수 <span class="font-bold">{{ my_study.count }}</span> 개
+                </p>
                 <p>
                     평균 리뷰 점수
                     {% if avg_score %}
-                        {{ avg_score|floatformat:2 }}
+                        <span class="font-bold">{{ avg_score|floatformat:2 }}</span>
                     {% else %}
-                        0
+                        <span class="font-bold">0</span>
                     {% endif %}
                     / 10
                 </p>
             </div>
         </div>
-        <p class="text-2xl font-semibold title p-2">작성한 리뷰 목록</p>
+        <p class="text-2xl font-semibold title pl-2">작성한 리뷰 목록</p>
         <div class="p-2">
             <div class="flex flex-row justify-center">
                 {% for index in pagelist %}
