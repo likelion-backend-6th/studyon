@@ -12,15 +12,15 @@
           type="text/css">
 {% endblock style %}
 {% block content %}
-    <div class="mx-auto px-8 max-w-3xl flex h-full lg:max-w-5xl lg:px-0">
+    <div class="flex h-full max-w-3xl px-8 mx-auto lg:max-w-5xl lg:px-0">
         <div class="flex flex-col flex-auto">
-            <div class="pt-16 flex-none overflow-hidden md:mr-8">
-                <div class="flex justify-between flex-col lg:flex-row">
+            <div class="flex-none pt-16 overflow-hidden md:mr-8">
+                <div class="flex flex-col justify-between lg:flex-row">
                     <form method="get"
-                          class="flex flex-auto flex-col lg:flex-row justify-between lg:pr-10">
+                          class="flex flex-col justify-between flex-auto lg:flex-row lg:pr-10">
                         <div class="flex flex-col flex-auto">
                             <h2 class="text-2xl text-neutral-500">스터디 검색</h2>
-                            <label class="mt-2 p-1 px-2 border-b border-neutral-500 cursor-text flex">
+                            <label class="flex p-1 px-2 mt-2 border-b border-neutral-500 cursor-text">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                                 <input type="text"
                                        name="query"
@@ -28,12 +28,12 @@
                                        id="id_query"
                                        value="{{ query|default:''|safe }}"
                                        placeholder="키워드를 입력해주세요."
-                                       class="pl-2 bg-transparent outline-none placeholder-slate-400 flex">
+                                       class="flex pl-2 bg-transparent outline-none placeholder-slate-400">
                             </label>
                         </div>
                         <div class="flex flex-col flex-auto mt-8 lg:mt-0 lg:pl-8">
                             <h2 class="text-2xl text-neutral-500">태그 필터</h2>
-                            <label class="mt-2 p-1 px-2 border-b border-neutral-500 cursor-text flex">
+                            <label class="flex p-1 px-2 mt-2 border-b border-neutral-500 cursor-text">
                                 <i class="fa-regular fa-tag"></i>
                                 <input type="text"
                                        name="tag"
@@ -41,14 +41,14 @@
                                        id="id_tag"
                                        value="{{ tag|default:''|safe }}"
                                        placeholder="태그를 입력해주세요."
-                                       class="pl-2 bg-transparent outline-none placeholder-slate-400 flex">
+                                       class="flex pl-2 bg-transparent outline-none placeholder-slate-400">
                             </label>
                         </div>
                         <input type="submit" hidden>
                     </form>
-                    <div class="flex mt-8 justify-end lg:block lg:mt-0">
+                    <div class="flex justify-end mt-8 lg:block lg:mt-0">
                         <a href="{% url 'recruits:create_recruit' %}">
-                            <div class="px-2 py-1 bg-neutral-600 hover:bg-neutral-700 text-white">
+                            <div class="px-2 py-1 text-white bg-neutral-600 hover:bg-neutral-700">
                                 <span>모집하기</span>
                             </div>
                         </a>
@@ -56,9 +56,9 @@
                 </div>
             </div>
             <ul id="recruit-list"
-                class="flex-auto grid overflow-y-auto recruits {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-6 mt-8 md:pr-6">
+                class="grid overflow-y-auto recruits {% if user.is_authenticated %}grid-cols-1 lg:grid-cols-2{% else %}grid-cols-2 lg:grid-cols-3{% endif %} gap-6 mt-8 md:pr-6">
                 {% for recruit in recruits %}
-                    <li class="py-4 px-6 border">
+                    <li class="px-6 py-4 border">
                         <a href="{% url 'recruits:recruit_detail' recruit.id %}">
                             <div class="w-full">
                                 <h3 class="text-xl truncate">{{ recruit.title }}</h3>
@@ -69,10 +69,10 @@
                                 <span>{{ recruit.members.count }}/{{ recruit.total_seats }}</span>
                             </div>
                         </a>
-                        <ul class="flex pt-1 flex-wrap">
+                        <ul class="flex flex-wrap pt-1">
                             {% for tag in recruit.tags.all %}
-                                <li class="mr-2 mb-2 last:m-0 text-sm">
-                                    <a href="?tag={{ tag.name }}" class="bg-neutral-200 px-2">{{ tag.name }}</a>
+                                <li class="mb-2 mr-2 text-sm last:m-0">
+                                    <a href="?tag={{ tag.name }}" class="px-2 bg-neutral-200">{{ tag.name }}</a>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -80,7 +80,7 @@
                             <span class="text-sm">{{ recruit.like_users.count }}</span>
                             {% if recruit in liked_recruits %}
                                 <a href="{% url 'recruits:unlike_recruit' recruit.pk %}">
-                                    <i class="fa-solid fa-heart text-red-400"></i>
+                                    <i class="text-red-400 fa-solid fa-heart"></i>
                                 </a>
                             {% else %}
                                 <a href="{% url 'recruits:like_recruit' recruit.pk %}">
@@ -94,15 +94,15 @@
         </div>
         {% if user.is_authenticated %}
             <div id="sidebar"
-                 class="flex-none w-64 border-l border-r border-neutral-300 overflow-y-auto hidden md:block">
-                <div class="pt-20 px-4">
+                 class="flex-none hidden w-64 overflow-y-auto border-l border-r border-neutral-300 md:block">
+                <div class="px-4 pt-20">
                     <div class="pb-8">
-                        <h3 class="text-xl font-bold mb-2">참여 중인 스터디</h3>
+                        <h3 class="mb-2 text-xl font-bold">참여 중인 스터디</h3>
                         <hr class="border-neutral-300" />
                         {% if in_studies %}
                             <ul class="mt-2">
                                 {% for study in in_studies %}
-                                    <li class="pl-2 border-b border-neutral-200 pb-1 mb-1 last:border-none last:pb-0 last:mb-0">
+                                    <li class="pb-1 pl-2 mb-1 border-b border-neutral-200 last:border-none last:pb-0 last:mb-0">
                                         <a href="{% url 'manager:study_detail' study.id %}"
                                            class="block truncate">{{ study.title }}</a>
                                     </li>
@@ -111,12 +111,12 @@
                         {% endif %}
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold pb-2">좋아요 누른 스터디</h3>
+                        <h3 class="pb-2 text-xl font-bold">좋아요 누른 스터디</h3>
                         <hr class="border-neutral-300" />
                         {% if liked_recruits %}
                             <ul class="mt-2">
                                 {% for recruit in liked_recruits %}
-                                    <li class="pl-2 border-b border-neutral-200 pb-1 mb-1 last:border-none last:pb-0 last:mb-0">
+                                    <li class="pb-1 pl-2 mb-1 border-b border-neutral-200 last:border-none last:pb-0 last:mb-0">
                                         <a href="{% url 'recruits:recruit_detail' recruit.id %}"
                                            class="block truncate">{{ recruit.title }}</a>
                                     </li>
