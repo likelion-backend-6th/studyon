@@ -1,3 +1,4 @@
+from calendar import month
 from datetime import date, datetime, timedelta
 import random
 
@@ -23,8 +24,9 @@ class Command(BaseCommand):
         number = int(input("생성할 모집/스터디 수를 입력하세요 :  "))
         created_rs_cnt = 0
 
-        start_date = date(2023, 8, 1)
-        end_date = date(2024, 1, 31)
+        today = date.today()
+        start_date = today + timedelta(days=7)
+        end_date = start_date + timedelta(days=5 * 30)
 
         # creator
         def generate_random_user():
