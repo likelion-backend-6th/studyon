@@ -32,7 +32,7 @@ class RecruitView(InfiniteListView):
                 members_count__lt=F("total_seats"),
                 is_active=True,
             )
-            .order_by("-created_at")
+            .order_by("deadline", "-created_at")
         )
         query = self.request.GET.get("query")
         tag = self.request.GET.get("tag")
