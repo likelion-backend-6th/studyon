@@ -168,6 +168,8 @@
 
 # 🕍 Infra Structure
 
+[repository](https://github.com/likelion-backend-6th/studyon-infra)
+
 ![InfraStructure](./static/image/README/infra_structure.png)
 
 <br>
