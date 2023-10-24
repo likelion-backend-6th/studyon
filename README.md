@@ -471,6 +471,13 @@
     ```
 
 
+## Markdown 스타일 문제
+  - 게시글 입력시 markdown입력을 지원
+  - TailwindCSS에서 기본 tag 스타일을 기본 텍스트로 변경해 markdown이 제대로 표시되지 않음
+  - css에서 기본 tag에 스타일을 넣어주려 하였으나 강사님 조언으로 외부 툴 활용
+  - Toast UI Editor를 추가해 markdown입력과 preview를 추가하였고 스타일도 넣어줄 수 있었음
+    ![Alt text](./static/image/md-test.png)
+
 
 <br>
 <br>
